@@ -21,7 +21,7 @@ prisma:
 psql:
 	cd docker && docker-compose up -d
 
-docker-stop:
+psql-stop:
 	cd docker && docker-compose down
 
-.PHONY: docker-stop commit migrate prisma psql
+.PHONY: psql-stop commit migrate prisma psql
