@@ -1,0 +1,20 @@
+# More information on the parameters can be found here: https://documentation.red-gate.com/flyway/flyway-cli-and-api/configuration/parameters
+
+[environments.local]
+url = "jdbc:postgresql://localhost:5432/ecom"
+user = "paul"
+schemas = ["ecom"]
+
+[environments.azure]
+url = "jdbc:postgresql://vacation-work-2024.postgres.database.azure.com:5432/postgres"
+user = "formationadminuser"
+schemas = ["ecom"]
+
+[flyway]
+locations = ["filesystem:migrations"]
+cleanDisabled = false
+validateMigrationNaming=true
+reportEnabled = true
+table = "FlywayHistory"
+baselineVersion = "2021.11.000"
+baselineDescription = "Baseline before converting to flyway migrations"
