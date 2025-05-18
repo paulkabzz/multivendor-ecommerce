@@ -1,0 +1,14 @@
+{
+  "name": "team-formation-database",
+  "version": "2024.11.1",
+  "description": "Team Formation Repo",
+  "type": "module",
+  "private": "true",
+  "scripts": {
+    "flyway": "flyway -environment=local"
+  },
+  "dependencies": {
+    "@aldenquimby/flywaydb-cli": "^0.13.0",
+    "flyway": "^0.1.9"
+  }
+}
