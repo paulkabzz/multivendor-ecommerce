@@ -6,7 +6,6 @@ This is a multivendor ecommerce store built with **React.js** and **TypeScript**
 
 ## Running the App
 
----
 
 ### Prerequisites:
 
@@ -17,7 +16,6 @@ The following programs should be installed on your machine in order to run the a
 - Prisma 
 - Node
 
----
 
 ### 1. Clone the Repo
 
