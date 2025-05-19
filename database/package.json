@@ -4,7 +4,7 @@
   "type": "module",
   "private": "true",
   "scripts": {
-    "flyway": "export FLYWAY_PASSWORD=\"\" && flyway -environment=local"
+    "flyway": "source .env && flyway -environment=local"
   },
   "dependencies": {
     "@aldenquimby/flywaydb-cli": "^0.13.0",

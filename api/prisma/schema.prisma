@@ -102,6 +102,6 @@ enum role {
 
 enum status {
   PENDING
-  APPROVED
-  REJECTED
+  DELIVERED
+  CANCELLED
 }
