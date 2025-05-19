@@ -1,0 +1,79 @@
+DROP TABLE IF EXISTS mytable;
+
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+CREATE TYPE ROLE AS ENUM  (
+    'CUSTOMER',
+    'VENDOR',
+    'ADMIN'
+);
+
+CREATE TYPE STATUS AS ENUM  (
+    'PENDING',
+    'APPROVED',
+    'REJECTED'
+);
+
+CREATE TABLE IF NOT EXISTS Users (
+    user_id UUID NOT NULL UNIQUE PRIMARY KEY DEFAULT uuid_generate_v4(),
+    first_name VARCHAR(60) NOT NULL,
+    last_name VARCHAR(60) NOT NULL,
+    email VARCHAR(120) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    craeted_at TIMESTAMP DEFAUlT CURRENT_TIMESTAMP,
+    role ROLE DEFAUlT 'CUSTOMER'
+);
+
+CREATE TABLE IF NOT EXISTS Vendor (
+    vendor_id UUID NOT NULL UNIQUE PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID NOT NULL UNIQUE,
+    FOREIGN KEY(user_id) REFERENCES Users(user_id) ON DELETE CASCADE,
+    store_name VARCHAR(100) NOT NULL,
+    bio TEXT,
+    image_url VARCHAR(255)
+);
+
+
+CREATE TABLE IF NOT EXISTS Product (
+    product_id UUID NOT NULL UNIQUE PRIMARY KEY DEFAULT uuid_generate_v4(),
+    vendor_id UUID NOT NULL UNIQUE,
+    name VARCHAR(100) NOT NULL,
+    decsription TEXT,
+    price DECIMAL(10, 2) NOT NULL,
+    image_url VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY(vendor_id) REFERENCES Vendor(vendor_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS Image (
+    image_id UUID NOT NULL UNIQUE PRIMARY KEY DEFAULT uuid_generate_v4(),
+    image_url VARCHAR(255) NOT NULL,
+    product_id UUID UNIQUE NOT NULL,
+    FOREIGN KEY(product_id) REFERENCES Product(product_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS Orders (
+    order_id UUID UNIQUE NOT NULL PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID UNIQUE NOT NULL,
+    FOREIGN KEY(user_id) REFERENCES Users(user_id) ON DELETE CASCADE,
+    status STATUS DEFAULT 'PENDING',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS OrderItem (
+    order_item_id UUID UNIQUE NOT NULL PRIMARY KEY DEFAULT uuid_generate_v4(),
+    order_id UUID UNIQUE NOT NULL,
+    product_id UUID UNIQUE NOT NULL,
+    user_id UUID UNIQUE NOT NULL,
+    FOREIGN KEY(order_id) REFERENCES Orders(order_id) ON DELETE CASCADE,
+    FOREIGN KEY(product_id) REFERENCES Product(product_id) ON DELETE CASCADE,
+    FOREIGN KEY(user_id) REFERENCES Users(user_id) ON DELETE CASCADE,
+    quantity INTEGER DEFAULT 1
+);
+
+CREATE TABLE IF NOT EXISTS Cart (
+    product_id UUID UNIQUE NOT NULL,
+    user_id UUID UNIQUE NOT NULL,
+    FOREIGN KEY(product_id) REFERENCES Product(product_id) ON DELETE CASCADE,
+    FOREIGN KEY(user_id) REFERENCES Users(user_id) ON DELETE CASCADE
+);

@@ -1,13 +1,6 @@
-# More information on the parameters can be found here: https://documentation.red-gate.com/flyway/flyway-cli-and-api/configuration/parameters
-
 [environments.local]
-url = "jdbc:postgresql://172.18.0.1/ecommerce"
+url = "jdbc:postgresql://localhost:5432/paul"
 user = "paul"
-schemas = ["ecommerce"]
-
-[environments.azure]
-url = "jdbc:postgresql://vacation-work-2024.postgres.database.azure.com:5432/postgres"
-user = "formationadminuser"
 schemas = ["ecommerce"]
 
 [flyway]

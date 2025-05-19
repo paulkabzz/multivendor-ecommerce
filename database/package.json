@@ -1,14 +1,17 @@
 {
-  "name": "team-formation-database",
-  "version": "2024.11.1",
-  "description": "Team Formation Repo",
+  "name": "ecommerce",
+  "description": "Ecommerce",
   "type": "module",
   "private": "true",
   "scripts": {
-    "flyway": "flyway -environment=local"
+    "flyway": "export FLYWAY_PASSWORD=\"\" && flyway -environment=local"
   },
   "dependencies": {
     "@aldenquimby/flywaydb-cli": "^0.13.0",
     "flyway": "^0.1.9"
+  },
+  "devDependencies": {
+    "dotenv": "^16.5.0",
+    "dotenv-cli": "^8.0.0"
   }
 }
