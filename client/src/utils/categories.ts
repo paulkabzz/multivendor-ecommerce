@@ -1,0 +1,19 @@
+export const categories = [
+    'BOOKS',
+    'ELECTRONICS',
+    'CLOTHING',
+    'FURNITURE',
+    'GROCERIES',
+    'STATIONERY',
+    'HEALTH_AND_BEAUTY',
+    'SPORTS_AND_OUTDOORS',
+    'CAMPUS_MERCH',
+    'EVENT_TICKETS',
+    'PRINTING_SERVICES',
+    'FOOD_AND_DRINKS',
+    'TEXTBOOKS',
+    'ART_SUPPLIES',
+    'LAB_EQUIPMENT',
+    'ACCESSORIES',
+    'OTHER'
+];
