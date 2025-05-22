@@ -4,16 +4,16 @@ import { Outlet } from "react-router";
 import { Nav } from "./components/navbar/nav";
 
 const RootLayout = () => {
-    return (
-        <>
-            <Header />
-            <Nav />
-                <main className="h-[200vh]">
-                    <Outlet />
-                </main>
-            <Footer />
-        </>
-    )
-}
+  return (
+    <>
+      <Header />
+      <Nav />
+      <main className="h-[200vh]">
+        <Outlet />
+      </main>
+      <Footer />
+    </>
+  );
+};
 
 export default RootLayout;

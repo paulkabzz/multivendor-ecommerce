@@ -1,8 +1,5 @@
-import type { INavLink } from "../../../utils/types"
+import type { INavLink } from "../../../utils/types";
 
 export const CategoryButton = ({ text, href }: INavLink) => {
-  return (
-    <a href={href}> { text } </a>
-  )
-}
-
+  return <a href={href}> {text} </a>;
+};
