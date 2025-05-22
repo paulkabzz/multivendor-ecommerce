@@ -2,7 +2,7 @@ import { categories } from "../../utils/categories";
 import type { INavLink } from "../../utils/types";
 import { CategoryButton } from "../common/buttons/category-button";
 
-export const Header = () => {
+export const Header: React.FC = (): React.ReactElement => {
   return (
     <>
       <header className="absolute top-0 right-0 w-full h-[50px] bg-[#131313] flex justify-between items-center px-[100px] overflow-y-auto ">

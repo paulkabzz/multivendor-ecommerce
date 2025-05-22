@@ -1,4 +1,4 @@
-export const Nav = () => {
+export const Nav: React.FC = (): React.ReactElement => {
   return (
     <header className="sticky top-0 right-0 bg-gray-400 w-full mt-[50px] px-[100px] py-[.5rem] flex flex-col">
       <div className="flex items-center justify-between"></div>

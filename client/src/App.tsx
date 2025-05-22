@@ -3,7 +3,7 @@ import "./app.css";
 import Home from "./pages/home/page";
 import RootLayout from "./root-layout";
 
-function App() {
+function App(): React.ReactElement {
   return (
     <>
       <Routes>

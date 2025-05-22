@@ -3,7 +3,7 @@ import { Footer } from "./components/Footer";
 import { Outlet } from "react-router";
 import { Nav } from "./components/navbar/nav";
 
-const RootLayout = () => {
+const RootLayout: React.FC = (): React.ReactElement => {
   return (
     <>
       <Header />
