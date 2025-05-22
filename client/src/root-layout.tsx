@@ -1,12 +1,14 @@
-import { Navbar } from "./components/navbar/Navbar";
+import { Header } from "./components/navbar/header";
 import { Footer } from "./components/Footer";
 import { Outlet } from "react-router";
+import { Nav } from "./components/navbar/nav";
 
 const RootLayout = () => {
     return (
         <>
-            <Navbar />
-                <main>
+            <Header />
+            <Nav />
+                <main className="h-[200vh]">
                     <Outlet />
                 </main>
             <Footer />

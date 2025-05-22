@@ -1,4 +1,4 @@
-export const Navbar = () => {
+export const Header = () => {
     return (
         <>
             <header className="absolute top-0 right-0 w-full h-[7vh] bg-slate-100">
