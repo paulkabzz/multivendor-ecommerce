@@ -22,17 +22,6 @@ model FlywayHistory {
   @@index([success], map: "FlywayHistory_s_idx")
 }
 
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model cart {
-  product_id String  @db.Uuid
-  user_id    String  @db.Uuid
-  product    product @relation(fields: [product_id], references: [product_id], onDelete: Cascade, onUpdate: NoAction)
-  users      users   @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
-
-  @@id([user_id, product_id])
-  @@ignore
-}
-
 model image {
   image_id   String  @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   image_url  String  @db.VarChar(255)
@@ -71,7 +60,6 @@ model product {
   condition    condition?
   category     category?
   is_available Boolean?    @default(true)
-  cart         cart[]      @ignore
   image        image[]
   orderitem    orderitem[]
   vendor       vendor      @relation(fields: [vendor_id], references: [vendor_id], onDelete: Cascade, onUpdate: NoAction)
@@ -87,7 +75,6 @@ model users {
   role        role?       @default(CUSTOMER)
   phone       String?     @db.VarChar(20)
   is_verified Boolean?    @default(false)
-  cart        cart[]      @ignore
   orderitem   orderitem[]
   orders      orders[]
   vendor      vendor[]
