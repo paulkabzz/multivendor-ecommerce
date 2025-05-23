@@ -1,13 +1,43 @@
 .parent {
-display: grid;
-grid-template-columns: repeat(5, 1fr);
-grid-template-rows: repeat(5, 1fr);
-grid-column-gap: 12px;
-grid-row-gap: 12px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  grid-column-gap: 12px;
+  grid-row-gap: 12px;
+  height: 100%;
+  margin: 0 200px;
 }
 
-.div1 { grid-area: 1 / 1 / 4 / 4; }
-.div2 { grid-area: 1 / 4 / 3 / 6; }
-.div3 { grid-area: 3 / 4 / 6 / 6; }
-.div4 { grid-area: 4 / 1 / 6 / 3; }
-.div5 { grid-area: 4 / 3 / 6 / 4; }
+.div1,
+.div2,
+.div3,
+.div4,
+.div5 {
+  background-position: center;
+  background-size: cover;
+}
+
+.div1 {
+  grid-area: 1 / 1 / 4 / 4;
+  background-image: url("../../../assets/ui/men.jpg");
+}
+
+.div2 {
+  grid-area: 1 / 4 / 3 / 6;
+  background-image: url("../../../assets/ui/sport-2.jpg");
+}
+
+.div3 {
+  grid-area: 3 / 4 / 6 / 6;
+  background-image: url("../../../assets/ui/women.jpg");
+}
+
+.div4 {
+  grid-area: 4 / 1 / 6 / 3;
+  background-image: url("../../../assets/ui/children-3.jpg");
+}
+
+.div5 {
+  grid-area: 4 / 3 / 6 / 4;
+  background-image: url("../../../assets/ui/beauty.jpg");
+}
