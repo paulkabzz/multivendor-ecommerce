@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router";
-import "./app.css";
+import "@src/app.css";
 import { Home } from "@src/routes";
-import RootLayout from "./root-layout";
+import RootLayout from "@src/root-layout";
 
 function App(): React.ReactElement {
   return (
