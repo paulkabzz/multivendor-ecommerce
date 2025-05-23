@@ -1,5 +1,15 @@
 export interface INavLink {
-  text?: string;
-  href?: string;
+  text: string;
+  href: string;
   icon?: string;
+};
+
+export interface IInput {
+  placeholder?: string;
+  type: string;
+  icon?: string;
+  className?: string;
+  collapsible?: boolean;
+  width?: number;
+  height?: number;
 }

@@ -1,6 +1,7 @@
 import type { INavLink } from "./types";
 
 export const categories: INavLink[] = [
+  {text: "All", href: "#"},
   { text: "Men", href: "#" },
   { text: "Women", href: "#" },
   { text: "Children", href: "#" },
