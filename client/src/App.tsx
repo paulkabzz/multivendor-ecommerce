@@ -1,6 +1,6 @@
 import { Route, Routes } from "react-router";
 import "./app.css";
-import { Home } from "./routes";
+import { Home } from "@src/routes";
 import RootLayout from "./root-layout";
 
 function App(): React.ReactElement {
