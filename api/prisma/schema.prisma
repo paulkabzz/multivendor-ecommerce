@@ -50,19 +50,20 @@ model orders {
 }
 
 model product {
-  product_id   String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  vendor_id    String      @db.Uuid
-  name         String      @db.VarChar(100)
-  decsription  String?
-  price        Decimal     @db.Decimal(10, 2)
-  image_url    String?     @db.VarChar(255)
-  created_at   DateTime?   @default(now()) @db.Timestamp(6)
-  condition    condition?
-  category     category?
-  is_available Boolean?    @default(true)
-  image        image[]
-  orderitem    orderitem[]
-  vendor       vendor      @relation(fields: [vendor_id], references: [vendor_id], onDelete: Cascade, onUpdate: NoAction)
+  product_id     String       @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  vendor_id      String       @db.Uuid
+  name           String       @db.VarChar(100)
+  decsription    String?
+  price          Decimal      @db.Decimal(10, 2)
+  image_url      String?      @db.VarChar(255)
+  created_at     DateTime?    @default(now()) @db.Timestamp(6)
+  condition      condition?
+  is_available   Boolean?     @default(true)
+  subcategory_id String?      @db.Uuid
+  image          image[]
+  orderitem      orderitem[]
+  vendor         vendor       @relation(fields: [vendor_id], references: [vendor_id], onDelete: Cascade, onUpdate: NoAction)
+  subcategory    subcategory? @relation(fields: [subcategory_id], references: [subcategory_id], onDelete: NoAction, onUpdate: NoAction, map: "subcategory_fk")
 }
 
 model users {
@@ -90,6 +91,50 @@ model vendor {
   users      users     @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
 }
 
+model category {
+  category_id         String                @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  category_name       String                @unique @db.VarChar(255)
+  department_id       String?               @db.Uuid
+  department          department?           @relation(fields: [department_id], references: [department_id], onDelete: NoAction, onUpdate: NoAction)
+  categorysubcategory categorysubcategory[]
+  departmentcategory  departmentcategory[]
+  subcategory         subcategory[]
+}
+
+model categorysubcategory {
+  category_id    String      @db.Uuid
+  subcategory_id String      @db.Uuid
+  category       category    @relation(fields: [category_id], references: [category_id], onDelete: NoAction, onUpdate: NoAction)
+  subcategory    subcategory @relation(fields: [subcategory_id], references: [subcategory_id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([category_id, subcategory_id])
+}
+
+model department {
+  department_id      String               @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  department_name    String               @unique @db.VarChar(255)
+  category           category[]
+  departmentcategory departmentcategory[]
+}
+
+model departmentcategory {
+  department_id String     @db.Uuid
+  category_id   String     @db.Uuid
+  category      category   @relation(fields: [category_id], references: [category_id], onDelete: NoAction, onUpdate: NoAction)
+  department    department @relation(fields: [department_id], references: [department_id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([department_id, category_id])
+}
+
+model subcategory {
+  subcategory_id      String                @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  subcategory_name    String                @db.VarChar(255)
+  category_id         String?               @db.Uuid
+  categorysubcategory categorysubcategory[]
+  product             product[]
+  category            category?             @relation(fields: [category_id], references: [category_id], onDelete: NoAction, onUpdate: NoAction)
+}
+
 enum role {
   CUSTOMER
   VENDOR
@@ -100,26 +145,6 @@ enum status {
   PENDING
   DELIVERED
   CANCELLED
-}
-
-enum category {
-  BOOKS
-  ELECTRONICS
-  CLOTHING
-  FURNITURE
-  GROCERIES
-  STATIONERY
-  HEALTH_AND_BEAUTY
-  SPORTS_AND_OUTDOORS
-  CAMPUS_MERCH
-  EVENT_TICKETS
-  PRINTING_SERVICES
-  FOOD_AND_DRINKS
-  TEXTBOOKS
-  ART_SUPPLIES
-  LAB_EQUIPMENT
-  ACCESSORIES
-  OTHER
 }
 
 enum condition {
