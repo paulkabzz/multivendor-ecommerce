@@ -19,4 +19,6 @@ export interface IShoppingCard {
   name: string;
   price: number;
   img_url: string;
+  decsription?: string;
+  vendor?: string;
 }
