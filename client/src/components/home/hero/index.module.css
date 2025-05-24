@@ -8,11 +8,7 @@
   margin: 0 200px;
 }
 
-.div1,
-.div2,
-.div3,
-.div4,
-.div5 {
+.parent > * {
   background-position: center;
   background-size: cover;
 }
