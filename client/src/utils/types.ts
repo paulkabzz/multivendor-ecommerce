@@ -13,3 +13,10 @@ export interface IInput {
   width?: number;
   height?: number;
 }
+
+export interface IShoppingCard {
+  product_id?: string;
+  name: string;
+  price: number;
+  img_url: string;
+}
