@@ -62,8 +62,8 @@ model product {
   subcategory_id String?      @db.Uuid
   image          image[]
   orderitem      orderitem[]
+  subcategory    subcategory? @relation(fields: [subcategory_id], references: [subcategory_id], onDelete: Cascade, onUpdate: NoAction, map: "subcategory_fk")
   vendor         vendor       @relation(fields: [vendor_id], references: [vendor_id], onDelete: Cascade, onUpdate: NoAction)
-  subcategory    subcategory? @relation(fields: [subcategory_id], references: [subcategory_id], onDelete: NoAction, onUpdate: NoAction, map: "subcategory_fk")
 }
 
 model users {
@@ -104,8 +104,8 @@ model category {
 model categorysubcategory {
   category_id    String      @db.Uuid
   subcategory_id String      @db.Uuid
-  category       category    @relation(fields: [category_id], references: [category_id], onDelete: NoAction, onUpdate: NoAction)
-  subcategory    subcategory @relation(fields: [subcategory_id], references: [subcategory_id], onDelete: NoAction, onUpdate: NoAction)
+  category       category    @relation(fields: [category_id], references: [category_id], onDelete: Cascade, onUpdate: NoAction)
+  subcategory    subcategory @relation(fields: [subcategory_id], references: [subcategory_id], onDelete: Cascade, onUpdate: NoAction)
 
   @@id([category_id, subcategory_id])
 }
@@ -120,8 +120,8 @@ model department {
 model departmentcategory {
   department_id String     @db.Uuid
   category_id   String     @db.Uuid
-  category      category   @relation(fields: [category_id], references: [category_id], onDelete: NoAction, onUpdate: NoAction)
-  department    department @relation(fields: [department_id], references: [department_id], onDelete: NoAction, onUpdate: NoAction)
+  category      category   @relation(fields: [category_id], references: [category_id], onDelete: Cascade, onUpdate: NoAction)
+  department    department @relation(fields: [department_id], references: [department_id], onDelete: Cascade, onUpdate: NoAction)
 
   @@id([department_id, category_id])
 }
@@ -132,7 +132,7 @@ model subcategory {
   category_id         String?               @db.Uuid
   categorysubcategory categorysubcategory[]
   product             product[]
-  category            category?             @relation(fields: [category_id], references: [category_id], onDelete: NoAction, onUpdate: NoAction)
+  category            category?             @relation(fields: [category_id], references: [category_id], onDelete: Cascade, onUpdate: NoAction)
 }
 
 enum role {
