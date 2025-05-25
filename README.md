@@ -1,6 +1,6 @@
 # Multivendor Ecommerce Store
 
-This is a multivendor ecommerce store built with **React.js** and **TypeScript** for the frontend, and Azure with **PostgreSQL** for the backend. The database is containerised using **Docker**, and **Flyway** is used for version control of the database schema.
+This is a multivendor ecommerce store built with **React.js** and **TypeScript** for the frontend, and **Azure** with **PostgreSQL** for the backend. The database is containerised using **Docker**, and **Flyway** is used for version control of the database schema.
 
 ---
 
