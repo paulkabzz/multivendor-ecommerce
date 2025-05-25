@@ -1,6 +1,10 @@
 const SignUp: React.FC = (): React.ReactElement => {
   return (
-    <div>SignUp</div>
+    <section className="w-full flex justify-center">
+        <div className="">
+            
+        </div>
+    </section>
   )
 }
 

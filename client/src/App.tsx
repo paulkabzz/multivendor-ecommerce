@@ -1,14 +1,15 @@
-import { Navigate, Route, Routes } from "react-router";
+import { Route, Routes } from "react-router";
 import "@src/app.css";
-import { Activation, BestSelling, Checkout, Contact, Events, FAQ, Home, Login, NotFound, ProductDetails, Products, Profile, SignUp } from "@src/routes";
+import { Activation, BestSelling, Contact, Events, FAQ, Home, Login, NotFound, ProductDetails, Products, Profile, SignUp } from "@src/routes";
 import RootLayout from "@src/root-layout";
 
 function App(): React.ReactElement {
 
-  const ProtectedRoute = ({ children }: {children: React.ReactNode}): React.ReactNode => {
-    let isAuthenticated = false;
-    return isAuthenticated ? children : <Navigate to={'/login'} />;
-  }
+  // const ProtectedRoute = ({ children }: {children: React.ReactNode}): React.ReactNode => {
+
+  //   let isAuthenticated = false;
+  //   return isAuthenticated ? children : <Navigate to={'/login'} />;
+  // }
 
   return (
     <>
@@ -26,10 +27,11 @@ function App(): React.ReactElement {
             <Route path="/best-selling" element={<BestSelling />} />
 
             {/* Protected Routes */}
-            <ProtectedRoute>
+            
+            {/* <ProtectedRoute>
                 <Route path="/profile/:user_id" element={<Profile />} />
                 <Route path="checkout/:user_id" element={<Checkout />} />
-            </ProtectedRoute>
+            </ProtectedRoute> */}
 
             {/* Not Found */}
             <Route path="*" element={<NotFound />} />
