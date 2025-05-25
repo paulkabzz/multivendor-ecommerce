@@ -54,7 +54,7 @@ Then run:
 This command will start the PostgreSQL container using the settings from the `.env` file.
 
 Connect to Docker Postgres
-``bash
+```bash
     psql -h localhost -U ecommerce_user -d ecommerce -p 5433
 ```
 
