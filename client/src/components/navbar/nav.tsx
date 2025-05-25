@@ -2,6 +2,7 @@ import { Input } from '@components/common/input/input';
 import shoppingBag from '@assets/icons/shopping-bag.png';
 import profileIcon from '@assets/icons/profile.png';
 import { Hamburger } from '../common/hamburger/hamburger';
+import searchIcon from '@assets/icons/search.png'
 
 export const Nav: React.FC = (): React.ReactElement => {
   return (
@@ -11,7 +12,7 @@ export const Nav: React.FC = (): React.ReactElement => {
               <Hamburger /> Ecom
           </div>
           <div className="flex items-center gap-3">
-                <Input type="text" placeholder="Search products, stores, or brands" />
+                <Input type="text" placeholder="Search products, stores, or brands" icon={searchIcon} />
                 <a href="#cart">
                   <img src={shoppingBag} alt="Cart" className="w-[20px] h-[20px]" />
                 </a>
