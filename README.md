@@ -25,18 +25,7 @@ Run the following command in your terminal to clone the repo:
     git clone https://github.com/paulkabzz/multivendor-ecommerce .
 ```
 
-### 2. Install the Node Modules
-
-Install dependencies by running the following command in each of these directories:
-- `/` (project root dir)
-- `/database`
-- `/api`
-
-``` bash
-    npm i
-```
-
-### 3. Start the Docker Container
+### 2. Start the Docker Container
 
 In the `docker` directory, create a `.env` file with the following variables:
 
@@ -71,6 +60,17 @@ Exit postres using the following command:
 
 ```bash
     \q
+```
+
+Run Flyway migration script:
+```bash
+    make flyway
+```
+
+Generate Prisma schema:
+
+```bash
+    make prisma
 ```
 
 Reconnect as `ecommerce_user`:
