@@ -6,6 +6,7 @@ import Events from '@pages/events/page';
 import FAQ from '@pages/faq/page';
 import Home from '@pages/home/page';
 import Login from '@pages/login/page';
+import NotFound from '@pages/not-found/page';
 import ProductDetails from '@pages/product-details/page';
 import Products from '@pages/products/page';
 import Profile from '@pages/profile/page';
@@ -20,6 +21,7 @@ export {
     FAQ,
     Home,
     Login,
+    NotFound,
     ProductDetails,
     Products,
     Profile,
