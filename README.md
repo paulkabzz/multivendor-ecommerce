@@ -31,7 +31,7 @@ In the `docker` directory, create a `.env` file with the following variables:
 
 ```
 POSTGRES_USER=ecommerce_user
-POSTGRES_PASSWORD=
+POSTGRES_PASSWORD=<password>
 POSTGRES_DB=ecommerce
 ```
 
@@ -65,7 +65,7 @@ Exit postres using the following command:
 Create a file called `priv` in the database folder and add the following line into in:
 
 ```
-    export FLYWAY_PASSWORD=password
+    export FLYWAY_PASSWORD=<password>
 ```
 The password is the password in your `docker/.env` file.
 
