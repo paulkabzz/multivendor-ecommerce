@@ -21,7 +21,7 @@ async function signup(request: HttpRequest, context: InvocationContext): Promise
 
 app.http('sign-up',
    { 
-    methods: ['PUT'],
+    methods: ['GET', 'POST'],
     authLevel: 'anonymous',
     handler: signup
 }

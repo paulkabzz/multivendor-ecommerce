@@ -12,6 +12,10 @@ export interface IInput {
   collapsible?: boolean;
   width?: number;
   height?: number;
+  action?:  any;
+  name?: string;
+  value?: string;
+  id?: string;
 };
 
 export interface IShoppingCard {
@@ -28,6 +32,16 @@ export interface IButton {
   disabled?: boolean;
   width?: number;
   height?: number;
-  action?: (Event: any) => any | void;
+  action?: any;
   className?: string;
+  type?: "submit" | "reset" | "button" | undefined;
 };
+
+export interface IUser {
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone?: string;
+  role?: 'CUSTOMER' | 'VENDOR' | 'ADMIN';
+  password: string;
+}
