@@ -1,3 +1,4 @@
+import { Button } from "@/src/components/common/buttons/button";
 import { Input } from "@/src/components/common/input/input";
 import logo from '@assets/logo-2.png';
 
@@ -29,7 +30,7 @@ const SignUp: React.FC = (): React.ReactElement => {
                   <label htmlFor="Confirm Password" className="text-[12px] font-[600]">Confirm Password</label>
                   <Input type="password" className="!text-[#131313] !bg-[#ddd] !w-[350px]" />
               </div>
-              
+              <Button text="Sign Up" className="!text-[12px]"/>  
         </div>
     </section>
   )

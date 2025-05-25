@@ -12,7 +12,7 @@ export interface IInput {
   collapsible?: boolean;
   width?: number;
   height?: number;
-}
+};
 
 export interface IShoppingCard {
   product_id?: string;
@@ -21,4 +21,13 @@ export interface IShoppingCard {
   img_url: string;
   decsription?: string;
   vendor?: string;
-}
+};
+
+export interface IButton {
+  text: string;
+  disabled?: boolean;
+  width?: number;
+  height?: number;
+  action?: (Event: any) => any | void;
+  className?: string;
+};
