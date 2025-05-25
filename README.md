@@ -41,13 +41,48 @@ Install dependencies by running the following command in each of these directori
 In the `docker` directory, create a `.env` file with the following variables:
 
 ```
-POSTGRES_USER=
+POSTGRES_USER=ecommerce_user
 POSTGRES_PASSWORD=
+POSTGRES_DB=ecommerce
 ```
 
 Then run:
 ```bash
-    docker-compose up
+    make docker
 ```
 
 This command will start the PostgreSQL container using the settings from the `.env` file.
+
+Connect to Docker Postgres
+``bash
+    psql -h localhost -U ecommerce_user -d ecommerce -p 5433
+```
+
+Then run:
+```sql
+    ALTER ROLE ecommerce_user SET search_path TO ecommerce;
+```
+
+This tells Postgres to automatically use the ecommerce schema when ecommerce_user connects, so tools like psql, Prisma, etc., behave as expected without extra schema prefixes.
+
+Test Connection
+Exit postres using the following command:
+
+```bash
+    \q
+```
+
+Reconnect as `ecommerce_user`:
+```bash
+    psql -h localhost -U ecommerce_user -d ecommerce -p 5433
+```
+
+Then run:
+
+```bash
+    \dt
+```
+
+This will show all the tables associated with the ecommerce db.
+
+## Using DBeaver or Prisma Studio
