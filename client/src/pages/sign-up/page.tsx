@@ -71,13 +71,13 @@ const SignUp: React.FC = (): React.ReactElement => {
       if (!data.email.trim()) {
           errors.email = 'Email is required';
       } else if (!/^[a-zA-z]{6}[0-9]{3}@myuct\.ac\.za$/i.test(data.email)) {
-          errors.email = 'Email is invalid';
+          errors.email = data.email.trim() + ' is not a valid uct email.';
       }
 
       if (!data.password) {
           errors.password = 'Password is required';
-      } else if (data.password.length < 8 && !/^(?=.*[a-z])(?=.*[A-Z])(?=.*[^A-Za-z0-9])(?=.{8,}).*$/.test(data.password)) {
-          errors.password = 'Password must be at least 8 characters long';
+      } else if (data.password.length < 8 || !/^(?=.*[a-z])(?=.*[A-Z])(?=.*[^A-Za-z0-9])(?=.{8,}).*$/.test(data.password)) {
+          errors.password = 'Password must container at least 1 number, 1 uppercase letter, 1 special character, and must be at least 8 characters long.';
       }
 
       if (data.confirm_password !== data.password) {
@@ -86,7 +86,6 @@ const SignUp: React.FC = (): React.ReactElement => {
 
         return errors;
   };
-
 
   return (
     <section className="w-full flex flex-col justify-center items-center pt-10">

@@ -125,3 +125,7 @@ To remove the container (this will delete all data):
 ```bash
 docker rm <container_name>
 ```
+
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+```
