@@ -62,6 +62,14 @@ Exit postres using the following command:
     \q
 ```
 
+Create a file called `priv` in the database folder and add the following line into in:
+
+```
+    export FLYWAY_PASSWORD=password
+```
+The password is the password in your `docker/.env` file.
+
+
 Run Flyway migration script:
 ```bash
     make flyway
