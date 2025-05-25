@@ -65,7 +65,8 @@ Then run:
 
 This tells Postgres to automatically use the ecommerce schema when ecommerce_user connects, so tools like psql, Prisma, etc., behave as expected without extra schema prefixes.
 
-Test Connection
+### Test Connection
+
 Exit postres using the following command:
 
 ```bash
