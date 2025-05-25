@@ -1,6 +1,6 @@
 [environments.local]
-url = "jdbc:postgresql://localhost:5432/paul"
-user = "paul"
+url = "jdbc:postgresql://localhost:5433/ecommerce"
+user = "ecommerce_user"
 schemas = ["ecommerce"]
 
 [flyway]
