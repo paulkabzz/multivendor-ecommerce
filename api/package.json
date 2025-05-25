@@ -1,8 +1,12 @@
 {
   "name": "api",
   "version": "1.0.0",
-  "main": "index.js",
   "scripts": {
+    "build": "tsc",
+    "start": "func start --verbose",
+    "watch": "tsc -w",
+    "clean": "rm -rf dist",
+    "prestart": "npm run clean && npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -16,6 +20,11 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "@prisma/client": "^6.8.2"
-  }
+    "@azure/functions": "^4.7.2",
+    "@prisma/client": "^6.8.2",
+    "bcrypt": "^6.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "resend": "^4.5.1"
+  },
+  "main": "dist/index.js"
 }
