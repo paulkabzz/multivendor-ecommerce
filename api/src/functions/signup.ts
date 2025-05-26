@@ -77,7 +77,7 @@ async function signup(request: HttpRequest, context: InvocationContext): Promise
 
             if (!emailSent) {
                 context.error('Failed to send verification email');
-                await prisma.$executeRaw`DELETE FROM Users WHERE email=${newUser.email};`;
+                await prisma.$executeRaw`DELETE FROM Users WHERE email='${newUser.email}';`;
             }
 
             return {
