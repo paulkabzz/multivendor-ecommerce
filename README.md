@@ -15,7 +15,7 @@ A full-stack multivendor ecommerce platform built with modern technologies for s
 
 **Database:**
 - PostgreSQL
-- Docker containerization
+- Docker containerisation
 - Flyway for database migrations
 
 ## Prerequisites
@@ -38,7 +38,7 @@ git clone https://github.com/paulkabzz/multivendor-ecommerce.git .
 
 #### Create Environment File
 
-Create `.env` in the `docker/` with the following content:
+Create `.env` in the `docker/` directory with the following content:
 ```env
 POSTGRES_USER=ecommerce_user
 POSTGRES_PASSWORD=your_secure_password_here
@@ -47,9 +47,9 @@ POSTGRES_DB=ecommerce
 
 **⚠️ Important:** Replace `your_secure_password_here` with a strong password of your choice.
 
-#### Start PostgreSQL Container
+#### Start the PostgreSQL Container
 ```bash
-make docker
+make psql
 ```
 
 This command starts the PostgreSQL container with your specified configuration.
@@ -96,7 +96,7 @@ echo "export FLYWAY_PASSWORD=your_secure_password_here" > priv
 
 **⚠️ Note:** When using `make` commands, make sure you are in the same directory as the `Makefile`
 ```bash
-make flyway
+make migrate
 ```
 
 #### Generate Prisma Schema
@@ -270,7 +270,7 @@ docker logs <container_name>
 
 # Remove and recreate container
 docker rm <container_name>
-make docker
+make psql
 ```
 
 #### Database Connection Issues

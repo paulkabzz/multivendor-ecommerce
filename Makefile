@@ -7,7 +7,7 @@ commit:
 	git commit -am "$(m)"
 	git push
 
-flyway:
+migrate:
 	cd database && \
 	npm i && \
 	npm run flyway migrate
@@ -18,10 +18,10 @@ prisma:
 	npx prisma db pull && \
 	npx prisma generate
 
-docker:
+psql:
 	cd docker && docker-compose up -d
 
 docker-stop:
 	cd docker && docker-compose down
 
-.PHONY: docker-stop commit flyway prisma docker
+.PHONY: docker-stop commit migrate prisma psql
