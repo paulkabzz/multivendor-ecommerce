@@ -1,6 +1,6 @@
-import { categories } from "../../utils/categories";
-import type { INavLink } from "../../utils/types";
-import { CategoryButton } from "../common/buttons/category-button";
+import { categories } from "../../../utils/categories";
+import type { INavLink } from "../../../utils/types";
+import { CategoryButton } from "../buttons/category-button";
 
 export const Header: React.FC = (): React.ReactElement => {
   return (

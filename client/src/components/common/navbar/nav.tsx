@@ -1,7 +1,7 @@
-import { Input } from '@components/common/input/input';
+import { Input } from '@/src/components/common/input/input';
 import shoppingBag from '@assets/icons/shopping-bag.png';
 import profileIcon from '@assets/icons/profile.png';
-import { Hamburger } from '../common/hamburger/hamburger';
+import { Hamburger } from '../hamburger/hamburger';
 import searchIcon from '@assets/icons/search.png'
 import { Link } from 'react-router';
 

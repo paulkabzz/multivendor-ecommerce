@@ -24,4 +24,4 @@ docker:
 docker-stop:
 	cd docker && docker-compose down
 
-.PHONY: commit flyway prisma docker
+.PHONY: docker-stop commit flyway prisma docker
