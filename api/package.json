@@ -24,8 +24,10 @@
   "dependencies": {
     "@azure/functions": "^4.7.2",
     "@prisma/client": "^6.8.2",
+    "@types/nodemailer": "^6.4.17",
     "bcrypt": "^6.0.0",
     "jsonwebtoken": "^9.0.2",
+    "nodemailer": "^7.0.3",
     "resend": "^4.5.1"
   },
   "main": "dist/index.js"

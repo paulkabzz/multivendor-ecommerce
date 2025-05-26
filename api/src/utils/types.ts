@@ -25,3 +25,12 @@ export interface ILoginResponse {
   };
   token?: string;
 }
+
+export interface IVerificationRequest {
+  token: string;
+}
+
+export interface IVerificationResponse {
+  success: boolean;
+  message: string;
+}
