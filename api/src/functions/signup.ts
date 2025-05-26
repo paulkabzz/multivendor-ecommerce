@@ -63,14 +63,11 @@ async function signup(request: HttpRequest, context: InvocationContext): Promise
                 }
             });
 
-            // Generate verification token
             const verificationToken = generateVerificationToken(newUser.email, newUser.user_id);
             
-            // Get base URL from request
             const url = new URL(request.url);
             const baseUrl = `${url.protocol}//${url.host}`;
 
-            // Send verification email
             const emailSent = await sendVerificationEmail({
                 to: newUser.email,
                 firstName: newUser.first_name,
@@ -79,11 +76,10 @@ async function signup(request: HttpRequest, context: InvocationContext): Promise
             });
 
             if (!emailSent) {
-                context.log('Failed to send verification email');
-                // You might want to delete the user or mark for retry
+                context.error('Failed to send verification email');
+                await prisma.$queryRaw`DELETE FROM Users WHERE email=${newUser.email};`;
             }
 
-            // Return success response (don't include password)
             return {
                 status: 201,
                 headers,
