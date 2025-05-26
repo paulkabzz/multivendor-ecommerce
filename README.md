@@ -121,64 +121,6 @@ You should see the ecommerce tables listed. Exit when done:
 \q
 ```
 
-## 📝 Writing SQL and Migrations
-
-When making changes to the database schema, follow these steps:
-
-### 1. Create Migration File
-Create a new file in the `migrations` folder following Flyway's naming convention:
-
-```
-V<version_number>__description_of_changes.sql
-```
-
-**Example:** `V7__create_blog_table.sql`
-- Version: 7
-- Description: Creating a blog table
-
-### 2. Write Your SQL
-Add your SQL commands to the migration file:
-
-```sql
--- V7__create_blog_table.sql
-CREATE TABLE IF NOT EXISTS Blog (
-    blog_id UUID UNIQUE NOT NULL PRIMARY KEY DEFAULT uuid_generate_v4(),
-    title VARCHAR(255) NOT NULL,
-    content TEXT,
-    user_id UUID,
-    FOREIGN KEY(user_id) REFERENCES Users(user_id),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-```
-
-### 3. Apply Migration
-Run the migration to update your database:
-
-```bash
-make migrate
-```
-
-This command will:
-- Execute your new migration
-- Update the database schema
-- Create the new version in Flyway's schema history
-
-### 4. Update Prisma Schema
-After applying the migration, regenerate the Prisma schema:
-
-```bash
-make prisma
-```
-
-This ensures your Prisma client stays in sync with the database schema.
-
-### Migration Best Practices
-- Always test migrations on a development database first
-- Use descriptive names for your migration files
-- Include rollback instructions in comments when applicable
-- Never modify existing migration files once they're applied
-
 ## API Setup
 
 ### 1. Navigate to API Directory
@@ -256,6 +198,64 @@ You should see output similar to:
 
 ### 5. Access the Application
 Open your browser and navigate to `http://localhost:5173/`
+
+## 📝 Writing SQL and Migrations
+
+When making changes to the database schema, follow these steps:
+
+### 1. Create Migration File
+Create a new file in the `migrations` folder following Flyway's naming convention:
+
+```
+V<version_number>__description_of_changes.sql
+```
+
+**Example:** `V7__create_blog_table.sql`
+- Version: 7
+- Description: Creating a blog table
+
+### 2. Write Your SQL
+Add your SQL commands to the migration file:
+
+```sql
+-- V7__create_blog_table.sql
+CREATE TABLE IF NOT EXISTS Blog (
+    blog_id UUID UNIQUE NOT NULL PRIMARY KEY DEFAULT uuid_generate_v4(),
+    title VARCHAR(255) NOT NULL,
+    content TEXT,
+    user_id UUID,
+    FOREIGN KEY(user_id) REFERENCES Users(user_id),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+### 3. Apply Migration
+Run the migration to update your database:
+
+```bash
+make migrate
+```
+
+This command will:
+- Execute your new migration
+- Update the database schema
+- Create the new version in Flyway's schema history
+
+### 4. Update Prisma Schema
+After applying the migration, regenerate the Prisma schema:
+
+```bash
+make prisma
+```
+
+This ensures your Prisma client stays in sync with the database schema.
+
+### Migration Best Practices
+- Always test migrations on a development database first
+- Use descriptive names for your migration files
+- Include rollback instructions in comments when applicable
+- Never modify existing migration files once they're applied
 
 ## Database Management Tools
 
