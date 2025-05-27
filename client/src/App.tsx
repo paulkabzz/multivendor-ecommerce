@@ -1,6 +1,6 @@
 import { Route, Routes } from "react-router";
 import "@src/app.css";
-import { Activation, BestSelling, Contact, Events, FAQ, Home, Login, NotFound, ProductDetails, Products, Profile, SignUp } from "@src/routes";
+import { Activation, BestSelling, Contact, Events, FAQ, Home, Login, NotFound, ProductDetails, Products, SignUp } from "@src/routes";
 import RootLayout from "@src/root-layout";
 
 function App(): React.ReactElement {
@@ -16,7 +16,7 @@ function App(): React.ReactElement {
       <Routes>
         <Route path="/" element={<RootLayout />}>
             <Route index element={<Home />} />
-            <Route path="activation/:auth_token" element={<Activation />} />
+            <Route path="activation/:activation_token" element={<Activation />} />
             <Route path="/login" element={<Login />} />
             <Route path="/sign-up" element={<SignUp />} />
             <Route path="/faq" element={<FAQ />} />
