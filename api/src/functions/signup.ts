@@ -66,7 +66,7 @@ async function signup(request: HttpRequest, context: InvocationContext): Promise
             const verificationToken = generateVerificationToken(newUser.email, newUser.user_id);
             
             const url = new URL(request.url);
-            const baseUrl = `${url.protocol}//${url.host}`;
+            const baseUrl = `${url.protocol}//localhost:5173`;
 
             const emailSent = await sendVerificationEmail({
                 to: newUser.email,

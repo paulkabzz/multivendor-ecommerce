@@ -1,4 +1,4 @@
-import Activation from '@pages/activation/page';
+import Verification from '@pages/verification/page';
 import BestSelling from '@pages/best-selling/page';
 import Checkout from '@pages/checkout/page';
 import Contact from '@pages/contact/page';
@@ -13,7 +13,7 @@ import Profile from '@pages/profile/page';
 import SignUp from '@pages/sign-up/page';
 
 export {
-    Activation,
+    Verification,
     BestSelling,
     Checkout,
     Contact,

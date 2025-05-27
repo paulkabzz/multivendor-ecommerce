@@ -19,8 +19,8 @@ export async function sendVerificationEmail(
   data: VerificationEmailData
 ): Promise<boolean> {
   try {
-    const verificationUrl = `${data.baseUrl}/activation/?token=${data.verificationToken}`;
-
+    const verificationUrl = `${data.baseUrl.replace(/\/$/, '')}/api/verify-email?token=${encodeURIComponent(data.verificationToken)}`;
+    
     const mailOptions = {
       from: `"Market Place" <${process.env.GMAIL_USER}>`,
       to: data.to,

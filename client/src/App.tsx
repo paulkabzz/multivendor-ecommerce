@@ -1,22 +1,16 @@
 import { Route, Routes } from "react-router";
 import "@src/app.css";
-import { Activation, BestSelling, Contact, Events, FAQ, Home, Login, NotFound, ProductDetails, Products, SignUp } from "@src/routes";
+import { BestSelling, Contact, Events, FAQ, Home, Login, NotFound, ProductDetails, Products, SignUp, Verification } from "@src/routes";
 import RootLayout from "@src/root-layout";
 
 function App(): React.ReactElement {
-
-  // const ProtectedRoute = ({ children }: {children: React.ReactNode}): React.ReactNode => {
-
-  //   let isAuthenticated = false;
-  //   return isAuthenticated ? children : <Navigate to={'/login'} />;
-  // }
 
   return (
     <>
       <Routes>
         <Route path="/" element={<RootLayout />}>
             <Route index element={<Home />} />
-            <Route path="activation/:activation_token" element={<Activation />} />
+            <Route path="/verify-email" element={<Verification />} />
             <Route path="/login" element={<Login />} />
             <Route path="/sign-up" element={<SignUp />} />
             <Route path="/faq" element={<FAQ />} />
