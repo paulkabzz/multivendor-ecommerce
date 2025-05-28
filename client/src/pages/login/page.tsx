@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Input } from '@components/common/input/input';
 import { Button } from '@components/common/buttons/button';
 import { BASE_URL } from '@/src/utils/url';
+import { useNavigate } from 'react-router';
 
 const Login: React.FC = (): React.ReactElement => {
 
@@ -13,6 +14,8 @@ const Login: React.FC = (): React.ReactElement => {
 
   const [message, setMessage] = useState<string>();
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
+
+  const navigate = useNavigate();
   
   const handleSubmit = async (event: any) => {
     event.preventDefault();
@@ -29,10 +32,13 @@ const Login: React.FC = (): React.ReactElement => {
 
           const data = await response.json();
 
-          console.log(data.user);
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("user", JSON.stringify(data.user));
 
           setMessage(data.message);
           setIsSuccess(data.success);
+
+          navigate("/");
 
       } catch (error) {
           console.error(error);
