@@ -6,6 +6,7 @@ import searchIcon from '@assets/icons/search.png'
 import { Link } from 'react-router';
 
 export const Nav: React.FC = (): React.ReactElement => {
+  const isLoggedIn: boolean = false;
   return (
     <header className="sticky top-0 right-0 bg-[#131313] h-[55px] w-full mt-[50px] px-[200px] py-[.5rem] flex flex-col justify-center">
       <div className="flex items-center justify-between text-[#fff]">
@@ -17,7 +18,7 @@ export const Nav: React.FC = (): React.ReactElement => {
                 <a href="#cart">
                   <img src={shoppingBag} alt="Cart" className="w-[20px] h-[20px]" />
                 </a>
-                  <a href="#profile">
+                  <a href={isLoggedIn ? '/profile' : '/login'}>
                   <img src={profileIcon} alt="Profile" className="w-[20px] h-[20px]" />
                 </a>
           </div>

@@ -3,10 +3,9 @@ import { Input } from "@/src/components/common/input/input";
 import type { IUser } from "@utils/types";
 import logo from '@assets/logo-2.png';
 import { useState } from "react";
+import { BASE_URL } from "@utils/url";
 
 const SignUp: React.FC = (): React.ReactElement => {
-
-  const BASE_URL = "http://localhost:7071/api";
 
   const [user, setUser] = useState<IUser | any>({
     first_name: '',
@@ -26,22 +25,20 @@ const SignUp: React.FC = (): React.ReactElement => {
   const handleSubmit = async (event: any) => {
         event.preventDefault();
 
-        const headers = {
-          method: 'POST',
-          headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-          },
-          body: user,
-        };
-
         const newErrors = validateForm(user);
         setErrors(newErrors);
 
         if (Object.keys(newErrors).length === 0) {
 
           try {
-            const response = await fetch(`${BASE_URL}/sign-up`, headers);
+            const response = await fetch(`${BASE_URL}/sign-up`, {
+              method: 'POST',
+              headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+              },
+              body: user,
+            });
             
             if (!response.ok) throw new Error("Error signing up");
 
