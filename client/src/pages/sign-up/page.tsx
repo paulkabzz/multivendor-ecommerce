@@ -4,6 +4,7 @@ import type { IUser } from "@utils/types";
 import logo from '@assets/logo-2.png';
 import { useState } from "react";
 import { BASE_URL } from "@utils/url";
+import { Link } from "react-router";
 
 const SignUp: React.FC = (): React.ReactElement => {
 
@@ -116,7 +117,10 @@ const SignUp: React.FC = (): React.ReactElement => {
                     { errors.confirm_password && <p className="text-[rgb(255,0,0)] text-[12px] font-[600] py-2">{errors.confirm_password}</p> }
                   <Input type="password" value={user.confirm_password} name="confirm_password" action={handleChange} className="!text-[#131313] !bg-[#ddd] !w-[350px]" />
               </div>
-              <Button text="Sign Up" className="!text-[12px]" type="submit"/>  
+              <div className="w-full mt-3">
+                  <Button text="Sign Up" className="!text-[12px] w-full" type="submit"/>  
+                  <p className='text-[12px] mt-3'>Already have an account? <Link to={'/login'} className='text-link'>Log in</Link></p>
+              </div>
         </form>
     </section>
   )

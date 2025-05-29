@@ -6,6 +6,11 @@ export default {
       fontFamily: {
         main: "./src/assets/fonts/SFPRODISPLAYREGULAR.OTF",
       },
+      colors: {
+        'primary-dark': '#131313',
+        'primary-light': '#ddd',
+        'link': '#667eea'
+      }
     },
   },
   plugins: [
