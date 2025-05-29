@@ -19,13 +19,13 @@ export async function sendVerificationEmail(
   data: VerificationEmailData
 ): Promise<boolean> {
   try {
-    const verificationUrl = `${data.baseUrl.replace(/\/$/, '')}/api/verify-email?token=${encodeURIComponent(data.verificationToken)}`;
+    const verificationUrl = `${data.baseUrl.replace(/\/$/, '')}/verify-email?token=${encodeURIComponent(data.verificationToken)}`;
     
     const mailOptions = {
       from: `"Market Place" <${process.env.GMAIL_USER}>`,
       to: data.to,
       subject: "Verify Your Account - Market Place",
-      html: `    
+      html: `     
         <!DOCTYPE html>
         <html lang="en">
         <head>
@@ -62,12 +62,12 @@ export async function sendVerificationEmail(
             <!-- Main container -->
             <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color: #f8fafc;">
                 <tr>
-                    <td style="padding: 40px 20px;">
+                    <td style="padding: 40px 10px;">
                         <!-- Email content wrapper -->
                         <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
                             <!-- Header -->
                             <tr>
-                                <td style="padding: 40px 40px 0 40px;">
+                                <td style="padding: 40px 25px 0 25px;">
                                     <!-- Logo placeholder -->
                                     <div style="display:flex; align-items: center;">
                                       <img src="https://github.com/paulkabzz/multivendor-ecommerce/blob/main/client/src/assets/logo-2.png?raw=true" href="logo" style="width: 45px; height:45px;"/>
@@ -86,9 +86,9 @@ export async function sendVerificationEmail(
                             
                             <!-- Main content -->
                             <tr>
-                                <td style="padding: 0 40px;">
+                                <td style="padding: 0 25px;">
                                     <div style="background-color: #f9fafb; border-radius: 8px; padding: 32px; text-align: center; margin-bottom: 32px;">
-                                        <p style="margin: 0 0 24px 0; font-size: 14px; color: #374151; line-height: 1.5;">
+                                        <p style="margin: 0 0 24px 0; font-size: 12px; color: #374151; line-height: 1.5;">
                                             Click the button below to verify your email address and activate your account:
                                         </p>
                                         

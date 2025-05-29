@@ -1,10 +1,10 @@
 import { Route, Routes } from "react-router";
 import "@src/app.css";
-import { BestSelling, Contact, Events, FAQ, Home, Login, NotFound, ProductDetails, Products, SignUp, Verification } from "@src/routes";
+import { BestSelling, Checkout, Contact, Events, FAQ, Home, Login, NotFound, ProductDetails, Products, Profile, SignUp, Verification } from "@src/routes";
 import RootLayout from "@src/root-layout";
+import ProtectedRoute from "@src/components/common/ProtectedRoute";
 
 function App(): React.ReactElement {
-
   return (
     <>
       <Routes>
@@ -21,11 +21,10 @@ function App(): React.ReactElement {
             <Route path="/best-selling" element={<BestSelling />} />
 
             {/* Protected Routes */}
-            
-            {/* <ProtectedRoute>
+            <Route element={<ProtectedRoute />}>
                 <Route path="/profile/:user_id" element={<Profile />} />
-                <Route path="checkout/:user_id" element={<Checkout />} />
-            </ProtectedRoute> */}
+                <Route path="/checkout/:user_id" element={<Checkout />} />
+            </Route>
 
             {/* Not Found */}
             <Route path="*" element={<NotFound />} />

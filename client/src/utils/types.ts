@@ -44,4 +44,19 @@ export interface IUser {
   phone?: string;
   role?: 'CUSTOMER' | 'VENDOR' | 'ADMIN';
   password: string;
-}
+};
+
+export interface UserState {
+  user: {
+    user_id?: string;
+    first_name?: string;
+    last_name?: string;
+    email?: string;
+    role?: string;
+    is_verified?: boolean;
+  } | null;
+  token: string | null;
+  isAuthenticated: boolean;
+  loading: boolean;
+  error: string | null;
+};
