@@ -38,7 +38,7 @@ async function login(request: HttpRequest, context: InvocationContext): Promise<
             if (!user) {
                 const response: ILoginResponse = {
                     success: false,
-                    message: "Invalid email or password"
+                    message: "User with this email does not exsist."
                 };
                 return {
                     status: 401,
