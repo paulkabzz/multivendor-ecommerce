@@ -48,18 +48,18 @@ const SignUp: React.FC = (): React.ReactElement => {
       dispatch(signupUser(userData));
 
       // Reset form fields
-      setUser({
-        first_name: '',
-        last_name: '',
-        email: '',
-        password: '',
-        confirm_password: ''
-      });
-      setErrors({});
+      // setUser({
+      //   first_name: '',
+      //   last_name: '',
+      //   email: '',
+      //   password: '',
+      //   confirm_password: ''
+      // });
+      // setErrors({});
     }
   };
 
-  const validateForm = (data: any) => {
+  const validateForm = (data: IUser & {confirm_password: string}) => {
     const errors: any = {};
 
     if (!data.first_name.trim()) {
@@ -72,8 +72,8 @@ const SignUp: React.FC = (): React.ReactElement => {
 
     if (!data.email.trim()) {
       errors.email = 'Email is required';
-    } else if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/i.test(data.email)) {
-      errors.email = data.email.trim() + ' is not a valid email.';
+    } else if (!/^[a-zA-z]{6}[0-9]{3}@myuct\.ac\.za$/i.test(data.email.trim().toLowerCase())) {
+      errors.email = data.email.trim() + ' is not a valid UCT email.';
     }
 
     if (!data.password) {

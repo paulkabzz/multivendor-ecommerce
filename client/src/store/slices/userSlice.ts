@@ -55,6 +55,7 @@ export const loginUser = createAsyncThunk(
       
       return data;
     } catch (error) {
+      console.error("Error logging in: " + error);
       return rejectWithValue('Failed to login. Please try again.');
     }
   }
@@ -82,6 +83,7 @@ export const signupUser = createAsyncThunk(
       
       return data;
     } catch (error) {
+      console.error("Error signing up: " + error);
       return rejectWithValue('Failed to sign up. Please try again.');
     }
   }

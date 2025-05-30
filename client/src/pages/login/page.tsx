@@ -47,7 +47,7 @@ const Login: React.FC = (): React.ReactElement => {
           <label htmlFor="Email" className="text-[12px] font-[600]">Email</label>
           <Input 
             type="email" 
-            value={credentials.email} 
+            value={credentials.email.trim()} 
             name="email" 
             placeholder="johndoes@example.com" 
             action={handleChange} 

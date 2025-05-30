@@ -31,7 +31,7 @@ async function login(request: HttpRequest, context: InvocationContext): Promise<
             // Find user by email
             const user = await prisma.users.findUnique({
                 where: {
-                    email: email.toLowerCase()
+                    email: email.toLowerCase().trim()
                 }
             });
 
@@ -80,7 +80,7 @@ async function login(request: HttpRequest, context: InvocationContext): Promise<
             const token = jwt.sign(
                 {
                     user_id: user.user_id,
-                    email: user.email,
+                    email: user.email.trim(),
                     role: user.role
                 },
                 jwtSecret,
@@ -93,9 +93,9 @@ async function login(request: HttpRequest, context: InvocationContext): Promise<
                 message: "Login successful",
                 user: {
                     user_id: user.user_id,
-                    first_name: user.first_name,
+                    first_name: user.first_name.trim(),
                     last_name: user.last_name,
-                    email: user.email,
+                    email: user.email.trim(),
                     role: user.role || 'CUSTOMER',
                     is_verified: user.is_verified || false
                 },

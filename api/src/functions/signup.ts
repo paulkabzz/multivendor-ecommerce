@@ -29,6 +29,28 @@ async function signup(request: HttpRequest, context: InvocationContext): Promise
                 };
             }
 
+            if (!/^[a-zA-Z]{6}[0-9]{3}@myuct\.ac\.za$/.test(email.trim().toLowerCase())) {
+                return {
+                    status: 403,
+                    headers,
+                    body: JSON.stringify({
+                        success: false,
+                        message: email.trim() + " is not a valid uct email."
+                    })
+                };
+            };
+
+            if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*[^A-Za-z0-9])(?=.{8,}).*$/.test(password) || password.length < 8) {
+                return {
+                    status: 403,
+                    headers,
+                    body: JSON.stringify({
+                        success: false,
+                        message: "Password should contain at least 1 capital letter, number and special character, and must be at least 8 characters long. "
+                    })
+                }
+            }
+
             // Check if user already exists
             const existingUser = await prisma.users.findUnique({
                 where: {
