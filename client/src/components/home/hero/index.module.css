@@ -13,6 +13,28 @@
   background-size: cover;
 }
 
+.parent > * h1 {
+  position: relative;
+}
+
+.parent > * h1::after {
+  content: "";
+  position: absolute;
+  width: 0%;
+  height: 3px;
+  background-color: white;
+  margin-top: 2px;
+  bottom: 0;
+  left: 0;
+   border-radius: 100px;
+  transition: ease-in-out .3s;
+}
+
+.parent > * h1:hover::after {
+  width: 70%;
+  transition: ease-in-out .3s;
+}
+
 .div1 {
   grid-area: 1 / 1 / 4 / 4;
   background-image: url("../../../assets/ui/men.jpg");
