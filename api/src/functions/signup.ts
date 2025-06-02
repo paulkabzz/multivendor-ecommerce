@@ -2,6 +2,8 @@
 import { app, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/functions";
 import { IUser } from "../utils/types";
 import bcrypt from 'bcrypt';
+import { scryptSync, randomBytes } from "crypto";
+
 import prisma from '../utils/database';
 import { sendVerificationEmail } from '../utils/gmailService';
 import { generateVerificationToken } from '../utils/tokenUtils';
@@ -69,8 +71,10 @@ async function signup(request: HttpRequest, context: InvocationContext): Promise
                 };
             }
 
+            const salt = randomBytes(16).toString('hex');
             // Hash password
-            const hashedPassword = await bcrypt.hash(password, 10);
+            const hashedPassword = scryptSync(password, salt, 64).toString('hex');
+
 
             // Create user in database
             const newUser = await prisma.users.create({
@@ -78,7 +82,7 @@ async function signup(request: HttpRequest, context: InvocationContext): Promise
                     first_name,
                     last_name,
                     email: email.toLowerCase(),
-                    password: hashedPassword,
+                    password: `${salt}:${hashedPassword}`,
                     phone: phone || null,
                     role: role || 'CUSTOMER',
                     is_verified: false

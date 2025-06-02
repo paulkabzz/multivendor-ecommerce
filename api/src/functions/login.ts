@@ -3,6 +3,7 @@ import { ILoginRequest, ILoginResponse } from "../utils/types";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import prisma from '../utils/database';
+import { scryptSync, timingSafeEqual } from "crypto";
 
 async function login(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
     context.log(`Processing login request for URL "${request.url}"`);
@@ -61,9 +62,14 @@ async function login(request: HttpRequest, context: InvocationContext): Promise<
             }
 
             // Verify password
-            const isPasswordValid = await bcrypt.compare(password, user.password);
+            const [salt, key] = user.password.split(":");
+            const hashedBuffer = scryptSync(password, salt, 64);
 
-            if (!isPasswordValid) {
+            const keyBuffer = Buffer.from(key, 'hex');
+
+            const match = timingSafeEqual(hashedBuffer, keyBuffer);
+
+            if (!match) {
                 const response: ILoginResponse = {
                     success: false,
                     message: "Invalid email or password"
