@@ -1,6 +1,5 @@
 import { app, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/functions";
 import { ILoginRequest, ILoginResponse } from "../utils/types";
-import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import prisma from '../utils/database';
 import { scryptSync, timingSafeEqual } from "crypto";
@@ -83,6 +82,9 @@ async function login(request: HttpRequest, context: InvocationContext): Promise<
 
             // Generate JWT token
             const jwtSecret = process.env.JWT_SECRET || "";
+
+            if (!jwtSecret) throw new Error("JWT_SECRET environment variable not set.");
+
             const token = jwt.sign(
                 {
                     user_id: user.user_id,

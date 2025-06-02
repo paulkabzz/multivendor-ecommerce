@@ -1,12 +1,12 @@
 
 import { app, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/functions";
 import { IUser } from "../utils/types";
-import bcrypt from 'bcrypt';
 import { scryptSync, randomBytes } from "crypto";
 
 import prisma from '../utils/database';
 import { sendVerificationEmail } from '../utils/gmailService';
 import { generateVerificationToken } from '../utils/tokenUtils';
+import { isStrongPassword, isValidUCTEmail } from "../utils/helpers";
 
 async function signup(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
     context.log(`Processing request for URL "${request.url}"`);
@@ -31,7 +31,7 @@ async function signup(request: HttpRequest, context: InvocationContext): Promise
                 };
             }
 
-            if (!/^[a-zA-Z]{6}[0-9]{3}@myuct\.ac\.za$/.test(email.trim().toLowerCase())) {
+            if (!isValidUCTEmail(email)) {
                 return {
                     status: 403,
                     headers,
@@ -42,7 +42,7 @@ async function signup(request: HttpRequest, context: InvocationContext): Promise
                 };
             };
 
-            if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*[^A-Za-z0-9])(?=.{8,}).*$/.test(password) || password.length < 8) {
+            if (!isStrongPassword(password)) {
                 return {
                     status: 403,
                     headers,
@@ -72,9 +72,9 @@ async function signup(request: HttpRequest, context: InvocationContext): Promise
             }
 
             const salt = randomBytes(16).toString('hex');
+
             // Hash password
             const hashedPassword = scryptSync(password, salt, 64).toString('hex');
-
 
             // Create user in database
             const newUser = await prisma.users.create({
