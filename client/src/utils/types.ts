@@ -54,6 +54,7 @@ export interface UserState {
     email?: string;
     role?: string;
     is_verified?: boolean;
+    profile_pic_url?: string;
   } | null;
   token: string | null;
   isAuthenticated: boolean;

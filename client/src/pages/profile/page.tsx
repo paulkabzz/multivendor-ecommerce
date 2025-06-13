@@ -1,6 +1,7 @@
 import { useAppSelector } from '@/src/store/hooks';
 import { useNavigate } from 'react-router';
 import { Button } from '@/src/components/common/buttons/button';
+import defaultProfilePic from '@assets/ui/default.png';
 import { useAppDispatch } from '@/src/store/hooks';
 import { logout } from '@/src/store/slices/userSlice';
 
@@ -18,25 +19,13 @@ const Profile: React.FC = (): React.ReactElement => {
     <section className="w-full flex flex-col items-center pt-10 min-h-[75vh]">
       <h1 className="font-[700] text-[2.5rem] mb-8">My Profile</h1>
       
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <div className="mb-6">
-          <h2 className="text-2xl font-semibold mb-4">User Information</h2>
-          <div className="space-y-3">
-            <p><span className="font-medium">Name:</span> {user?.first_name} {user?.last_name}</p>
-            <p><span className="font-medium">Email:</span> {user?.email}</p>
-            <p><span className="font-medium">Role:</span> {user?.role}</p>
-            <p><span className="font-medium">Verification Status:</span> {user?.is_verified ? 'Verified' : 'Not Verified'}</p>
-          </div>
-        </div>
-        
-        <div className="pt-4 border-t border-gray-200">
-          <Button 
-            text="Logout" 
-            className="!text-[12px] w-full bg-red-500 hover:bg-red-600" 
-            action={handleLogout}
-          />
-        </div>
+      <div className='flex flex-col items-center'>
+            <div className="w-[250px] h-[250px] rounded-full bg-red relative">
+                <img src={user?.profile_pic_url ?? defaultProfilePic} alt={`${user?.first_name}'s profile pic.`} className='w-full h-full object-cover' />
+                <Button text='+' className='w-[30px] h-[30px] bg-[rgb(46,152,111)] text-primary-light rounded-full flex items-center justify-center absolute bottom-[10%] right-[10%] border-[#fff] border-[.15rem] border-solid cursor-pointer' />
+            </div>
       </div>
+     
     </section>
   );
 };
