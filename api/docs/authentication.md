@@ -39,7 +39,7 @@ The API uses a middleware-based approach to protect endpoints. There are two mai
 
 ### 1. Direct Authentication
 
-The `authenticateRequest` function in `authMiddleware.ts` can be used directly in your handler functions:
+The `authenticateRequest` function in `authMiddleware.ts` can be used directly in the handler functions:
 
 ```typescript
 import { authenticateRequest } from "../utils/authMiddleware";
@@ -53,7 +53,7 @@ async function yourHandler(request: HttpRequest, context: InvocationContext): Pr
   const token = request.headers.get('authorization')!.split(' ')[1];
   const decodedToken = verifyAuthToken(token) as DecodedToken;
   
-  // Your handler logic here
+  // handler logic here
 }
 ```
 
@@ -65,7 +65,7 @@ The recommended approach is to use the `withAuth` higher-order function from `mi
 import { withAuth } from "../utils/middleware";
 
 async function yourHandler(request: HttpRequest, context: InvocationContext, decodedToken?: DecodedToken): Promise<HttpResponseInit> {
-  // Your handler logic here
+  //  handelr logic here goes here
   // decodedToken contains the user information from the JWT
 }
 
@@ -118,7 +118,7 @@ async function updateUserHandler(request: HttpRequest, context: InvocationContex
           headers,
           body: JSON.stringify({
             success: false,
-            message: "You are not authorized to update this user's information"
+            message: "You are not authorised to update this user's information"
           })
         };
       };
@@ -187,12 +187,3 @@ Authentication errors will return one of the following responses:
     "message": "You do not have permission to access this resource"
   }
   ```
-
-## Best Practices
-
-1. Always use HTTPS in production to protect tokens in transit
-2. Set appropriate token expiration times (current default is 24 hours)
-3. Implement token refresh mechanisms for long-lived sessions
-4. Use role-based access control for fine-grained permissions
-5. Validate user input even on authenticated endpoints
-6. Log authentication failures for security monitoring
