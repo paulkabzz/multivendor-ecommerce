@@ -1,18 +1,18 @@
 import { app, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/functions";
 import prisma from "../utils/database";
 import { IUpdateUserRequest, IUser } from "../utils/types";
+import { DecodedToken } from "../utils/authMiddleware";
+import { withAuth } from "../utils/middleware";
 
 
-async function updateUser(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
+async function updateUserHandler(request: HttpRequest, context: InvocationContext, decodedToken?: DecodedToken): Promise<HttpResponseInit> {
 
     const headers = {
         'Content-Type': 'application/json'
     };
 
     if (request.method === "PATCH") {
-
         try {
-
             const { first_name, last_name, email, phone, user_id } = await request.json() as IUpdateUserRequest;
         
             if (!user_id) {
@@ -24,6 +24,18 @@ async function updateUser(request: HttpRequest, context: InvocationContext): Pro
                         message: "No user ID provided"
                     })
                 }
+            };
+            
+            // Verify that the user is updating their own profile or is an admin
+            if (decodedToken && decodedToken.user_id !== user_id && decodedToken.role !== 'ADMIN') {
+                return {
+                    status: 403,
+                    headers,
+                    body: JSON.stringify({
+                        success: false,
+                        message: "You are not authorised to update this user's information"
+                    })
+                };
             };
 
             const existingUser = await prisma.users.findUnique({ where: {user_id: user_id}});
@@ -103,6 +115,8 @@ async function updateUser(request: HttpRequest, context: InvocationContext): Pro
         body: JSON.stringify({ success: false, message: "Method not allowed" })
     };
 }
+
+const updateUser = withAuth(updateUserHandler);
 
 app.http('update-user', {
     methods: ['PATCH'],
