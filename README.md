@@ -364,5 +364,3 @@ If you encounter any issues or need help getting the application running, please
 4. Contact the me via email
 
 ---
-
-**Happy coding! 😶🔫**

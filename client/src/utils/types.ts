@@ -16,6 +16,8 @@ export interface IInput {
   name?: string;
   value?: string;
   id?: string;
+  defaultValue?
+  : string | number;
 };
 
 export interface IShoppingCard {
@@ -38,12 +40,15 @@ export interface IButton {
 };
 
 export interface IUser {
+  user_id?: string;
   first_name: string;
   last_name: string;
   email: string;
   phone?: string;
   role?: 'CUSTOMER' | 'VENDOR' | 'ADMIN';
   password: string;
+  is_verified?: boolean;
+  profile_pic_url?: string;
 };
 
 export interface UserState {

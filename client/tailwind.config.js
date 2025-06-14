@@ -10,7 +10,21 @@ export default {
         'primary-dark': '#131313',
         'primary-light': '#ddd',
         'link': '#667eea'
-      }
+      },
+      screens: {
+        "1000px": "1050px",
+        "1100px": "1110px",
+        "800px": "800px",
+        "1300px": "1300px",
+        "400px": "400px",
+        "1200px": "1200px",
+        "760px": "760px",
+        "600px": "600px",
+        "500px": "500px",
+        "400px": "400px",
+        "300px": "300px",
+        "200px": "200px",
+      },
     },
   },
   plugins: [

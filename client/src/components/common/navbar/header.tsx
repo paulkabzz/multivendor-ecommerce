@@ -5,7 +5,7 @@ import { CategoryButton } from "../buttons/category-button";
 export const Header: React.FC = (): React.ReactElement => {
   return (
     <>
-      <header className="absolute top-0 right-0 w-full h-[50px] bg-[#fff] flex justify-between items-center px-[200px] overflow-y-auto ">
+      <header className="absolute top-0 right-0 w-full h-[50px] bg-[#fff] flex justify-between items-center px-[200px] overflow-y-auto z-[100] ">
         {categories.slice(0, 10).map((category: INavLink, key: number) => (
             <CategoryButton
               key={key}

@@ -5,6 +5,7 @@ export interface IUser {
   phone?: string;
   role?: 'CUSTOMER' | 'VENDOR' | 'ADMIN';
   password: string;
+  profile_pic_url?: string;
 }
 
 export interface ILoginRequest {
@@ -22,6 +23,7 @@ export interface ILoginResponse {
     email: string;
     role: string;
     is_verified: boolean;
+    profile_pic_url?: string;
   };
   token?: string;
 }

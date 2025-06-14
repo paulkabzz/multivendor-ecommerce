@@ -9,7 +9,7 @@ import { useAppSelector } from '@/src/store/hooks';
 export const Nav: React.FC = (): React.ReactElement => {
   const { user, isAuthenticated } = useAppSelector(state => state.user);
   return (
-    <header className="sticky top-0 right-0 bg-[#131313] h-[55px] w-full mt-[50px] px-[200px] py-[.5rem] flex flex-col justify-center">
+    <header className="sticky top-0 right-0 bg-[#131313] h-[55px] w-full mt-[50px] px-[200px] py-[.5rem] flex flex-col justify-center z-[150]">
       <div className="flex items-center justify-between text-[#fff]">
           <div className=" flex items-center gap-5 font-[900]">
               <Hamburger /> <Link to={'/'}>Ecom</Link>
