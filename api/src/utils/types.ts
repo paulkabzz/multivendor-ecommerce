@@ -42,7 +42,6 @@ export interface IVerificationResponse {
 
 
 // updating interfaces
-
 export interface IUpdateUserRequest {
   user_id: string;
   first_name?: string;
@@ -50,4 +49,11 @@ export interface IUpdateUserRequest {
   email?: string;
   phone?: string;
   is_verified?: boolean;
+}
+
+// Admin interfaces
+export interface ICreateDepartment {
+  department_name: string;
+  user_id: string;
+  role: string;
 }
