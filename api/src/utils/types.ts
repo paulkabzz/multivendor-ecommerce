@@ -27,6 +27,7 @@ export interface ILoginResponse {
     profile_pic_url?: string;
   };
   token?: string;
+  emailSent?: boolean;
 }
 
 export interface IVerificationRequest {
@@ -36,6 +37,7 @@ export interface IVerificationRequest {
 export interface IVerificationResponse {
   success: boolean;
   message: string;
+  emailSent?: boolean;
 }
 
 
@@ -47,4 +49,5 @@ export interface IUpdateUserRequest {
   last_name?: string;
   email?: string;
   phone?: string;
+  is_verified?: boolean;
 }

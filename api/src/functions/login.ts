@@ -3,6 +3,8 @@ import { ILoginRequest, ILoginResponse } from "../utils/types";
 import jwt from 'jsonwebtoken';
 import prisma from '../utils/database';
 import { scryptSync, timingSafeEqual } from "crypto";
+import { generateVerificationToken } from "../utils/tokenUtils";
+import { sendVerificationEmail } from "../utils/gmailService";
 
 async function login(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
     context.log(`Processing login request for URL "${request.url}"`);
@@ -47,11 +49,26 @@ async function login(request: HttpRequest, context: InvocationContext): Promise<
                 };
             }
 
+            const url: URL = new URL(request.url);
+            const baseUrl: string = `${url.protocol}//localhost:5173`;
+
             // Check if user is verified
             if (!user.is_verified) {
+                // Generate a new verification token
+                const verificationToken = generateVerificationToken(user.email, user.user_id);
+                
+                // Send verification email
+                const emailSent = await sendVerificationEmail({
+                    to: user.email, 
+                    firstName: user.first_name, 
+                    verificationToken,
+                    baseUrl
+                });
+                
                 const response: ILoginResponse = {
                     success: false,
-                    message: "Please verify your account before logging in"
+                    message: "Please verify your account before logging in. A new verification email has been sent to your email address.",
+                    emailSent
                 };
                 return {
                     status: 401,
