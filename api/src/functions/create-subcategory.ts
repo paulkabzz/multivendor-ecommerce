@@ -42,7 +42,7 @@ async function createSubcategory(request: HttpRequest, context: InvocationContex
                     headers,
                     body: JSON.stringify({
                         success: false,
-                        message: "You are not authorised to create new departmenrs"
+                        message: "You are not authorised to create new subcategories"
                     })
                 };
             };
@@ -68,7 +68,7 @@ async function createSubcategory(request: HttpRequest, context: InvocationContex
                     headers,
                     body: JSON.stringify({
                         success: false,
-                        message: "You are not authorised to create new departmenrs"
+                        message: "You are not authorised to create new subcategories"
                     })
                 };
             };

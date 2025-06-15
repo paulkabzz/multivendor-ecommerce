@@ -42,7 +42,7 @@ async function createCategory(request: HttpRequest, context: InvocationContext, 
                     headers,
                     body: JSON.stringify({
                         success: false,
-                        message: "You are not authorised to create new departmenrs"
+                        message: "You are not authorised to create new categories"
                     })
                 };
             };
@@ -68,7 +68,7 @@ async function createCategory(request: HttpRequest, context: InvocationContext, 
                     headers,
                     body: JSON.stringify({
                         success: false,
-                        message: "You are not authorised to create new departmenrs"
+                        message: "You are not authorised to create new categories"
                     })
                 };
             };
