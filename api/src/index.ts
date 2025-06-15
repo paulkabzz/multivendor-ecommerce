@@ -8,6 +8,7 @@ import './functions/protected-endpoint';
 import './functions/create-department';
 import './functions/create-category';
 import './functions/get-department';
+import './functions/create-subcategory';
 
 app.setup({
     enableHttpStream: true,

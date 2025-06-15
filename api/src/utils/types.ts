@@ -55,12 +55,16 @@ export interface IUpdateUserRequest {
 export interface ICreateDepartment {
   department_name: string;
   user_id: string;
-  role: string;
 }
 
 export interface ICreateCategory{
   department_id: string;
   category_name: string[];
   user_id: string;
-  role: string;
+}
+
+export interface ICreateSubCategory {
+  category_id: string;
+  subcategory_name: string[];
+  user_id: string;
 }
