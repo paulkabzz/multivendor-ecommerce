@@ -7,6 +7,7 @@ import './functions/update-user';
 import './functions/protected-endpoint';
 import './functions/create-department';
 import './functions/create-category';
+import './functions/get-department';
 
 app.setup({
     enableHttpStream: true,
