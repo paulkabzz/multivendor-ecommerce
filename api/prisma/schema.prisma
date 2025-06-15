@@ -95,11 +95,8 @@ model vendor {
 model category {
   category_id         String                @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   category_name       String                @unique @db.VarChar(255)
-  department_id       String?               @db.Uuid
-  department          department?           @relation(fields: [department_id], references: [department_id], onDelete: NoAction, onUpdate: NoAction)
   categorysubcategory categorysubcategory[]
   departmentcategory  departmentcategory[]
-  subcategory         subcategory[]
 }
 
 model categorysubcategory {
@@ -114,7 +111,6 @@ model categorysubcategory {
 model department {
   department_id      String               @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   department_name    String               @unique @db.VarChar(255)
-  category           category[]
   departmentcategory departmentcategory[]
 }
 
@@ -130,10 +126,8 @@ model departmentcategory {
 model subcategory {
   subcategory_id      String                @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   subcategory_name    String                @db.VarChar(255)
-  category_id         String?               @db.Uuid
   categorysubcategory categorysubcategory[]
   product             product[]
-  category            category?             @relation(fields: [category_id], references: [category_id], onDelete: Cascade, onUpdate: NoAction)
 }
 
 enum role {

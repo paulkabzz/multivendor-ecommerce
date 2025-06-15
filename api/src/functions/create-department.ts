@@ -61,7 +61,7 @@ async function createDepartment(request: HttpRequest, context: InvocationContext
 
 
             const exsistingUser = await prisma.users.findUnique({
-                where: {user_id}
+                where: { user_id }
             });
 
             if (!exsistingUser) {
@@ -119,7 +119,7 @@ async function createDepartment(request: HttpRequest, context: InvocationContext
 
             
         } catch (error: unknown) {
-            context.log("Error creating department", error);
+            context.error("Error creating department", error);
             return {
                 status: 500,
                 headers,

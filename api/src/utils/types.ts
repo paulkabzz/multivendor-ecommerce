@@ -57,3 +57,10 @@ export interface ICreateDepartment {
   user_id: string;
   role: string;
 }
+
+export interface ICreateCategory{
+  department_id: string;
+  category_name: string[];
+  user_id: string;
+  role: string;
+}
