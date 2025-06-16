@@ -66,7 +66,7 @@ async function createDepartment(request: HttpRequest, context: InvocationContext
 
             if (!exsistingUser) {
                 return {
-                    status: 400,
+                    status: 404,
                     headers,
                     body: JSON.stringify({
                         success: false,

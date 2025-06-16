@@ -53,7 +53,7 @@ async function createCategory(request: HttpRequest, context: InvocationContext, 
 
             if (!existingUser) {
                 return {
-                    status: 400,
+                    status: 404,
                     headers,
                     body: JSON.stringify({
                         success: false,

@@ -53,7 +53,7 @@ async function createSubcategory(request: HttpRequest, context: InvocationContex
 
             if (!existingUser) {
                 return {
-                    status: 400,
+                    status: 404,
                     headers,
                     body: JSON.stringify({
                         success: false,
@@ -97,9 +97,79 @@ async function createSubcategory(request: HttpRequest, context: InvocationContex
                         message: "All category names must be non-empty strings"
                     })
                 };
-            }            
+            }
+            
+            const category = prisma.category.findUnique({
+                where: { category_id }
+            });
+
+            if (!category) {
+                return {
+                    status: 404,
+                    headers,
+                    body: JSON.stringify({
+                        success: false,
+                        message: "Category not found."
+                    })
+                }
+            }
+
+            const exsitingSubcategoriesInCategory = await prisma.categorysubcategory.findMany({
+                where: {
+                    category_id,
+                    subcategory: {
+                        subcategory_name: {
+                            in: subcategory_name.map(name => name.trim())
+                        }
+                    }
+                }, 
+                include: {
+                    subcategory: {
+                        select: {
+                            subcategory_name: true
+                        }
+                    }
+                }
+            });
+
+            if (exsitingSubcategoriesInCategory.length > 0) {
+                const duplicates = exsitingSubcategoriesInCategory.map(duplicate => duplicate.subcategory.subcategory_name);
+                return {
+                    status: 409,
+                    headers,
+                    body: JSON.stringify({
+                        success: false,
+                        message: `Categories already exist in this department: ${duplicates.join(', ')}`
+                    })
+                }
+            }
+
+            const exsistingGobalSubcategories = await prisma.subcategory.findMany({
+                where: {
+                    subcategory_name: {
+                        in: subcategory_name.map(name => name.trim())
+                    }
+                },
+                select: {
+                    subcategory_id: true,
+                    subcategory_name: true
+                }
+            })
+            
+            
+
+            return {
+                status: 201,
+                headers,
+                body: JSON.stringify({
+                    success: true,
+                    message: "Subcategory(ies) created successfully."
+                })
+            }
             
         } catch (error: unknown) {
+            context.error("Error creating subcategory", error);
+
             return {
                 status: 500,
                 headers,
