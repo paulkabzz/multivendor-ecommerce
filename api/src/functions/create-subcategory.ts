@@ -79,7 +79,7 @@ async function createSubcategory(request: HttpRequest, context: InvocationContex
                     headers,
                     body: JSON.stringify({
                         success: false,
-                        message: "Category names must be provided as a non-empty array"
+                        message: "Subcategories names must be provided as a non-empty array"
                     })
                 };
             }
@@ -99,7 +99,7 @@ async function createSubcategory(request: HttpRequest, context: InvocationContex
                 };
             }
             
-            const category = prisma.category.findUnique({
+            const category = await prisma.category.findUnique({
                 where: { category_id }
             });
 
@@ -139,12 +139,12 @@ async function createSubcategory(request: HttpRequest, context: InvocationContex
                     headers,
                     body: JSON.stringify({
                         success: false,
-                        message: `Categories already exist in this department: ${duplicates.join(', ')}`
+                        message: `Subcategories already exist in this category: ${duplicates.join(', ')}`
                     })
                 }
             }
 
-            const exsistingGobalSubcategories = await prisma.subcategory.findMany({
+            const existingGobalSubcategories = await prisma.subcategory.findMany({
                 where: {
                     subcategory_name: {
                         in: subcategory_name.map(name => name.trim())
@@ -154,16 +154,85 @@ async function createSubcategory(request: HttpRequest, context: InvocationContex
                     subcategory_id: true,
                     subcategory_name: true
                 }
-            })
+            });
+
+            const result = await prisma.$transaction(async tx => {
+                const createdSubcategories: any[] = [];
+                const categorySubcategoryLinks: any[] = [];
+
+                for (const name of subcategory_name) {
+                    const trimmedName = name.trim();
+
+                    // Check if subcategory already exists globally
+                    let existingSubcategory = existingGobalSubcategories.find(
+                        subcat => subcat.subcategory_name === trimmedName
+                    );
+
+                    let subcategoryId: string;
+                    
+                    if (existingSubcategory) {
+                        subcategoryId = existingSubcategory.subcategory_id;
+                    } else {
+                        const newSubcategory = await tx.subcategory.create({
+                            data: {
+                                subcategory_name: trimmedName
+                            }
+                        });
+                        createdSubcategories.push(newSubcategory);
+                        subcategoryId = newSubcategory.subcategory_id;                        
+                    }
+
+
+                    const categorySubcategoryLink = await tx.categorysubcategory.create({
+                        data: {
+                            category_id,
+                            subcategory_id: subcategoryId
+                        }
+                    });
+
+                    categorySubcategoryLinks.push(categorySubcategoryLink);
+
+                }
+                const linkedSubcategories = await tx.categorysubcategory.findMany({
+                    where: { 
+                        category_id,
+                        subcategory_id: {
+                            in: [...createdSubcategories.map(s => s.subcategory_id), ...existingGobalSubcategories.filter(s => subcategory_name.map(n => n.trim()).includes(s.subcategory_name)).map(s => s.subcategory_id)]
+                        }
+                    },
+                    include: {
+                        subcategory: true
+                    }
+                });
+
+                return {
+                    newSubcategoriesCount: createdSubcategories.length,
+                    linkedSubcategoriesCount: linkedSubcategories.length,
+                    subcategories: linkedSubcategories
+                }
+            });
             
-            
+            context.log(`Successfully processed ${result?.linkedSubcategoriesCount} subcategories for category ${category_id}. Created ${result?.newSubcategoriesCount} new subcategories.`);
 
             return {
                 status: 201,
                 headers,
                 body: JSON.stringify({
                     success: true,
-                    message: "Subcategory(ies) created successfully."
+                    message: "Subcategory(ies) created successfully.",
+                    data: {
+                        category_id,
+                        category_name: category.category_name,
+                        subcategories_processed: result?.subcategories.map(cs => ({
+                            subcategory_id: cs.subcategory.subcategory_id,
+                            subcategory_name: cs.subcategory.subcategory_name,
+                            was_new_subcategory: result.subcategories.some(subcat => 
+                                subcat.subcategory.subcategory_id === cs.subcategory.subcategory_id
+                            )
+                        })),
+                        total_linked: result?.linkedSubcategoriesCount,
+                        new_categories_created: result?.newSubcategoriesCount
+                    }                    
                 })
             }
             
