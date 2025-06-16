@@ -146,7 +146,7 @@ async function updateUserHandler(request: HttpRequest, context: InvocationContex
             }
             
             return {
-                status: 200,
+                status: 201,
                 headers: headers,
                 body: JSON.stringify({
                     success: true,

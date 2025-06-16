@@ -9,6 +9,7 @@ import './functions/create-department';
 import './functions/create-category';
 import './functions/get-department';
 import './functions/create-subcategory';
+import './functions/delete-user';
 
 app.setup({
     enableHttpStream: true,
