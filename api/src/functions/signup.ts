@@ -6,14 +6,9 @@ import { scryptSync, randomBytes } from "crypto";
 import prisma from '../utils/database';
 import { sendVerificationEmail } from '../utils/gmailService';
 import { generateVerificationToken } from '../utils/tokenUtils';
-import { isStrongPassword, isValidUCTEmail } from "../utils/helpers";
+import { headers, isStrongPassword, isValidUCTEmail } from "../utils/helpers";
 
 async function signup(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
-    context.log(`Processing request for URL "${request.url}"`);
-
-    const headers = {
-        'Content-Type': 'application/json'
-    };
 
     if (request.method === "POST") {
         try {
@@ -103,7 +98,9 @@ async function signup(request: HttpRequest, context: InvocationContext): Promise
 
             if (!emailSent) {
                 context.error('Failed to send verification email');
-                await prisma.$executeRaw`DELETE FROM Users WHERE email='${newUser.email}';`;
+                await prisma.users.delete({
+                    where: { email: newUser.email}
+                });
             }
 
             return {

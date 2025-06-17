@@ -5,13 +5,11 @@ import prisma from '../utils/database';
 import { scryptSync, timingSafeEqual } from "crypto";
 import { generateVerificationToken } from "../utils/tokenUtils";
 import { sendVerificationEmail } from "../utils/gmailService";
+import { headers } from "../utils/helpers";
+
 
 async function login(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
     context.log(`Processing login request for URL "${request.url}"`);
-
-    const headers = {
-        'Content-Type': 'application/json'
-    };
 
     if (request.method === "POST") {
         try {

@@ -5,3 +5,7 @@ export const isValidUCTEmail = (email: string): boolean => {
 export const isStrongPassword = (password: string): boolean => {
     return /^(?=.*[a-z])(?=.*[A-Z])(?=.*[^A-Za-z0-9])(?=.{8,}).*$/.test(password) && password.length >= 8;
 }
+
+export const headers = { 
+    'Content-Type': 'application/json' 
+} as const;

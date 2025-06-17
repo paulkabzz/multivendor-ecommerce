@@ -3,12 +3,9 @@ import { withAuth } from "../utils/middleware";
 import { ICreateDepartment } from "../utils/types";
 import { DecodedToken } from "../utils/authMiddleware";
 import prisma from "../utils/database";
+import { headers } from "../utils/helpers";
 
 async function createDepartment(request: HttpRequest, context: InvocationContext, decodedToken?: DecodedToken): Promise<HttpResponseInit> {
-    const headers = {
-        'Content-Type': 'application/json'
-    };
-
     // Department -> Male, female, kids, sports
     // Categories -> Clothes, Shoes, Accessories, etc
     // Subcategories -> Sneakers, flipflops, dresses, hoodies
@@ -138,10 +135,10 @@ async function createDepartment(request: HttpRequest, context: InvocationContext
     }
 }
 
-const adminCreateDepartment = withAuth(createDepartment, ['ADMIN']);
+const CREATE_DEPARTMENT = withAuth(createDepartment, ['ADMIN']);
 
 app.http('create-department', {
     methods: ['POST'],
     authLevel: 'anonymous',
-    handler: adminCreateDepartment
+    handler: CREATE_DEPARTMENT
 });

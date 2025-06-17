@@ -2,13 +2,9 @@ import { app, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/fu
 import { IVerificationResponse } from "../utils/types";
 import prisma from '../utils/database';
 import { verifyVerificationToken } from '../utils/tokenUtils';
+import { headers } from "../utils/helpers";
 
 async function verifyEmail(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
-    context.log(`Processing email verification for URL "${request.url}"`);
-
-    const headers = {
-        'Content-Type': 'application/json'
-    };
 
     if (request.method === "GET") {
         try {

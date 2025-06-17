@@ -5,14 +5,10 @@ import { DecodedToken } from "../utils/authMiddleware";
 import { withAuth } from "../utils/middleware";
 import { generateVerificationToken } from "../utils/tokenUtils";
 import { sendVerificationEmail } from "../utils/gmailService";
-import { isValidUCTEmail } from "../utils/helpers";
+import { headers, isValidUCTEmail } from "../utils/helpers";
 
 
 async function updateUserHandler(request: HttpRequest, context: InvocationContext, decodedToken?: DecodedToken): Promise<HttpResponseInit> {
-
-    const headers = {
-        'Content-Type': 'application/json'
-    };
 
     if (request.method === "PATCH") {
         try {
@@ -178,10 +174,10 @@ async function updateUserHandler(request: HttpRequest, context: InvocationContex
     };
 }
 
-const updateUser = withAuth(updateUserHandler);
+const UPDATE_USER = withAuth(updateUserHandler);
 
 app.http('update-user', {
     methods: ['PATCH'],
     authLevel: 'anonymous',
-    handler: updateUser
+    handler: UPDATE_USER
 });

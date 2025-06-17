@@ -2,11 +2,9 @@ import { app, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/fu
 import { DecodedToken } from "../utils/authMiddleware";
 import { withAuth } from "../utils/middleware";
 import prisma from "../utils/database";
+import { headers } from "../utils/helpers";
 
 async function getDepartments(request: HttpRequest, context: InvocationContext, decodedToken?: DecodedToken): Promise<HttpResponseInit> {
-    const headers = {
-        'Content-Type': 'application/json'
-    };
 
     if (request.method === "GET") {
         try {

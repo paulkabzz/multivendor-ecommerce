@@ -3,11 +3,9 @@ import { DecodedToken } from "../utils/authMiddleware";
 import { withAuth } from "../utils/middleware";
 import { ICreateCategory } from "../utils/types";
 import prisma from "../utils/database";
+import { headers } from "../utils/helpers";
 
 async function createCategory(request: HttpRequest, context: InvocationContext, decodedToken?: DecodedToken): Promise<HttpResponseInit> {
-    const headers = {
-        'Content-Type': 'application/json'
-    };
 
     if (request.method === "POST") {
         try {
@@ -289,10 +287,10 @@ async function createCategory(request: HttpRequest, context: InvocationContext, 
 
 
 
-const adminCreateCategory = withAuth(createCategory, ['ADMIN']);
+const CREATE_CATEGORY = withAuth(createCategory, ['ADMIN']);
 
 app.http('create-category', {
     methods: ['POST'],
     authLevel: 'anonymous',
-    handler: adminCreateCategory
+    handler: CREATE_CATEGORY
 });

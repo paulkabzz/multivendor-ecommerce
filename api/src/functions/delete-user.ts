@@ -2,10 +2,8 @@ import { app, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/fu
 import { DecodedToken } from "../utils/authMiddleware";
 import { withAuth } from "../utils/middleware";
 import prisma from "../utils/database";
+import { headers } from "../utils/helpers";
 
-const headers = {
-    'Content-Type': 'application/json'
-} as const;
 
 interface DeleteUserRequest {
     user_id: string;
@@ -91,10 +89,10 @@ async function deleteUser(request: HttpRequest, context: InvocationContext, deco
     }
 }
 
-const deleteUSer = withAuth(deleteUser);
+const DELETE_USER = withAuth(deleteUser);
 
 app.http('delete-user', {
     methods: ['DELETE'],
     authLevel: 'anonymous',
-    handler: deleteUSer
+    handler: DELETE_USER
 });
