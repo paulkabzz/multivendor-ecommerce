@@ -3,11 +3,16 @@ import { withAuth } from "../utils/middleware";
 import { DecodedToken } from "../utils/authMiddleware";
 import prisma from "../utils/database";
 import { headers } from "../utils/helpers";
+import { ICreateProduct } from "../utils/types";
 
 
 async function createProduct(request: HttpRequest, context: InvocationContext, decodedToken?: DecodedToken): Promise<HttpResponseInit> {
     if (request.method === "POST") {
         try {
+
+            const { name, vendor_id, price, is_available, description, condition, image_url, subcategory_id } = await request.json() as ICreateProduct;
+
+            
             
         } catch (error: unknown) {
             context.error(error);

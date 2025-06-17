@@ -57,7 +57,7 @@ export interface ICreateDepartment {
   user_id: string;
 }
 
-export interface ICreateCategory{
+export interface ICreateCategory {
   department_id: string;
   category_name: string[];
   user_id: string;
@@ -67,4 +67,16 @@ export interface ICreateSubCategory {
   category_id: string;
   subcategory_name: string[];
   user_id: string;
+}
+
+export interface ICreateProduct {
+  // user_id: string;
+  vendor_id: string;
+  image_url: string[];
+  price: number;
+  is_available?: boolean;
+  description?: string;
+  name: string;
+  condition?: string;
+  subcategory_id?: string;
 }

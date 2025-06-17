@@ -55,7 +55,6 @@ model product {
   name           String       @db.VarChar(100)
   decsription    String?
   price          Decimal      @db.Decimal(10, 2)
-  image_url      String?      @db.VarChar(255)
   created_at     DateTime?    @default(now()) @db.Timestamp(6)
   condition      condition?
   is_available   Boolean?     @default(true)
