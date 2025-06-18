@@ -80,3 +80,10 @@ export interface ICreateProduct {
   condition?: string;
   subcategory_id?: string;
 }
+
+export interface ICreateStore {
+  user_id: string;
+  store_name: string;
+  bio?: string | null;
+  image_url?: string | null;
+}

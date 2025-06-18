@@ -7,5 +7,6 @@ export const isStrongPassword = (password: string): boolean => {
 }
 
 export const headers = { 
-    'Content-Type': 'application/json' 
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization'
 } as const;

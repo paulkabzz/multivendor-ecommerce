@@ -10,6 +10,7 @@ import './functions/create-category';
 import './functions/get-department';
 import './functions/create-subcategory';
 import './functions/delete-user';
+import './functions/create-store';
 
 app.setup({
     enableHttpStream: true,
