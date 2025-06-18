@@ -11,6 +11,7 @@ import './functions/get-department';
 import './functions/create-subcategory';
 import './functions/delete-user';
 import './functions/create-store';
+import './functions/delete-store';
 
 app.setup({
     enableHttpStream: true,
