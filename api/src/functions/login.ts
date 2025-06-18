@@ -120,7 +120,9 @@ async function login(request: HttpRequest, context: InvocationContext): Promise<
                     last_name: user.last_name,
                     email: user.email.trim(),
                     role: user.role || 'CUSTOMER',
-                    is_verified: user.is_verified || false
+                    is_verified: user.is_verified || false,
+                    phone: user.phone ?? null,
+                    profile_pic_url: user.profile_pic_url ?? null
                 },
                 token
             };

@@ -24,7 +24,8 @@ export interface ILoginResponse {
     email: string;
     role: string;
     is_verified: boolean;
-    profile_pic_url?: string;
+    profile_pic_url: string | null;
+    phone: string | null;
   };
   token?: string;
   emailSent?: boolean;
