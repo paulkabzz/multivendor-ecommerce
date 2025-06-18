@@ -5,6 +5,7 @@ import { Hamburger } from '../hamburger/hamburger';
 import searchIcon from '@assets/icons/search.png'
 import { Link } from 'react-router';
 import { useAppSelector } from '@/src/store/hooks';
+import { Button } from '../buttons/button';
 
 export const Nav: React.FC = (): React.ReactElement => {
   const { user, isAuthenticated } = useAppSelector(state => state.user);
@@ -16,12 +17,13 @@ export const Nav: React.FC = (): React.ReactElement => {
           </div>
           <div className="flex items-center gap-3">
                 <Input type="text" placeholder="Search products, stores, or brands" icon={searchIcon} />
-                <a href="#cart">
+                <Link to={'/create-store'}><Button text='Create Store' className='bg-white !text-primary-dark !text-[12px] px-6'/></Link>
+                <Link to="#cart">
                   <img src={shoppingBag} alt="Cart" className="w-[20px] h-[20px]" />
-                </a>
-                  <a href={isAuthenticated ? ('/profile/' + user?.user_id) : '/login'}>
+                </Link>
+                  <Link to={isAuthenticated ? ('/profile/' + user?.user_id) : '/login'}>
                   <img src={profileIcon} alt="Profile" className="w-[20px] h-[20px]" />
-                </a>
+                </Link>
           </div>
       </div>
     </header>
