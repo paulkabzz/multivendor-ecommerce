@@ -65,7 +65,7 @@ async function login(request: HttpRequest, context: InvocationContext): Promise<
                 
                 const response: ILoginResponse = {
                     success: false,
-                    message: "Please verify your account before logging in. A new verification email has been sent to your email address.",
+                    message: "Please verify your account before logging in",
                     emailSent
                 };
                 return {
