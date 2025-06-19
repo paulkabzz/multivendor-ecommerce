@@ -12,6 +12,7 @@ export interface IInput {
   collapsible?: boolean;
   width?: number;
   height?: number;
+  disabled?: boolean;
   action?:  any;
   name?: string;
   value?: string;
@@ -66,3 +67,7 @@ export interface UserState {
   loading: boolean;
   error: string | null;
 };
+
+export interface IUpdateUserRequest {
+
+}

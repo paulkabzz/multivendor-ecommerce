@@ -1,15 +1,21 @@
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Button } from "../common/buttons/button";
 import { Input } from "../common/input/input";
 import defaultProfilePic from '@assets/ui/default.png';
 import { ProfileSideBar } from "./profile-sidebar";
 import { Camera, CreditCard, MapPin, ShoppingBag } from "lucide-react";
+import { updateUser } from "@/src/store/slices/userSlice"; 
+import type { AppDispatch, RootState } from "@/src/store/index"; 
 
 interface IProfileContentProps {
     user: any;
 }
 
 const ProfileContent: React.FC<IProfileContentProps> = ({ user }) => {
+    const dispatch = useDispatch<AppDispatch>();
+    const { loading, error } = useSelector((state: RootState) => state.user);
+    
     const [activeTab, setActiveTab] = useState(1);
     const [formData, setFormData] = useState({
         first_name: user?.first_name || '',
@@ -19,6 +25,17 @@ const ProfileContent: React.FC<IProfileContentProps> = ({ user }) => {
     });
 
     const [hasChanges, setHasChanges] = useState(false);
+    const [saveSuccess, setSaveSuccess] = useState(false);
+
+    // Update form data when user prop changes
+    useEffect(() => {
+        setFormData({
+            first_name: user?.first_name || '',
+            last_name: user?.last_name || '',
+            email: user?.email || '',
+            phone: user?.phone || ''
+        });
+    }, [user]);
 
     // Check for changes whenever formData updates
     useEffect(() => {
@@ -43,12 +60,58 @@ const ProfileContent: React.FC<IProfileContentProps> = ({ user }) => {
             ...prev,
             [field]: value
         }));
+
+        if (saveSuccess) {
+            setSaveSuccess(false);
+        }
     };
 
-    const handleSave = () => {
-      // I'll handle the updating user details logic here
-        console.log('Saving profile data:', formData);
-        setHasChanges(false);
+    const getChangedFields = () => {
+        const originalData = {
+            first_name: user?.first_name || '',
+            last_name: user?.last_name || '',
+            email: user?.email || '',
+            phone: user?.phone || ''
+        };
+
+        const changedFields: any = {
+            user_id: user?.user_id
+        };
+
+        Object.keys(formData).forEach(key => {
+            const formValue = String(formData[key as keyof typeof formData]).trim();
+            const originalValue = String(originalData[key as keyof typeof originalData]).trim();
+            
+            if (formValue !== originalValue) {
+                changedFields[key] = formValue;
+            }
+        });
+
+        return changedFields;
+    };
+
+    const handleSave = async () => {
+        if (!hasChanges) return;
+
+        try {
+            const changedFields = getChangedFields();
+            
+            // Only send changed fields to reduce th api payload
+            console.log('Sending only changed fields:', changedFields);
+            
+            const resultAction = await dispatch(updateUser(changedFields));
+            
+            if (updateUser.fulfilled.match(resultAction)) {
+                setSaveSuccess(true);
+                setHasChanges(false);
+                
+                setTimeout(() => {
+                    setSaveSuccess(false);
+                }, 3000);
+            }
+        } catch (error) {
+            console.error('Error updating user:', error);
+        }
     };
 
     const renderContent = () => {
@@ -68,6 +131,20 @@ const ProfileContent: React.FC<IProfileContentProps> = ({ user }) => {
 
     const renderProfileForm = () => (
         <div className="mt-5">
+            {/* Error Display */}
+            {error && (
+                <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                    <p className="text-red-600 text-sm">{error}</p>
+                </div>
+            )}
+
+            {/* Success Display */}
+            {saveSuccess && (
+                <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+                    <p className="text-green-600 text-sm">Profile updated successfully!</p>
+                </div>
+            )}
+
             {/* Profile Picture Section */}
             <div className="flex flex-col items-center mb-8">
                 <div className="relative group">
@@ -104,6 +181,7 @@ const ProfileContent: React.FC<IProfileContentProps> = ({ user }) => {
                         placeholder="Enter your first name"
                         action={(e: any) => handleInputChange('first_name', e.target.value)}
                         className="w-full"
+                        disabled={loading}
                     />
                 </div>
                 <div>
@@ -116,6 +194,7 @@ const ProfileContent: React.FC<IProfileContentProps> = ({ user }) => {
                         placeholder="Enter your last name"
                         action={(e: any) => handleInputChange('last_name', e.target.value)}
                         className="w-full"
+                        disabled={loading}
                     />
                 </div>
             </div>
@@ -131,6 +210,7 @@ const ProfileContent: React.FC<IProfileContentProps> = ({ user }) => {
                         placeholder="Enter your email"
                         action={(e: any) => handleInputChange('email', e.target.value)}
                         className="w-full"
+                        disabled={loading}
                     />
                 </div>
                 <div>
@@ -143,6 +223,7 @@ const ProfileContent: React.FC<IProfileContentProps> = ({ user }) => {
                         placeholder="Enter your phone number"
                         action={(e: any) => handleInputChange('phone', e.target.value)}
                         className="w-full"
+                        disabled={loading}
                     />
                 </div>
             </div>
@@ -150,18 +231,16 @@ const ProfileContent: React.FC<IProfileContentProps> = ({ user }) => {
             {/* Save Button */}
             <div className="flex justify-end pt-6 border-t border-gray-200">
                 <Button 
-                    text={
-                      'Save Changes'
-                    }
+                    text={loading ? 'Saving...' : 'Save Changes'}
                     action={handleSave}
                     className={`
                         px-6 py-3 rounded-full font-medium transition-all duration-200 flex items-center space-x-2
-                        ${hasChanges 
+                        ${hasChanges && !loading
                             ? 'bg-[rgb(46,152,111)] text-white shadow-lg hover:shadow-xl transform hover:scale-105' 
                             : 'bg-gray-200 !text-gray-400 cursor-not-allowed'
                         }
                     `}
-                    disabled={!hasChanges}
+                    disabled={!hasChanges || loading}
                 />
             </div>
         </div>

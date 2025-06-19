@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { BASE_URL } from '@/src/utils/url';
-import type { IUser, UserState } from '@/src/utils/types';
+import type { IUser, UserState, IUpdateUserRequest } from '@/src/utils/types';
 
 // Initialise state from localStorage if available
 const getUserFromStorage = () => {
@@ -89,6 +89,45 @@ export const signupUser = createAsyncThunk(
   }
 );
 
+// Async thunk for updating user
+export const updateUser = createAsyncThunk(
+  'user/update',
+  async (updateData: Partial<IUpdateUserRequest>, { getState, rejectWithValue }) => {
+    try {
+      const state = getState() as { user: UserState };
+      const token = state.user.token;
+      
+      if (!token) {
+        return rejectWithValue('No authentication token found');
+      }
+
+      const response = await fetch(`${BASE_URL}/update-user`, {
+        method: 'PATCH',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(updateData)
+      });
+
+      const data = await response.json();
+      
+      if (!data.success) {
+        return rejectWithValue(data.message);
+      }
+      
+      // Update localStorage with new user data
+      localStorage.setItem('user', JSON.stringify(data.user));
+      
+      return data;
+    } catch (error) {
+      console.error("Error updating user: " + error);
+      return rejectWithValue('Failed to update user. Please try again.');
+    }
+  }
+);
+
 // Create the user slice
 const userSlice = createSlice({
   name: 'user',
@@ -107,6 +146,13 @@ const userSlice = createSlice({
     },
     clearError: (state) => {
       state.error = null;
+    },
+    updateUserLocal: (state, action: PayloadAction<Partial<IUser>>) => {
+      // For optimistic updates or local state changes
+      if (state.user) {
+        state.user = { ...state.user, ...action.payload };
+        localStorage.setItem('user', JSON.stringify(state.user));
+      }
     }
   },
   extraReducers: (builder) => {
@@ -137,9 +183,23 @@ const userSlice = createSlice({
       .addCase(signupUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
+      })
+      // Update user cases
+      .addCase(updateUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateUser.fulfilled, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.user = action.payload.user;
+        // Keep the same token and authentication status
+      })
+      .addCase(updateUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
       });
   }
 });
 
-export const { logout, clearError } = userSlice.actions;
+export const { logout, clearError, updateUserLocal } = userSlice.actions;
 export default userSlice.reducer;
