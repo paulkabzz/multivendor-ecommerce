@@ -2,7 +2,7 @@ export interface INavLink {
   text: string;
   href: string;
   icon?: string;
-};
+}
 
 export interface IInput {
   placeholder?: string;
@@ -13,13 +13,12 @@ export interface IInput {
   width?: number;
   height?: number;
   disabled?: boolean;
-  action?:  any;
+  action?: any;
   name?: string;
   value?: string;
   id?: string;
-  defaultValue?
-  : string | number;
-};
+  defaultValue?: string | number;
+}
 
 export interface IShoppingCard {
   product_id?: string;
@@ -28,7 +27,7 @@ export interface IShoppingCard {
   img_url: string;
   decsription?: string;
   vendor?: string;
-};
+}
 
 export interface IButton {
   text: string;
@@ -38,7 +37,7 @@ export interface IButton {
   action?: any;
   className?: string;
   type?: "submit" | "reset" | "button" | undefined;
-};
+}
 
 export interface IUser {
   user_id?: string;
@@ -46,11 +45,11 @@ export interface IUser {
   last_name: string;
   email: string;
   phone?: string;
-  role?: 'CUSTOMER' | 'VENDOR' | 'ADMIN';
+  role?: "CUSTOMER" | "VENDOR" | "ADMIN";
   password: string;
   is_verified?: boolean;
   profile_pic_url?: string;
-};
+}
 
 export interface UserState {
   user: {
@@ -66,8 +65,6 @@ export interface UserState {
   isAuthenticated: boolean;
   loading: boolean;
   error: string | null;
-};
-
-export interface IUpdateUserRequest {
-
 }
+
+export interface IUpdateUserRequest {}

@@ -5,14 +5,24 @@ import { DecodedToken } from "../utils/authMiddleware";
 import { withAuth } from "../utils/middleware";
 import { generateVerificationToken } from "../utils/tokenUtils";
 import { sendVerificationEmail } from "../utils/gmailService";
-import { headers, isValidUCTEmail } from "../utils/helpers";
+import { headers, isValidAppwriteImageUrl, isValidUCTEmail } from "../utils/helpers";
 
+interface IUpdateUserWithImageRequest extends IUpdateUserRequest {
+    profile_pic_url?: string;
+}
 
 async function updateUserHandler(request: HttpRequest, context: InvocationContext, decodedToken?: DecodedToken): Promise<HttpResponseInit> {
 
     if (request.method === "PATCH") {
         try {
-            const { first_name, last_name, email, phone, user_id } = await request.json() as IUpdateUserRequest;
+            const { 
+                first_name, 
+                last_name, 
+                email, 
+                phone, 
+                user_id, 
+                profile_pic_url 
+            } = await request.json() as IUpdateUserWithImageRequest;
         
             if (!user_id) {
                 return {
@@ -45,7 +55,7 @@ async function updateUserHandler(request: HttpRequest, context: InvocationContex
                     headers,
                     body: JSON.stringify({
                         success: false,
-                        message: "User does no exsist"
+                        message: "User does not exist"
                     })
                 }
             };
@@ -53,8 +63,8 @@ async function updateUserHandler(request: HttpRequest, context: InvocationContex
             const url: URL = new URL(request.url);
             const baseUrl: string = `${url.protocol}//localhost:5173`;
 
-            // If user is not verified, resend verification email
-            if (!existingUser?.is_verified) {
+            // If user is not verified, resend verification email (skip for profile image updates)
+            if (!existingUser?.is_verified && !profile_pic_url) {
                 // Generate a new verification token
                 const verificationToken = generateVerificationToken(existingUser.email, existingUser.user_id);
                 
@@ -78,10 +88,26 @@ async function updateUserHandler(request: HttpRequest, context: InvocationContex
             };
 
             // Build update data object with only changed fields
-            const updateData: Partial<IUpdateUserRequest> = {};
+            const updateData: Partial<IUpdateUserWithImageRequest> = {};
             if (first_name && first_name !== existingUser.first_name) updateData.first_name = first_name;
             if (last_name && last_name !== existingUser.last_name) updateData.last_name = last_name;
             if (phone && phone !== existingUser.phone) updateData.phone = phone;
+            
+            // Handle profile image URL update
+            if (profile_pic_url !== undefined) {
+                // Validate that the profile image URL is from the expected source (Appwrite)
+                if (profile_pic_url && !isValidAppwriteImageUrl(profile_pic_url, user_id)) {
+                    return {
+                        status: 400,
+                        headers,
+                        body: JSON.stringify({
+                            success: false,
+                            message: "Invalid profile image URL"
+                        })
+                    }
+                }
+                updateData.profile_pic_url = profile_pic_url;
+            }
             
             // Check if email is being updated
             let emailUpdated = false;
@@ -95,7 +121,7 @@ async function updateUserHandler(request: HttpRequest, context: InvocationContex
                         headers,
                         body: JSON.stringify({
                             success: false,
-                            message: email+ " is not a valid UCT email."
+                            message: email + " is not a valid UCT email."
                         })
                     }
                 }
@@ -112,7 +138,11 @@ async function updateUserHandler(request: HttpRequest, context: InvocationContex
                 return {
                     status: 200,
                     headers,
-                    body: JSON.stringify({ success: true, message: "No changes detected." })
+                    body: JSON.stringify({ 
+                        success: true, 
+                        message: "No changes detected.",
+                        user: existingUser 
+                    })
                 };
             }
 
@@ -135,10 +165,12 @@ async function updateUserHandler(request: HttpRequest, context: InvocationContex
                 });
             }
 
-            // Prepare response message based on whether email was updated
+            // Prepare response message based on what was updated
             let message = "User updated successfully";
             if (emailUpdated) {
                 message = "User updated successfully. A verification email has been sent to your new email address. Please verify your email to complete the update.";
+            } else if (profile_pic_url !== undefined) {
+                message = "Profile picture updated successfully";
             }
             
             return {
@@ -152,7 +184,6 @@ async function updateUserHandler(request: HttpRequest, context: InvocationContex
                 })
             }
 
-
         } catch (error) {
             context.log("Error updating user", error);
             return {
@@ -164,7 +195,6 @@ async function updateUserHandler(request: HttpRequest, context: InvocationContex
                 })
             };
         }
-
     }
 
     return {

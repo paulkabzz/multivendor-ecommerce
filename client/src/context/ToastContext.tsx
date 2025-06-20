@@ -1,7 +1,7 @@
-import React, { createContext, useContext } from 'react';
-import { toast, ToastContainer } from 'react-toastify';
-import type { ToastOptions } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import React, { createContext, useContext } from "react";
+import { toast, ToastContainer } from "react-toastify";
+import type { ToastOptions } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface ToastContextType {
   showSuccess: (message: string, options?: ToastOptions) => void;
@@ -15,7 +15,7 @@ const ToastContext = createContext<ToastContextType | undefined>(undefined);
 export const useToast = () => {
   const context = useContext(ToastContext);
   if (!context) {
-    throw new Error('useToast must be used within a ToastProvider');
+    throw new Error("useToast must be used within a ToastProvider");
   }
   return context;
 };

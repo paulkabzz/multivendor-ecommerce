@@ -26,13 +26,13 @@
   margin-top: 2px;
   bottom: 0;
   left: 0;
-   border-radius: 100px;
-  transition: ease-in-out .3s;
+  border-radius: 100px;
+  transition: ease-in-out 0.3s;
 }
 
 .parent > * h1:hover::after {
   width: 70%;
-  transition: ease-in-out .3s;
+  transition: ease-in-out 0.3s;
 }
 
 .div1 {

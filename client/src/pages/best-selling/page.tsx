@@ -1,7 +1,5 @@
 const BestSelling: React.FC = (): React.ReactElement => {
-  return (
-    <div>BestSelling</div>
-  );
+  return <div>BestSelling</div>;
 };
 
 export default BestSelling;

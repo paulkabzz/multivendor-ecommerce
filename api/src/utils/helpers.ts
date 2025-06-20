@@ -10,3 +10,16 @@ export const headers = {
     'Content-Type': 'application/json',
     'Access-Control-Allow-Headers': 'Content-Type, Authorization'
 } as const;
+
+export const isValidAppwriteImageUrl = (url: string, userId: string): boolean => {
+    try {
+        // This'll check if URL contains the expected pattern for the Appwrite instance
+        const urlPattern = /\/storage\/buckets\/[^\/]+\/files\/[^\/]+\/(preview|view)/;
+        const isValidPattern = urlPattern.test(url);
+        
+        return isValidPattern;
+    } catch (error) {
+        console.error('Error validating image URL:', error);
+        return false;
+    }
+}

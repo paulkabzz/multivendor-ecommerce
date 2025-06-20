@@ -5,7 +5,7 @@ const Home = () => {
     <div className="mt-[10px] h-[100vh] w-full">
       <Hero />
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;

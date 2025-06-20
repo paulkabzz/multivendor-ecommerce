@@ -1,29 +1,29 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import type { PayloadAction } from '@reduxjs/toolkit';
-import { BASE_URL } from '@/src/utils/url';
-import type { IUser, UserState, IUpdateUserRequest } from '@/src/utils/types';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import type { PayloadAction } from "@reduxjs/toolkit";
+import { BASE_URL } from "@/src/utils/url";
+import type { IUser, UserState, IUpdateUserRequest } from "@/src/utils/types";
 
 // Initialise state from localStorage if available
 const getUserFromStorage = () => {
-  if (typeof window !== 'undefined') {
-    const storedUser = localStorage.getItem('user');
-    const storedToken = localStorage.getItem('token');
-    
+  if (typeof window !== "undefined") {
+    const storedUser = localStorage.getItem("user");
+    const storedToken = localStorage.getItem("token");
+
     return {
       user: storedUser ? JSON.parse(storedUser) : null,
       token: storedToken || null,
       isAuthenticated: !!storedToken,
       loading: false,
-      error: null
+      error: null,
     };
   }
-  
+
   return {
     user: null,
     token: null,
     isAuthenticated: false,
     loading: false,
-    error: null
+    error: null,
   };
 };
 
@@ -31,113 +31,119 @@ const initialState: UserState = getUserFromStorage();
 
 // Async thunk for login
 export const loginUser = createAsyncThunk(
-  'user/login',
-  async (credentials: { email: string; password: string }, { rejectWithValue }) => {
+  "user/login",
+  async (
+    credentials: { email: string; password: string },
+    { rejectWithValue },
+  ) => {
     try {
       const response = await fetch(`${BASE_URL}/login`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
+          Accept: "application/json",
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(credentials)
+        body: JSON.stringify(credentials),
       });
 
       const data = await response.json();
-      
+
       if (!data.success) {
         return rejectWithValue(data.message);
       }
-      
+
       // Store in localStorage
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
-      
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+
       return data;
     } catch (error) {
       console.error("Error logging in: " + error);
-      return rejectWithValue('Failed to login. Please try again.');
+      return rejectWithValue("Failed to login. Please try again.");
     }
-  }
+  },
 );
 
 // Async thunk for signup
 export const signupUser = createAsyncThunk(
-  'user/signup',
+  "user/signup",
   async (userData: IUser, { rejectWithValue }) => {
     try {
       const response = await fetch(`${BASE_URL}/sign-up`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
+          Accept: "application/json",
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(userData)
+        body: JSON.stringify(userData),
       });
 
       const data = await response.json();
-      
+
       if (!data.success) {
         return rejectWithValue(data.message);
       }
-      
+
       return data;
     } catch (error) {
       console.error("Error signing up: " + error);
-      return rejectWithValue('Failed to sign up. Please try again.');
+      return rejectWithValue("Failed to sign up. Please try again.");
     }
-  }
+  },
 );
 
 // Async thunk for updating user
 export const updateUser = createAsyncThunk(
-  'user/update',
-  async (updateData: Partial<IUpdateUserRequest>, { getState, rejectWithValue }) => {
+  "user/update",
+  async (
+    updateData: Partial<IUpdateUserRequest>,
+    { getState, rejectWithValue },
+  ) => {
     try {
       const state = getState() as { user: UserState };
       const token = state.user.token;
-      
+
       if (!token) {
-        return rejectWithValue('No authentication token found');
+        return rejectWithValue("No authentication token found");
       }
 
       const response = await fetch(`${BASE_URL}/update-user`, {
-        method: 'PATCH',
+        method: "PATCH",
         headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(updateData)
+        body: JSON.stringify(updateData),
       });
 
       const data = await response.json();
-      
+
       if (!data.success) {
         return rejectWithValue(data.message);
       }
-      
+
       // Update localStorage with new user data
-      localStorage.setItem('user', JSON.stringify(data.user));
-      
+      localStorage.setItem("user", JSON.stringify(data.user));
+
       return data;
     } catch (error) {
       console.error("Error updating user: " + error);
-      return rejectWithValue('Failed to update user. Please try again.');
+      return rejectWithValue("Failed to update user. Please try again.");
     }
-  }
+  },
 );
 
 // Create the user slice
 const userSlice = createSlice({
-  name: 'user',
+  name: "user",
   initialState,
   reducers: {
     logout: (state) => {
       // Clear localStorage
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+
       // Reset state
       state.user = null;
       state.token = null;
@@ -151,9 +157,9 @@ const userSlice = createSlice({
       // For optimistic updates or local state changes
       if (state.user) {
         state.user = { ...state.user, ...action.payload };
-        localStorage.setItem('user', JSON.stringify(state.user));
+        localStorage.setItem("user", JSON.stringify(state.user));
       }
-    }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -198,7 +204,7 @@ const userSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       });
-  }
+  },
 });
 
 export const { logout, clearError, updateUserLocal } = userSlice.actions;
