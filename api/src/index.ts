@@ -12,6 +12,7 @@ import './functions/create-subcategory';
 import './functions/delete-user';
 import './functions/create-store';
 import './functions/delete-store';
+import './functions/get-me';
 
 app.setup({
     enableHttpStream: true,

@@ -2,10 +2,10 @@ export interface IUser {
   first_name: string;
   last_name: string;
   email: string;
-  phone?: string;
+  phone?: string | null;
   role?: 'CUSTOMER' | 'VENDOR' | 'ADMIN';
   password: string;
-  profile_pic_url?: string;
+  profile_pic_url?: string | null;
 }
 
 // Auth interfaces

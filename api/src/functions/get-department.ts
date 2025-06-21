@@ -1,6 +1,5 @@
 import { app, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/functions";
 import { DecodedToken } from "../utils/authMiddleware";
-import { withAuth } from "../utils/middleware";
 import prisma from "../utils/database";
 import { headers } from "../utils/helpers";
 
