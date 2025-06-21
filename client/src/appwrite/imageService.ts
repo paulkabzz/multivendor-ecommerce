@@ -19,7 +19,7 @@ class AppwriteImageService {
     for (let i = 0; i < userId.length; i++) {
       const char = userId.charCodeAt(i);
       hash = (hash << 5) - hash + char;
-      hash = hash & hash;
+      hash &= hash;
     }
 
     const hashStr: string = Math.abs(hash).toString(36);
@@ -30,9 +30,7 @@ class AppwriteImageService {
     return fileId.length <= 36 ? fileId : `prof_${hashStr}`.slice(0, 36);
   }
 
-  private async getExistingProfileFileId(
-    userId: string,
-  ): Promise<string | null> {
+  private async getExistingProfileFileId(userId: string): Promise<string | null> {
     try {
       const files = await storage.listFiles(
         appwriteConfig.userProfilePicBucketId,
@@ -51,20 +49,8 @@ class AppwriteImageService {
     }
   }
 
-  /**
-   * Upload a profile image for a specific user with authorization
-   * @param file - The image file to upload
-   * @param userId - The user ID (required for profile images)
-   * @param _authToken - JWT token for authorization (for future use)
-   * @returns Promise with upload result
-   */
-  public async uploadProfileImage(
-    file: File,
-    userId: string,
-    _authToken?: string,
-  ): Promise<ProfileImageUploadResult> {
+  public async uploadProfileImage(file: File, userId: string, _authToken?: string): Promise<ProfileImageUploadResult> {
     try {
-      // Validate inputs
       if (!userId || !userId.trim()) {
         return {
           success: false,
@@ -72,7 +58,6 @@ class AppwriteImageService {
         };
       }
 
-      // Validate file type
       const allowedTypes: string[] = [
         "image/jpeg",
         "image/jpg",
@@ -88,7 +73,6 @@ class AppwriteImageService {
         };
       }
 
-      // Validate file size (max 5MB)
       const maxSize: number = 5 * 1024 * 1024;
       if (file.size > maxSize) {
         return {
@@ -98,7 +82,6 @@ class AppwriteImageService {
         };
       }
 
-      // Check for existing profile image and delete it
       let oldImageDeleted = false;
       const existingFileId = await this.getExistingProfileFileId(userId);
 
@@ -115,17 +98,14 @@ class AppwriteImageService {
         }
       }
 
-      // Generate a valid fileId
       const fileId = this.generateProfileFileId(userId);
 
-      // Create file with metadata to associate it with the user
       const uploadedFile = await storage.createFile(
         appwriteConfig.userProfilePicBucketId,
         fileId,
         file,
       );
 
-      // Generate the image URL for preview/display - NO TRANSFORMATIONS
       const imageUrl: string = this.getImageUrl(uploadedFile.$id);
 
       return {
@@ -137,7 +117,6 @@ class AppwriteImageService {
     } catch (error: any) {
       console.error("Error uploading profile image:", error);
 
-      // Provide more specific error messages
       let errorMessage = "Failed to upload profile image";
 
       if (error.message?.includes("fileId")) {
@@ -160,44 +139,15 @@ class AppwriteImageService {
     }
   }
 
-  /**
-   * Verify user authorization for image operations
-   * @param userId - The user ID attempting the operation
-   * @param targetUserId - The user ID of the image being accessed
-   * @param _authToken - JWT token for authorization (for future use)
-   * @returns boolean indicating if operation is authorized
-   */
-  private async verifyImageAuthorisation(
-    userId: string,
-    targetUserId: string,
-    _authToken?: string,
-  ): Promise<boolean> {
-    // Basic check: users can only access their own images
+  private async verifyImageAuthorisation(userId: string, targetUserId: string, _authToken?: string): Promise<boolean> {
     if (userId !== targetUserId) {
       return false;
     }
 
-    // Additional server-side verification could be added here
-    // For now, we rely on the frontend token and user ID matching
     return true;
   }
 
-  /**
-   * Get the URL for a user's profile image
-   * @param userId - The user ID
-   * @param _requestingUserId - The user ID making the request (for future authorization)
-   * @param width - Optional width for image transformation (DISABLED for free plan)
-   * @param height - Optional height for image transformation (DISABLED for free plan)
-   * @param quality - Optional quality (1-100) (DISABLED for free plan)
-   * @returns Image URL string or empty string if not found
-   */
-  public async getProfileImageUrl(
-    userId: string,
-    _requestingUserId?: string,
-    _width?: number,
-    _height?: number,
-    _quality: number = 80,
-  ): Promise<string> {
+  public async getProfileImageUrl(userId: string, _requestingUserId?: string, _width?: number, _height?: number, _quality: number = 80): Promise<string> {
     try {
       const fileId = await this.getExistingProfileFileId(userId);
 
@@ -212,20 +162,7 @@ class AppwriteImageService {
     }
   }
 
-  /**
-   * Get the URL for an uploaded image - Modified to handle plan limitations
-   * @param fileId - The file ID from Appwrite
-   * @param width - Optional width for image transformation (ignored on free plan)
-   * @param height - Optional height for image transformation (ignored on free plan)
-   * @param quality - Optional quality (1-100) (ignored on free plan)
-   * @returns Image URL string
-   */
-  public getImageUrl(
-    fileId: string,
-    width?: number,
-    height?: number,
-    quality: number = 80,
-  ): string {
+  public getImageUrl(fileId: string, width?: number, height?: number, quality: number = 80): string {
     try {
       if (!width && !height) {
         const baseUrl = storage.getFileView(
@@ -262,11 +199,6 @@ class AppwriteImageService {
     }
   }
 
-  /**
-   * Get the direct file view URL (no transformations)
-   * @param fileId - The file ID from Appwrite
-   * @returns Direct file URL string
-   */
   public getDirectImageUrl(fileId: string): string {
     try {
       const imageUrl = storage.getFileView(
@@ -280,18 +212,8 @@ class AppwriteImageService {
     }
   }
 
-  /**
-   * Delete a user's profile image with authorization
-   * @param userId - The user ID whose profile image to delete
-   * @param requestingUserId - The user ID making the request
-   * @param authToken - JWT token for authorization
-   * @returns Promise with deletion result
-   */
-  public async deleteProfileImage(
-    userId: string,
-    requestingUserId: string,
-    authToken?: string,
-  ): Promise<{ success: boolean; error?: string }> {
+ 
+  public async deleteProfileImage(userId: string, requestingUserId: string, authToken?: string): Promise<{ success: boolean; error?: string }> {
     try {
       if (!userId || !userId.trim()) {
         return {
@@ -332,11 +254,6 @@ class AppwriteImageService {
     }
   }
 
-  /**
-   * Check if a user has a profile image
-   * @param userId - The user ID to check
-   * @returns Promise<boolean> - true if user has a profile image
-   */
   public async hasProfileImage(userId: string): Promise<boolean> {
     try {
       const fileId: string | null = await this.getExistingProfileFileId(userId);
@@ -346,16 +263,7 @@ class AppwriteImageService {
     }
   }
 
-  /**
-   * Get profile image metadata
-   * @param userId - The user ID
-   * @param requestingUserId - The user ID making the request
-   * @returns Promise with image metadata or null
-   */
-  public async getProfileImageMetadata(
-    userId: string,
-    requestingUserId?: string,
-  ): Promise<any | null> {
+  public async getProfileImageMetadata(userId: string, requestingUserId?: string,): Promise<any | null> {
     try {
       if (requestingUserId && userId !== requestingUserId) {
         return null;
@@ -378,11 +286,7 @@ class AppwriteImageService {
     }
   }
 
-  /**
-   * Extract file ID from an Appwrite image URL
-   * @param imageUrl - Full image URL from Appwrite
-   * @returns File ID or null if not found
-   */
+
   public extractFileIdFromUrl(imageUrl: string): string | null {
     try {
       const urlParts: string[] = imageUrl.split("/");
@@ -401,10 +305,7 @@ class AppwriteImageService {
     }
   }
 
-  /**
-   * Extract user ID from a profile image file name or metadata
-   * This method would need to be adapted based on how you store user association
-   */
+
   public async extractUserIdFromFile(fileId: string): Promise<string | null> {
     try {
       const file = await storage.getFile(
@@ -431,7 +332,6 @@ class AppwriteImageService {
 
 export const imageService = new AppwriteImageService();
 
-// Additional helper function for handling upload errors gracefully
 export const handleImageUploadError = (error: any): string => {
   if (error?.message?.includes("transformations_blocked")) {
     return "Image processing is not available on the current plan. The image was uploaded successfully but may appear at full size.";

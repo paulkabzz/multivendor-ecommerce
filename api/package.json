@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "build": "tsc",
-    "start": "func start --verbose",
+    "start": "func start -r --verbose",
     "watch": "tsc -w",
     "clean": "rm -rf dist",
     "prestart": "npm run clean && npm run build",
@@ -15,6 +15,7 @@
   "description": "",
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
+    "@types/formidable": "^3.4.5",
     "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^22.15.18",
     "prisma": "^6.8.2",
@@ -26,6 +27,7 @@
     "@prisma/client": "^6.8.2",
     "@types/nodemailer": "^6.4.17",
     "bcrypt": "^6.0.0",
+    "formidable": "^3.5.4",
     "jsonwebtoken": "^9.0.2",
     "nodemailer": "^7.0.3",
     "resend": "^4.5.1"

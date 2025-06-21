@@ -4,7 +4,6 @@ import './functions/signup';
 import './functions/login';
 import './functions/verifyEmail';
 import './functions/update-user';
-import './functions/protected-endpoint';
 import './functions/create-department';
 import './functions/create-category';
 import './functions/get-department';
