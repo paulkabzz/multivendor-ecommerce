@@ -4,6 +4,7 @@ import {
   BestSelling,
   Checkout,
   Contact,
+  CreateStore,
   Events,
   FAQ,
   Home,
@@ -41,6 +42,7 @@ function App(): React.ReactElement {
           <Route element={<ProtectedRoute />}>
             <Route path="/profile/:user_id" element={<Profile />} />
             <Route path="/checkout/:user_id" element={<Checkout />} />
+            <Route path="/create-store" element={<CreateStore />} />
           </Route>
 
           {/* Not Found */}

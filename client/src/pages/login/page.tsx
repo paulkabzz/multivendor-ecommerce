@@ -18,10 +18,13 @@ const Login: React.FC = (): React.ReactElement => {
   );
   const navigate = useNavigate();
 
+  // when user is not authenticated and wants to access protected route, login first, proceed to desired route after authentication
+  const callbackUrl: string = new URLSearchParams(location.search).get('callbackUrl') || '/'
+
   useEffect(() => {
     // Redirect if already authenticated
     if (isAuthenticated) {
-      navigate("/");
+      navigate(callbackUrl, {replace: true});
     }
 
     // Clear any previous errors when component mounts

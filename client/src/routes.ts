@@ -2,6 +2,7 @@ import Verification from "@pages/verification/page";
 import BestSelling from "@pages/best-selling/page";
 import Checkout from "@pages/checkout/page";
 import Contact from "@pages/contact/page";
+import CreateStore from "@pages/create-store/page";
 import Events from "@pages/events/page";
 import FAQ from "@pages/faq/page";
 import Home from "@pages/home/page";
@@ -17,6 +18,7 @@ export {
   BestSelling,
   Checkout,
   Contact,
+  CreateStore,
   Events,
   FAQ,
   Home,

@@ -7,7 +7,7 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
-  redirectPath = "/login",
+  redirectPath = `/login?callbackUrl=${encodeURIComponent(location.pathname + location.search)}`,
   children,
 }) => {
   const { isAuthenticated, user } = useAppSelector((state) => state.user);

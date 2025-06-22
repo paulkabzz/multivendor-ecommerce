@@ -49,7 +49,7 @@ async function getMe(request: HttpRequest, context: InvocationContext, decodedTo
                 status: 200,
                 headers,
                 body: JSON.stringify({
-                    success: false,
+                    success: true,
                     message: "User details updated",
                     data
                 })

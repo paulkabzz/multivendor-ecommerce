@@ -1,0 +1,2578 @@
+[
+  {
+    "product_id": "7405d3a0-19f3-4e79-acb3-e5981c244179",
+    "vendor_id": "cc6e88dc-7f59-4ace-983d-11f2f5ba3ff9",
+    "name": "Product 1",
+    "decsription": "Description for Product 1",
+    "price": "898.82",
+    "created_at": "2024-12-13T20:49:42.903823Z",
+    "condition": "GOOD",
+    "is_available": true,
+    "subcategory_id": "67bb76fb-a6c6-4834-b6f9-98ad44ada559",
+    "image": [
+      {
+        "image_id": "69783cef-5117-4667-b807-8303ab3ca10b",
+        "image_url": "https://cdn.example.com/products/product1_img1.jpg"          
+    },
+      {
+        "image_id": "f23037ba-c021-47a2-b382-bd07d150bcbe",
+        "image_url": "https://cdn.example.com/products/product1_img2.jpg"          
+    },
+      {
+        "image_id": "48b9323c-5c5d-4de8-998f-ccf99ae4fefa",
+        "image_url": "https://cdn.example.com/products/product1_img3.jpg"          
+    },
+      {
+        "image_id": "7dadaad3-63bf-4ef6-8f77-afd9c29b5dd3",
+        "image_url": "https://cdn.example.com/products/product1_img4.jpg"         
+    }
+    ]
+  },
+  {
+    "product_id": "eee925f1-85a9-4785-aa9e-f8ded87bcc42",
+    "vendor_id": "413f0f65-10e3-49e1-ac06-ab0c8e942455",
+    "name": "Product 2",
+    "decsription": "Description for Product 2",
+    "price": "961.03",
+    "created_at": "2025-05-21T20:49:42.904571Z",
+    "condition": "BAD",
+    "is_available": false,
+    "subcategory_id": "fb346ae1-3039-47a6-b45b-c06b7e29b27b",
+    "image": [
+      {
+        "image_id": "eb35783e-f212-4ce2-87fd-3df5c827b3d0",
+        "image_url": "https://cdn.example.com/products/product2_img1.jpg",
+        "product_id": "eee925f1-85a9-4785-aa9e-f8ded87bcc42"
+      },
+      {
+        "image_id": "49fdd5bd-290a-4aa4-8b8f-4f8754f3717a",
+        "image_url": "https://cdn.example.com/products/product2_img2.jpg",
+        "product_id": "eee925f1-85a9-4785-aa9e-f8ded87bcc42"
+      },
+      {
+        "image_id": "ae46891d-2e06-4b7b-98a2-0b0045b941cb",
+        "image_url": "https://cdn.example.com/products/product2_img3.jpg",
+        "product_id": "eee925f1-85a9-4785-aa9e-f8ded87bcc42"
+      },
+      {
+        "image_id": "3254233c-813f-4dfe-8266-6b2d4640fc2d",
+        "image_url": "https://cdn.example.com/products/product2_img4.jpg",
+        "product_id": "eee925f1-85a9-4785-aa9e-f8ded87bcc42"
+      }
+    ]
+  },
+  {
+    "product_id": "ddc98e2b-2623-4ac7-867b-5f1f6bdee349",
+    "vendor_id": "55b1aeca-4254-445d-84a2-d7238da6a57a",
+    "name": "Product 3",
+    "decsription": "Description for Product 3",
+    "price": "973.67",
+    "created_at": "2024-10-18T20:49:42.904691Z",
+    "condition": "BAD",
+    "is_available": true,
+    "subcategory_id": "ced9a1b5-2d75-40c3-a981-ed7202ffde96",
+    "image": [
+      {
+        "image_id": "be0fd2fe-7dd5-40be-acf0-c34caaecfb55",
+        "image_url": "https://cdn.example.com/products/product3_img1.jpg",
+        "product_id": "ddc98e2b-2623-4ac7-867b-5f1f6bdee349"
+      },
+      {
+        "image_id": "11e74238-a4ac-4a8b-87d5-7a286d14d864",
+        "image_url": "https://cdn.example.com/products/product3_img2.jpg",
+        "product_id": "ddc98e2b-2623-4ac7-867b-5f1f6bdee349"
+      }
+    ]
+  },
+  {
+    "product_id": "b4507ba7-caf1-454c-9fe2-260bc593d67f",
+    "vendor_id": "e8b1a1a8-fd70-4382-b374-4a5b8dcdc722",
+    "name": "Product 4",
+    "decsription": "Description for Product 4",
+    "price": "471.97",
+    "created_at": "2025-04-12T20:49:42.904739Z",
+    "condition": "GOOD",
+    "is_available": false,
+    "subcategory_id": "5b243177-ef7c-4da7-9505-94559306dd75",
+    "image": [
+      {
+        "image_id": "c3bfa41b-99dd-44c5-869b-f9cc227b6ee6",
+        "image_url": "https://cdn.example.com/products/product4_img1.jpg",
+        "product_id": "b4507ba7-caf1-454c-9fe2-260bc593d67f"
+      },
+      {
+        "image_id": "3e5cdc6d-b833-441f-a65e-38f6e3e320b1",
+        "image_url": "https://cdn.example.com/products/product4_img2.jpg",
+        "product_id": "b4507ba7-caf1-454c-9fe2-260bc593d67f"
+      },
+      {
+        "image_id": "a7685705-dc11-4875-86b8-38e3cba4b70b",
+        "image_url": "https://cdn.example.com/products/product4_img3.jpg",
+        "product_id": "b4507ba7-caf1-454c-9fe2-260bc593d67f"
+      }
+    ]
+  },
+  {
+    "product_id": "3307638d-1f1b-4522-8db0-a954699d5e2e",
+    "vendor_id": "4789396d-8fe1-4538-8a26-5ae0304f107b",
+    "name": "Product 5",
+    "decsription": "Description for Product 5",
+    "price": "830.8",
+    "created_at": "2025-01-09T20:49:42.904808Z",
+    "condition": "NEW",
+    "is_available": true,
+    "subcategory_id": "344bb28a-df0f-41ba-a26d-d0ce605e84fd",
+    "image": [
+      {
+        "image_id": "9f4c5bc6-aa1c-4b60-ada8-73e04f52b427",
+        "image_url": "https://cdn.example.com/products/product5_img1.jpg",
+        "product_id": "3307638d-1f1b-4522-8db0-a954699d5e2e"
+      }
+    ]
+  },
+  {
+    "product_id": "5c982401-3aba-4021-adab-7f4bc299e669",
+    "vendor_id": "8a1e1e7a-08dc-4da6-8085-9412565e4f17",
+    "name": "Product 6",
+    "decsription": "Description for Product 6",
+    "price": "958.28",
+    "created_at": "2025-02-09T20:49:42.904848Z",
+    "condition": "BAD",
+    "is_available": true,
+    "subcategory_id": "f7ffd196-19a3-4bc0-bf8d-bd4dc9f1fa08",
+    "image": [
+      {
+        "image_id": "a222ee16-1517-4e25-9452-b2f80f2b6eca",
+        "image_url": "https://cdn.example.com/products/product6_img1.jpg",
+        "product_id": "5c982401-3aba-4021-adab-7f4bc299e669"
+      },
+      {
+        "image_id": "9b7d1495-d42c-4726-9870-dae3c0b65d13",
+        "image_url": "https://cdn.example.com/products/product6_img2.jpg",
+        "product_id": "5c982401-3aba-4021-adab-7f4bc299e669"
+      }
+    ]
+  },
+  {
+    "product_id": "89eaff5c-269c-49c4-bbf1-326e484b892b",
+    "vendor_id": "2cab218e-949a-4a0e-b7c2-1421c9d13647",
+    "name": "Product 7",
+    "decsription": "Description for Product 7",
+    "price": "335.25",
+    "created_at": "2024-12-15T20:49:42.904884Z",
+    "condition": "GOOD",
+    "is_available": true,
+    "subcategory_id": "9b82970d-e0e0-4991-86d3-5390976e058e",
+    "image": [
+      {
+        "image_id": "c1ea2edb-6ab4-4bf8-bd52-93308acb5e95",
+        "image_url": "https://cdn.example.com/products/product7_img1.jpg",
+        "product_id": "89eaff5c-269c-49c4-bbf1-326e484b892b"
+      },
+      {
+        "image_id": "accd7d6a-c563-421b-9846-15874a2d4806",
+        "image_url": "https://cdn.example.com/products/product7_img2.jpg",
+        "product_id": "89eaff5c-269c-49c4-bbf1-326e484b892b"
+      },
+      {
+        "image_id": "a6f57787-b145-417a-a7f2-b443cf778ade",
+        "image_url": "https://cdn.example.com/products/product7_img3.jpg",
+        "product_id": "89eaff5c-269c-49c4-bbf1-326e484b892b"
+      }
+    ]
+  },
+  {
+    "product_id": "74cd634a-591d-447b-a184-a8fa66ab0658",
+    "vendor_id": "dd24c767-c81e-4e6e-9354-70de5878c855",
+    "name": "Product 8",
+    "decsription": "Description for Product 8",
+    "price": "486.32",
+    "created_at": "2025-06-19T20:49:42.904935Z",
+    "condition": "BAD",
+    "is_available": true,
+    "subcategory_id": "c9eac17b-e669-4cd0-bcd0-07e319cc7e40",
+    "image": [
+      {
+        "image_id": "d4d33cfb-08b2-4168-8e3e-4403d2fbacf5",
+        "image_url": "https://cdn.example.com/products/product8_img1.jpg",
+        "product_id": "74cd634a-591d-447b-a184-a8fa66ab0658"
+      },
+      {
+        "image_id": "9371e524-df51-4e73-ba34-f463cd8d1a15",
+        "image_url": "https://cdn.example.com/products/product8_img2.jpg",
+        "product_id": "74cd634a-591d-447b-a184-a8fa66ab0658"
+      }
+    ]
+  },
+  {
+    "product_id": "c38be53f-b58c-4cfc-8f3c-4aeefb93c5e5",
+    "vendor_id": "cab6a985-0956-4589-bed0-4a63626d7d2b",
+    "name": "Product 9",
+    "decsription": "Description for Product 9",
+    "price": "119.52",
+    "created_at": "2024-07-24T20:49:42.905001Z",
+    "condition": "NEW",
+    "is_available": true,
+    "subcategory_id": "1e05a43d-ebc0-44cf-be41-092df5526280",
+    "image": [
+      {
+        "image_id": "095080fe-018e-43f2-a923-29ce3fde9d4f",
+        "image_url": "https://cdn.example.com/products/product9_img1.jpg",
+        "product_id": "c38be53f-b58c-4cfc-8f3c-4aeefb93c5e5"
+      },
+      {
+        "image_id": "4e088d45-b6b4-4e17-8cad-5a2d95e04962",
+        "image_url": "https://cdn.example.com/products/product9_img2.jpg",
+        "product_id": "c38be53f-b58c-4cfc-8f3c-4aeefb93c5e5"
+      },
+      {
+        "image_id": "a42ca03a-8991-45dc-8e37-fd874e72f285",
+        "image_url": "https://cdn.example.com/products/product9_img3.jpg",
+        "product_id": "c38be53f-b58c-4cfc-8f3c-4aeefb93c5e5"
+      },
+      {
+        "image_id": "4199de01-80e1-42b3-a310-961790525385",
+        "image_url": "https://cdn.example.com/products/product9_img4.jpg",
+        "product_id": "c38be53f-b58c-4cfc-8f3c-4aeefb93c5e5"
+      }
+    ]
+  },
+  {
+    "product_id": "dee23cad-d168-46b5-aa7e-c639d70c27b9",
+    "vendor_id": "fd4fcae2-6170-43af-880b-bf3a9fb6bbec",
+    "name": "Product 10",
+    "decsription": "Description for Product 10",
+    "price": "252.77",
+    "created_at": "2024-08-01T20:49:42.905072Z",
+    "condition": "LIKE_NEW",
+    "is_available": false,
+    "subcategory_id": "01fcfc9f-1849-4fce-b70c-a20bee1af49a",
+    "image": [
+      {
+        "image_id": "28e15d10-0459-420c-9c31-fccb16d4b43a",
+        "image_url": "https://cdn.example.com/products/product10_img1.jpg",
+        "product_id": "dee23cad-d168-46b5-aa7e-c639d70c27b9"
+      },
+      {
+        "image_id": "317808c4-0ead-436d-97e0-617d9a9e69cf",
+        "image_url": "https://cdn.example.com/products/product10_img2.jpg",
+        "product_id": "dee23cad-d168-46b5-aa7e-c639d70c27b9"
+      },
+      {
+        "image_id": "f7985132-61ac-4f0c-b43f-19f42cb085ac",
+        "image_url": "https://cdn.example.com/products/product10_img3.jpg",
+        "product_id": "dee23cad-d168-46b5-aa7e-c639d70c27b9"
+      },
+      {
+        "image_id": "b901614f-e4c2-4ac2-8e9a-d29381625e52",
+        "image_url": "https://cdn.example.com/products/product10_img4.jpg",
+        "product_id": "dee23cad-d168-46b5-aa7e-c639d70c27b9"
+      }
+    ]
+  },
+  {
+    "product_id": "0cf5fdab-fd66-404a-9c12-6a5cdab0e09b",
+    "vendor_id": "bf235651-abb7-46a0-b237-dd94ae267989",
+    "name": "Product 11",
+    "decsription": "Description for Product 11",
+    "price": "310.71",
+    "created_at": "2025-03-06T20:49:42.905122Z",
+    "condition": "NEW",
+    "is_available": true,
+    "subcategory_id": "ea7f2e4b-f97f-44e1-9f7e-26d690d42b1a",
+    "image": [
+      {
+        "image_id": "0c1cb76c-f610-47b8-bd98-9173d6b88edc",
+        "image_url": "https://cdn.example.com/products/product11_img1.jpg",
+        "product_id": "0cf5fdab-fd66-404a-9c12-6a5cdab0e09b"
+      },
+      {
+        "image_id": "163012dd-8a2e-42f2-b747-bc43763cb837",
+        "image_url": "https://cdn.example.com/products/product11_img2.jpg",
+        "product_id": "0cf5fdab-fd66-404a-9c12-6a5cdab0e09b"
+      },
+      {
+        "image_id": "d18b9f1d-74f4-43fa-845f-f9dd37030ae3",
+        "image_url": "https://cdn.example.com/products/product11_img3.jpg",
+        "product_id": "0cf5fdab-fd66-404a-9c12-6a5cdab0e09b"
+      },
+      {
+        "image_id": "62dc1c50-866b-4793-b639-c0a0da4f9b66",
+        "image_url": "https://cdn.example.com/products/product11_img4.jpg",
+        "product_id": "0cf5fdab-fd66-404a-9c12-6a5cdab0e09b"
+      }
+    ]
+  },
+  {
+    "product_id": "85f9e7cf-c404-4828-ae29-8dbbecc9c665",
+    "vendor_id": "0221a929-9d35-4ebe-bd8e-3c4f38aa2e2c",
+    "name": "Product 12",
+    "decsription": "Description for Product 12",
+    "price": "255.75",
+    "created_at": "2025-03-25T20:49:42.905169Z",
+    "condition": "LIKE_NEW",
+    "is_available": false,
+    "subcategory_id": "b9462374-1180-472f-ac4c-0ca417c48ccc",
+    "image": [
+      {
+        "image_id": "d6552a2b-24b7-4985-a87c-80b0cf583500",
+        "image_url": "https://cdn.example.com/products/product12_img1.jpg",
+        "product_id": "85f9e7cf-c404-4828-ae29-8dbbecc9c665"
+      }
+    ]
+  },
+  {
+    "product_id": "f986041a-893e-4cfe-828c-d52737b3d418",
+    "vendor_id": "f6fd6ad4-7cad-473e-99f6-ccab91fa6974",
+    "name": "Product 13",
+    "decsription": "Description for Product 13",
+    "price": "217.1",
+    "created_at": "2025-01-21T20:49:42.905216Z",
+    "condition": "BAD",
+    "is_available": false,
+    "subcategory_id": "cbc565ec-2f01-40bf-b8c3-fb6f242f8164",
+    "image": [
+      {
+        "image_id": "65c14ccc-b385-4bb1-8e53-7e0917766434",
+        "image_url": "https://cdn.example.com/products/product13_img1.jpg",
+        "product_id": "f986041a-893e-4cfe-828c-d52737b3d418"
+      },
+      {
+        "image_id": "058ebff0-3983-422b-9a3f-4cc1bf416368",
+        "image_url": "https://cdn.example.com/products/product13_img2.jpg",
+        "product_id": "f986041a-893e-4cfe-828c-d52737b3d418"
+      },
+      {
+        "image_id": "16eff308-c06c-46a8-9261-dc1b593a219f",
+        "image_url": "https://cdn.example.com/products/product13_img3.jpg",
+        "product_id": "f986041a-893e-4cfe-828c-d52737b3d418"
+      },
+      {
+        "image_id": "2f5a05ef-a7be-4ed7-89e3-ac09925af0b2",
+        "image_url": "https://cdn.example.com/products/product13_img4.jpg",
+        "product_id": "f986041a-893e-4cfe-828c-d52737b3d418"
+      }
+    ]
+  },
+  {
+    "product_id": "cbb56064-c851-4d42-9738-6b2aba9f832f",
+    "vendor_id": "8da0d282-e73e-4804-bcc8-667eb9f5fc30",
+    "name": "Product 14",
+    "decsription": "Description for Product 14",
+    "price": "565.38",
+    "created_at": "2025-02-28T20:49:42.905276Z",
+    "condition": "NEW",
+    "is_available": false,
+    "subcategory_id": "c7468af2-878a-456e-a953-9a6e275f6b16",
+    "image": [
+      {
+        "image_id": "96b1f74f-2a44-4d8b-87c2-3e513fbac478",
+        "image_url": "https://cdn.example.com/products/product14_img1.jpg",
+        "product_id": "cbb56064-c851-4d42-9738-6b2aba9f832f"
+      }
+    ]
+  },
+  {
+    "product_id": "1426e5d1-aecd-43b0-99d9-55852a8f74d8",
+    "vendor_id": "f2992dcd-513e-4f2c-9414-973c13146c2e",
+    "name": "Product 15",
+    "decsription": "Description for Product 15",
+    "price": "224.81",
+    "created_at": "2024-08-19T20:49:42.905308Z",
+    "condition": "LIKE_NEW",
+    "is_available": true,
+    "subcategory_id": "19578b7e-bcda-41ea-b768-6cbb3c3e6e7b",
+    "image": [
+      {
+        "image_id": "eaa87cb2-4a30-4374-86e6-57c90f1122c0",
+        "image_url": "https://cdn.example.com/products/product15_img1.jpg",
+        "product_id": "1426e5d1-aecd-43b0-99d9-55852a8f74d8"
+      },
+      {
+        "image_id": "dc8c9f70-ec3e-4442-bae7-f0fc2ca8ef2b",
+        "image_url": "https://cdn.example.com/products/product15_img2.jpg",
+        "product_id": "1426e5d1-aecd-43b0-99d9-55852a8f74d8"
+      },
+      {
+        "image_id": "d4f2c471-5852-488d-818a-4fcfdd116bcb",
+        "image_url": "https://cdn.example.com/products/product15_img3.jpg",
+        "product_id": "1426e5d1-aecd-43b0-99d9-55852a8f74d8"
+      }
+    ]
+  },
+  {
+    "product_id": "a9d96e68-3cef-4140-bcb9-24f9717fe77c",
+    "vendor_id": "794a6cdb-efeb-464a-93e6-914583456d01",
+    "name": "Product 16",
+    "decsription": "Description for Product 16",
+    "price": "583.34",
+    "created_at": "2025-06-09T20:49:42.905357Z",
+    "condition": "NEW",
+    "is_available": true,
+    "subcategory_id": "37419d1f-4c46-431c-ba48-fdf07c785fb3",
+    "image": [
+      {
+        "image_id": "b2b16fa8-3528-49cd-8f4c-b6cbc53a605e",
+        "image_url": "https://cdn.example.com/products/product16_img1.jpg",
+        "product_id": "a9d96e68-3cef-4140-bcb9-24f9717fe77c"
+      }
+    ]
+  },
+  {
+    "product_id": "8b3fadbc-0792-4e1b-9b8e-12fad8aa9482",
+    "vendor_id": "f1688f68-3c96-4dc3-a98e-37d3498fdcb8",
+    "name": "Product 17",
+    "decsription": "Description for Product 17",
+    "price": "650.89",
+    "created_at": "2025-03-31T20:49:42.905393Z",
+    "condition": "BAD",
+    "is_available": true,
+    "subcategory_id": "9aa5476e-f253-4cd9-86b0-64bf138111d6",
+    "image": [
+      {
+        "image_id": "19d1a88d-6f3e-47ae-a6d1-5983f17fab09",
+        "image_url": "https://cdn.example.com/products/product17_img1.jpg",
+        "product_id": "8b3fadbc-0792-4e1b-9b8e-12fad8aa9482"
+      },
+      {
+        "image_id": "136ad1f7-2200-4b42-83a1-d21688e32ec1",
+        "image_url": "https://cdn.example.com/products/product17_img2.jpg",
+        "product_id": "8b3fadbc-0792-4e1b-9b8e-12fad8aa9482"
+      },
+      {
+        "image_id": "0893683f-a5a7-4dda-98e1-910573deac1b",
+        "image_url": "https://cdn.example.com/products/product17_img3.jpg",
+        "product_id": "8b3fadbc-0792-4e1b-9b8e-12fad8aa9482"
+      },
+      {
+        "image_id": "44013b1c-c408-45f4-81d2-1c15602fb317",
+        "image_url": "https://cdn.example.com/products/product17_img4.jpg",
+        "product_id": "8b3fadbc-0792-4e1b-9b8e-12fad8aa9482"
+      }
+    ]
+  },
+  {
+    "product_id": "eecf9256-5361-4902-a13a-2d7dd770a0ff",
+    "vendor_id": "a875311c-028e-4e39-b256-8cdaca32342b",
+    "name": "Product 18",
+    "decsription": "Description for Product 18",
+    "price": "915.05",
+    "created_at": "2025-01-12T20:49:42.905457Z",
+    "condition": "FAIR",
+    "is_available": true,
+    "subcategory_id": "f4f9e3e1-0700-4b21-b386-4f60bcdd5d06",
+    "image": [
+      {
+        "image_id": "f70b4892-e66a-4903-af72-763ecce5cc2c",
+        "image_url": "https://cdn.example.com/products/product18_img1.jpg",
+        "product_id": "eecf9256-5361-4902-a13a-2d7dd770a0ff"
+      },
+      {
+        "image_id": "0ca5cc9f-a2ef-4c8e-89e7-fb3c78087429",
+        "image_url": "https://cdn.example.com/products/product18_img2.jpg",
+        "product_id": "eecf9256-5361-4902-a13a-2d7dd770a0ff"
+      }
+    ]
+  },
+  {
+    "product_id": "22ec59b9-966a-4469-b0d7-839531f72807",
+    "vendor_id": "1d0edc3f-e669-4fc9-a98f-c6ce5acaa6f3",
+    "name": "Product 19",
+    "decsription": "Description for Product 19",
+    "price": "237.0",
+    "created_at": "2024-11-30T20:49:42.905494Z",
+    "condition": "GOOD",
+    "is_available": false,
+    "subcategory_id": "34446cc4-cdcd-4c58-892d-dc2b2249c6b6",
+    "image": [
+      {
+        "image_id": "905a94f4-d26a-4f83-b809-2c4ff8b1df9a",
+        "image_url": "https://cdn.example.com/products/product19_img1.jpg",
+        "product_id": "22ec59b9-966a-4469-b0d7-839531f72807"
+      }
+    ]
+  },
+  {
+    "product_id": "5a9ce6e9-01c3-46c1-8d15-bd12265a8d0f",
+    "vendor_id": "4e12b2b7-90e1-46fa-86cd-7b52578ab92f",
+    "name": "Product 20",
+    "decsription": "Description for Product 20",
+    "price": "738.11",
+    "created_at": "2025-02-02T20:49:42.905524Z",
+    "condition": "BAD",
+    "is_available": false,
+    "subcategory_id": "19f52850-8ad8-4591-87b7-e58f40a5be2a",
+    "image": [
+      {
+        "image_id": "5f4c227e-81e0-42e3-b441-1a17aca6d25c",
+        "image_url": "https://cdn.example.com/products/product20_img1.jpg",
+        "product_id": "5a9ce6e9-01c3-46c1-8d15-bd12265a8d0f"
+      },
+      {
+        "image_id": "79897e35-43dd-47fa-b2cf-3defdbc3ec95",
+        "image_url": "https://cdn.example.com/products/product20_img2.jpg",
+        "product_id": "5a9ce6e9-01c3-46c1-8d15-bd12265a8d0f"
+      },
+      {
+        "image_id": "71cc1038-1042-44ff-82ca-d7074d6bb7ed",
+        "image_url": "https://cdn.example.com/products/product20_img3.jpg",
+        "product_id": "5a9ce6e9-01c3-46c1-8d15-bd12265a8d0f"
+      }
+    ]
+  },
+  {
+    "product_id": "9c2d28f0-80d9-40db-aaf2-f2d1fcb1c764",
+    "vendor_id": "92d3f780-9a1d-4f38-80ba-1f003b9838e8",
+    "name": "Product 21",
+    "decsription": "Description for Product 21",
+    "price": "581.5",
+    "created_at": "2025-05-21T20:49:42.905567Z",
+    "condition": "NEW",
+    "is_available": true,
+    "subcategory_id": "8197a428-b460-4800-8793-3351a33a8d4e",
+    "image": [
+      {
+        "image_id": "8d5f9268-e8fd-4018-be5e-8ab149a54f9d",
+        "image_url": "https://cdn.example.com/products/product21_img1.jpg",
+        "product_id": "9c2d28f0-80d9-40db-aaf2-f2d1fcb1c764"
+      },
+      {
+        "image_id": "843f494e-286f-447f-a007-9c8acdd5cefa",
+        "image_url": "https://cdn.example.com/products/product21_img2.jpg",
+        "product_id": "9c2d28f0-80d9-40db-aaf2-f2d1fcb1c764"
+      }
+    ]
+  },
+  {
+    "product_id": "526a62d7-6b9f-475f-b632-8e9239fb9f30",
+    "vendor_id": "403c469c-5d17-4e2e-8142-689f3b438838",
+    "name": "Product 22",
+    "decsription": "Description for Product 22",
+    "price": "774.5",
+    "created_at": "2025-01-02T20:49:42.905606Z",
+    "condition": "NEW",
+    "is_available": true,
+    "subcategory_id": "721b893e-dc43-4831-bab3-085261e16e41",
+    "image": [
+      {
+        "image_id": "fb5bc3fe-3a1e-4329-a78e-f4645da630e1",
+        "image_url": "https://cdn.example.com/products/product22_img1.jpg",
+        "product_id": "526a62d7-6b9f-475f-b632-8e9239fb9f30"
+      },
+      {
+        "image_id": "58cc24a5-e92b-4638-9572-a077e4ae2f18",
+        "image_url": "https://cdn.example.com/products/product22_img2.jpg",
+        "product_id": "526a62d7-6b9f-475f-b632-8e9239fb9f30"
+      }
+    ]
+  },
+  {
+    "product_id": "fd9ca2ec-01db-4706-84ec-abe3c610ef90",
+    "vendor_id": "522342ab-56a5-4510-afcf-f4ae7ec62263",
+    "name": "Product 23",
+    "decsription": "Description for Product 23",
+    "price": "87.31",
+    "created_at": "2024-11-20T20:49:42.905657Z",
+    "condition": "GOOD",
+    "is_available": false,
+    "subcategory_id": "0bad2e8b-b71a-40e2-a994-49b6dfcc3b23",
+    "image": [
+      {
+        "image_id": "f0f29695-b46b-43ea-90a9-6a69415eedcf",
+        "image_url": "https://cdn.example.com/products/product23_img1.jpg",
+        "product_id": "fd9ca2ec-01db-4706-84ec-abe3c610ef90"
+      },
+      {
+        "image_id": "575ae99b-fd7d-46d5-9234-33d7b02f3cb7",
+        "image_url": "https://cdn.example.com/products/product23_img2.jpg",
+        "product_id": "fd9ca2ec-01db-4706-84ec-abe3c610ef90"
+      }
+    ]
+  },
+  {
+    "product_id": "fca1dda1-b3f2-43e7-bd3a-9290cef8403b",
+    "vendor_id": "e9d42b81-79dc-4e8b-ba8f-e4cac2823e87",
+    "name": "Product 24",
+    "decsription": "Description for Product 24",
+    "price": "476.84",
+    "created_at": "2025-04-24T20:49:42.905704Z",
+    "condition": "NEW",
+    "is_available": true,
+    "subcategory_id": "c7ae4030-b104-4090-85c3-baf6be5bda5e",
+    "image": [
+      {
+        "image_id": "9821eec3-c337-4ddc-88d9-df7dae66aa12",
+        "image_url": "https://cdn.example.com/products/product24_img1.jpg",
+        "product_id": "fca1dda1-b3f2-43e7-bd3a-9290cef8403b"
+      }
+    ]
+  },
+  {
+    "product_id": "191b9cfa-e291-4712-9a3a-83291dd04335",
+    "vendor_id": "6cb18c30-b1a6-4a95-aa13-b9c176be54d9",
+    "name": "Product 25",
+    "decsription": "Description for Product 25",
+    "price": "121.14",
+    "created_at": "2025-04-20T20:49:42.905745Z",
+    "condition": "NEW",
+    "is_available": true,
+    "subcategory_id": "bffe825b-7ea2-459d-9d99-7da44511cba4",
+    "image": [
+      {
+        "image_id": "bd519883-7e10-4dc2-9e4f-5e45063e89ca",
+        "image_url": "https://cdn.example.com/products/product25_img1.jpg",
+        "product_id": "191b9cfa-e291-4712-9a3a-83291dd04335"
+      },
+      {
+        "image_id": "0e807a77-296e-45fb-9018-4f8b896b6c97",
+        "image_url": "https://cdn.example.com/products/product25_img2.jpg",
+        "product_id": "191b9cfa-e291-4712-9a3a-83291dd04335"
+      },
+      {
+        "image_id": "565b536e-d48a-491f-99fe-699d0595da73",
+        "image_url": "https://cdn.example.com/products/product25_img3.jpg",
+        "product_id": "191b9cfa-e291-4712-9a3a-83291dd04335"
+      }
+    ]
+  },
+  {
+    "product_id": "88a29986-6689-4640-b670-e833f2bba5a0",
+    "vendor_id": "bb23f4af-822a-403b-8b15-d2d324c8e56f",
+    "name": "Product 26",
+    "decsription": "Description for Product 26",
+    "price": "74.26",
+    "created_at": "2024-08-06T20:49:42.905792Z",
+    "condition": "LIKE_NEW",
+    "is_available": false,
+    "subcategory_id": "4ef529c6-602b-429e-9562-091617a23197",
+    "image": [
+      {
+        "image_id": "b918949a-0ea4-4074-b0b6-03b642bae072",
+        "image_url": "https://cdn.example.com/products/product26_img1.jpg",
+        "product_id": "88a29986-6689-4640-b670-e833f2bba5a0"
+      },
+      {
+        "image_id": "279a814d-b1fd-44e8-aea5-39ad6d04228b",
+        "image_url": "https://cdn.example.com/products/product26_img2.jpg",
+        "product_id": "88a29986-6689-4640-b670-e833f2bba5a0"
+      }
+    ]
+  },
+  {
+    "product_id": "2f019631-7af9-4147-89db-dc6d77bd2790",
+    "vendor_id": "3b726434-c3a2-4457-88d4-207435458655",
+    "name": "Product 27",
+    "decsription": "Description for Product 27",
+    "price": "102.66",
+    "created_at": "2025-01-19T20:49:42.905827Z",
+    "condition": "FAIR",
+    "is_available": true,
+    "subcategory_id": "8f58e6df-c1ee-46d0-8cff-4a3bb1411e71",
+    "image": [
+      {
+        "image_id": "4bc8ff04-6801-47f1-b54a-f7bb69021281",
+        "image_url": "https://cdn.example.com/products/product27_img1.jpg",
+        "product_id": "2f019631-7af9-4147-89db-dc6d77bd2790"
+      },
+      {
+        "image_id": "839dee95-be59-48c7-9246-61a3f66e5715",
+        "image_url": "https://cdn.example.com/products/product27_img2.jpg",
+        "product_id": "2f019631-7af9-4147-89db-dc6d77bd2790"
+      }
+    ]
+  },
+  {
+    "product_id": "8d6fe3e3-f489-4fbc-8a8c-b8b4c532a73f",
+    "vendor_id": "bdf9beff-de6d-40ec-8a40-5053fc5e9f9f",
+    "name": "Product 28",
+    "decsription": "Description for Product 28",
+    "price": "289.41",
+    "created_at": "2025-03-12T20:49:42.905863Z",
+    "condition": "GOOD",
+    "is_available": false,
+    "subcategory_id": "5097d8e4-e36f-4ac4-b59a-e93ad39d58cc",
+    "image": [
+      {
+        "image_id": "65b5d8c3-f389-40f2-95fb-8458ffcdfd7c",
+        "image_url": "https://cdn.example.com/products/product28_img1.jpg",
+        "product_id": "8d6fe3e3-f489-4fbc-8a8c-b8b4c532a73f"
+      },
+      {
+        "image_id": "993dfc44-93de-4b7f-b49d-66867ac7397c",
+        "image_url": "https://cdn.example.com/products/product28_img2.jpg",
+        "product_id": "8d6fe3e3-f489-4fbc-8a8c-b8b4c532a73f"
+      },
+      {
+        "image_id": "2603b7ab-9250-4b77-8bdd-eb4cd2432b2e",
+        "image_url": "https://cdn.example.com/products/product28_img3.jpg",
+        "product_id": "8d6fe3e3-f489-4fbc-8a8c-b8b4c532a73f"
+      }
+    ]
+  },
+  {
+    "product_id": "5b860567-b63d-4766-951d-3a366e28ac0f",
+    "vendor_id": "83ea80dc-37b4-456f-a9bb-d0b8a6c447f4",
+    "name": "Product 29",
+    "decsription": "Description for Product 29",
+    "price": "608.99",
+    "created_at": "2025-06-02T20:49:42.905909Z",
+    "condition": "GOOD",
+    "is_available": false,
+    "subcategory_id": "7d616959-632d-40dd-99a3-410ac88d1c32",
+    "image": [
+      {
+        "image_id": "6e84ac9a-dd0e-4c51-8337-39eac786cfae",
+        "image_url": "https://cdn.example.com/products/product29_img1.jpg",
+        "product_id": "5b860567-b63d-4766-951d-3a366e28ac0f"
+      },
+      {
+        "image_id": "ede38fe8-2419-4436-8e0e-6a557e5bebd6",
+        "image_url": "https://cdn.example.com/products/product29_img2.jpg",
+        "product_id": "5b860567-b63d-4766-951d-3a366e28ac0f"
+      },
+      {
+        "image_id": "bbdb078c-4548-4949-bf4d-669d90c2da49",
+        "image_url": "https://cdn.example.com/products/product29_img3.jpg",
+        "product_id": "5b860567-b63d-4766-951d-3a366e28ac0f"
+      },
+      {
+        "image_id": "5865adde-c56d-4192-8292-86b85c2ad587",
+        "image_url": "https://cdn.example.com/products/product29_img4.jpg",
+        "product_id": "5b860567-b63d-4766-951d-3a366e28ac0f"
+      }
+    ]
+  },
+  {
+    "product_id": "6ec088a2-94c2-489f-ab70-b43264e9e729",
+    "vendor_id": "bf7cb883-dde2-4a69-8337-3a8368279e58",
+    "name": "Product 30",
+    "decsription": "Description for Product 30",
+    "price": "366.25",
+    "created_at": "2024-07-08T20:49:42.905997Z",
+    "condition": "GOOD",
+    "is_available": true,
+    "subcategory_id": "8ce2e86b-62b2-426c-b9d0-e10cd0453838",
+    "image": [
+      {
+        "image_id": "fcb652d6-8543-4aa4-a355-1b535165030d",
+        "image_url": "https://cdn.example.com/products/product30_img1.jpg",
+        "product_id": "6ec088a2-94c2-489f-ab70-b43264e9e729"
+      },
+      {
+        "image_id": "93cf00d6-a803-4339-8158-2d451705cab4",
+        "image_url": "https://cdn.example.com/products/product30_img2.jpg",
+        "product_id": "6ec088a2-94c2-489f-ab70-b43264e9e729"
+      },
+      {
+        "image_id": "9f23dfab-e5a2-4fc9-891a-af4468df05df",
+        "image_url": "https://cdn.example.com/products/product30_img3.jpg",
+        "product_id": "6ec088a2-94c2-489f-ab70-b43264e9e729"
+      }
+    ]
+  },
+  {
+    "product_id": "0274b325-b6f8-49d5-89e3-39f8a5edb93a",
+    "vendor_id": "c6899035-f2d5-4d3c-bb14-8ebafbe39644",
+    "name": "Product 31",
+    "decsription": "Description for Product 31",
+    "price": "460.03",
+    "created_at": "2024-12-29T20:49:42.906043Z",
+    "condition": "BAD",
+    "is_available": true,
+    "subcategory_id": "be70a900-e873-4f38-8bcb-a8e658c9576d",
+    "image": [
+      {
+        "image_id": "536516e3-6739-41d4-899b-1dfc3d88fc6b",
+        "image_url": "https://cdn.example.com/products/product31_img1.jpg",
+        "product_id": "0274b325-b6f8-49d5-89e3-39f8a5edb93a"
+      },
+      {
+        "image_id": "78552160-1311-4922-a7e9-f26a4018c35d",
+        "image_url": "https://cdn.example.com/products/product31_img2.jpg",
+        "product_id": "0274b325-b6f8-49d5-89e3-39f8a5edb93a"
+      },
+      {
+        "image_id": "128da4a9-3035-4b65-b4e9-c2b6c5032f2c",
+        "image_url": "https://cdn.example.com/products/product31_img3.jpg",
+        "product_id": "0274b325-b6f8-49d5-89e3-39f8a5edb93a"
+      }
+    ]
+  },
+  {
+    "product_id": "73cd60ef-f0ae-4d62-b6ef-bc07982974d6",
+    "vendor_id": "62b6e531-31c5-42ab-bd18-5b4fa33df0c0",
+    "name": "Product 32",
+    "decsription": "Description for Product 32",
+    "price": "827.82",
+    "created_at": "2024-09-20T20:49:42.906111Z",
+    "condition": "LIKE_NEW",
+    "is_available": true,
+    "subcategory_id": "052fbf33-93b2-4bdf-b1da-ead368c484ea",
+    "image": [
+      {
+        "image_id": "724cda1b-370a-4664-8d0f-01e5fcc41a09",
+        "image_url": "https://cdn.example.com/products/product32_img1.jpg",
+        "product_id": "73cd60ef-f0ae-4d62-b6ef-bc07982974d6"
+      },
+      {
+        "image_id": "7bd7eb39-8edf-4f95-9948-7c0ab4a60f31",
+        "image_url": "https://cdn.example.com/products/product32_img2.jpg",
+        "product_id": "73cd60ef-f0ae-4d62-b6ef-bc07982974d6"
+      }
+    ]
+  },
+  {
+    "product_id": "1fb9e821-4e8f-43b8-b953-25101c7129af",
+    "vendor_id": "4cf1e174-a5fe-477a-a681-6da475105457",
+    "name": "Product 33",
+    "decsription": "Description for Product 33",
+    "price": "406.64",
+    "created_at": "2025-06-17T20:49:42.906155Z",
+    "condition": "NEW",
+    "is_available": true,
+    "subcategory_id": "2c3b6c64-776b-4469-99fe-54fe86790b75",
+    "image": [
+      {
+        "image_id": "a892624f-8e98-4df3-8b84-8b81654e36b0",
+        "image_url": "https://cdn.example.com/products/product33_img1.jpg",
+        "product_id": "1fb9e821-4e8f-43b8-b953-25101c7129af"
+      },
+      {
+        "image_id": "98959f7f-ab22-4d7c-8c3c-8cbe85296d3c",
+        "image_url": "https://cdn.example.com/products/product33_img2.jpg",
+        "product_id": "1fb9e821-4e8f-43b8-b953-25101c7129af"
+      },
+      {
+        "image_id": "2d891359-ff09-4c62-a609-5dbb8d08286c",
+        "image_url": "https://cdn.example.com/products/product33_img3.jpg",
+        "product_id": "1fb9e821-4e8f-43b8-b953-25101c7129af"
+      },
+      {
+        "image_id": "9b3a44fc-29de-4d93-b271-0678a2f91536",
+        "image_url": "https://cdn.example.com/products/product33_img4.jpg",
+        "product_id": "1fb9e821-4e8f-43b8-b953-25101c7129af"
+      }
+    ]
+  },
+  {
+    "product_id": "230024d1-98ea-4085-ac92-de9b33498579",
+    "vendor_id": "e1074bfd-d649-4507-90be-e1c5e2d373c1",
+    "name": "Product 34",
+    "decsription": "Description for Product 34",
+    "price": "374.93",
+    "created_at": "2024-11-15T20:49:42.906207Z",
+    "condition": "GOOD",
+    "is_available": true,
+    "subcategory_id": "a7d52ec4-130e-4cee-be87-a28a0ca8899b",
+    "image": [
+      {
+        "image_id": "dca775eb-e403-40be-889b-55b8fd54aa0e",
+        "image_url": "https://cdn.example.com/products/product34_img1.jpg",
+        "product_id": "230024d1-98ea-4085-ac92-de9b33498579"
+      },
+      {
+        "image_id": "5b45cd07-8917-461d-b0e9-9246313372e5",
+        "image_url": "https://cdn.example.com/products/product34_img2.jpg",
+        "product_id": "230024d1-98ea-4085-ac92-de9b33498579"
+      }
+    ]
+  },
+  {
+    "product_id": "ff6cc290-184b-4371-bb86-dbb86f1bfdfc",
+    "vendor_id": "167bc8aa-069a-4515-8f07-5f8788f1da14",
+    "name": "Product 35",
+    "decsription": "Description for Product 35",
+    "price": "472.23",
+    "created_at": "2025-04-14T20:49:42.906244Z",
+    "condition": "BAD",
+    "is_available": true,
+    "subcategory_id": "163600b3-1462-400d-b9a9-9b80b8213600",
+    "image": [
+      {
+        "image_id": "496ae227-b811-4e3c-8b19-4dab515713fb",
+        "image_url": "https://cdn.example.com/products/product35_img1.jpg",
+        "product_id": "ff6cc290-184b-4371-bb86-dbb86f1bfdfc"
+      },
+      {
+        "image_id": "f5a2a1c1-e93e-4f10-892e-aacb9eb5fe83",
+        "image_url": "https://cdn.example.com/products/product35_img2.jpg",
+        "product_id": "ff6cc290-184b-4371-bb86-dbb86f1bfdfc"
+      },
+      {
+        "image_id": "dfad5d11-478d-4e9f-8fce-32974effa137",
+        "image_url": "https://cdn.example.com/products/product35_img3.jpg",
+        "product_id": "ff6cc290-184b-4371-bb86-dbb86f1bfdfc"
+      }
+    ]
+  },
+  {
+    "product_id": "3c74e169-2078-449a-8451-911c2cf417c1",
+    "vendor_id": "9b73927c-b1b5-46d0-a43d-e7cfd2a406f2",
+    "name": "Product 36",
+    "decsription": "Description for Product 36",
+    "price": "10.37",
+    "created_at": "2025-03-28T20:49:42.906285Z",
+    "condition": "BAD",
+    "is_available": true,
+    "subcategory_id": "8ca151c5-bf95-482e-92f6-431ebbbca828",
+    "image": [
+      {
+        "image_id": "4fff3e5a-aa1c-4dac-b724-5b777af6f977",
+        "image_url": "https://cdn.example.com/products/product36_img1.jpg",
+        "product_id": "3c74e169-2078-449a-8451-911c2cf417c1"
+      },
+      {
+        "image_id": "5d1c9160-3ab0-42c5-a936-07163d9fac66",
+        "image_url": "https://cdn.example.com/products/product36_img2.jpg",
+        "product_id": "3c74e169-2078-449a-8451-911c2cf417c1"
+      }
+    ]
+  },
+  {
+    "product_id": "6a7b5e48-7a63-4bf5-a354-0961221609cb",
+    "vendor_id": "f82c930b-d6e1-4876-a0c8-47662386ae45",
+    "name": "Product 37",
+    "decsription": "Description for Product 37",
+    "price": "514.05",
+    "created_at": "2024-12-09T20:49:42.906320Z",
+    "condition": "FAIR",
+    "is_available": false,
+    "subcategory_id": "421e3e32-21b0-4e97-bac0-82bc8a7d6f89",
+    "image": [
+      {
+        "image_id": "9acd1466-9a9c-477c-81b1-d1333b189931",
+        "image_url": "https://cdn.example.com/products/product37_img1.jpg",
+        "product_id": "6a7b5e48-7a63-4bf5-a354-0961221609cb"
+      }
+    ]
+  },
+  {
+    "product_id": "6e2b6727-7d2c-4c64-8f9a-2691d2ee271f",
+    "vendor_id": "44cc1775-bece-4770-91aa-a40a8ef30eda",
+    "name": "Product 38",
+    "decsription": "Description for Product 38",
+    "price": "823.64",
+    "created_at": "2025-03-28T20:49:42.906350Z",
+    "condition": "FAIR",
+    "is_available": true,
+    "subcategory_id": "5db347b3-fe14-499b-996f-09e3d03dd76e",
+    "image": [
+      {
+        "image_id": "fa2f8214-ee80-47c0-89d8-0059396799ba",
+        "image_url": "https://cdn.example.com/products/product38_img1.jpg",
+        "product_id": "6e2b6727-7d2c-4c64-8f9a-2691d2ee271f"
+      },
+      {
+        "image_id": "572ac92c-ea0e-4b3e-9729-a44b7beb789f",
+        "image_url": "https://cdn.example.com/products/product38_img2.jpg",
+        "product_id": "6e2b6727-7d2c-4c64-8f9a-2691d2ee271f"
+      }
+    ]
+  },
+  {
+    "product_id": "1c8810de-d650-4790-b6ec-5f5ef801b860",
+    "vendor_id": "3a7cacb6-9482-4e22-856e-501d49314170",
+    "name": "Product 39",
+    "decsription": "Description for Product 39",
+    "price": "750.68",
+    "created_at": "2025-01-07T20:49:42.906386Z",
+    "condition": "BAD",
+    "is_available": true,
+    "subcategory_id": "a62ba31c-da68-4c58-a8d7-95f9afebbb9f",
+    "image": [
+      {
+        "image_id": "86478bc4-ccdb-4e34-8399-92ec9cf0f8a0",
+        "image_url": "https://cdn.example.com/products/product39_img1.jpg",
+        "product_id": "1c8810de-d650-4790-b6ec-5f5ef801b860"
+      },
+      {
+        "image_id": "05abcb7a-88f3-49a0-94ea-106b2ca55f81",
+        "image_url": "https://cdn.example.com/products/product39_img2.jpg",
+        "product_id": "1c8810de-d650-4790-b6ec-5f5ef801b860"
+      },
+      {
+        "image_id": "8aa6b41d-5bae-4574-b1f4-16b31599f86c",
+        "image_url": "https://cdn.example.com/products/product39_img3.jpg",
+        "product_id": "1c8810de-d650-4790-b6ec-5f5ef801b860"
+      }
+    ]
+  },
+  {
+    "product_id": "56adcb93-3838-45a3-85c5-b2bb52e585ca",
+    "vendor_id": "fd683e32-0fc2-4389-ae75-67296c1ec26e",
+    "name": "Product 40",
+    "decsription": "Description for Product 40",
+    "price": "610.8",
+    "created_at": "2024-09-23T20:49:42.906429Z",
+    "condition": "NEW",
+    "is_available": false,
+    "subcategory_id": "0241e4d8-1648-4db8-8e21-eb5289de71a6",
+    "image": [
+      {
+        "image_id": "6f92a395-6362-49ca-9420-b10e694fef04",
+        "image_url": "https://cdn.example.com/products/product40_img1.jpg",
+        "product_id": "56adcb93-3838-45a3-85c5-b2bb52e585ca"
+      },
+      {
+        "image_id": "5e0ca4df-4834-4fd7-8af5-cd9e7809da5a",
+        "image_url": "https://cdn.example.com/products/product40_img2.jpg",
+        "product_id": "56adcb93-3838-45a3-85c5-b2bb52e585ca"
+      },
+      {
+        "image_id": "c4685f1c-a08e-40b2-b3d8-995fe5979164",
+        "image_url": "https://cdn.example.com/products/product40_img3.jpg",
+        "product_id": "56adcb93-3838-45a3-85c5-b2bb52e585ca"
+      },
+      {
+        "image_id": "56cd86cc-8dd2-40c1-bc4a-6e97e312aa7b",
+        "image_url": "https://cdn.example.com/products/product40_img4.jpg",
+        "product_id": "56adcb93-3838-45a3-85c5-b2bb52e585ca"
+      }
+    ]
+  },
+  {
+    "product_id": "6ea7dfde-764d-437f-833a-552fb9a33c73",
+    "vendor_id": "bd287af9-5b27-42aa-a23b-d03952441417",
+    "name": "Product 41",
+    "decsription": "Description for Product 41",
+    "price": "434.4",
+    "created_at": "2024-11-20T20:49:42.906481Z",
+    "condition": "FAIR",
+    "is_available": true,
+    "subcategory_id": "760c78ce-46d1-4471-a9a4-294d4744d2af",
+    "image": [
+      {
+        "image_id": "510a5635-af22-4e53-81f9-73f15b7ff02a",
+        "image_url": "https://cdn.example.com/products/product41_img1.jpg",
+        "product_id": "6ea7dfde-764d-437f-833a-552fb9a33c73"
+      },
+      {
+        "image_id": "0e670714-c62f-4cf3-b0bc-ffe78d62b950",
+        "image_url": "https://cdn.example.com/products/product41_img2.jpg",
+        "product_id": "6ea7dfde-764d-437f-833a-552fb9a33c73"
+      }
+    ]
+  },
+  {
+    "product_id": "74b18f42-d2c8-45b1-a667-267660d1b81d",
+    "vendor_id": "61f6ff20-3f3d-488a-a4aa-f45ebd6d29e3",
+    "name": "Product 42",
+    "decsription": "Description for Product 42",
+    "price": "309.78",
+    "created_at": "2025-02-20T20:49:42.906534Z",
+    "condition": "BAD",
+    "is_available": false,
+    "subcategory_id": "d1cfde3c-d3a7-4e89-a8eb-d4d065e03625",
+    "image": [
+      {
+        "image_id": "5d4dd9e5-ea9f-424b-ba06-af6c4f387a24",
+        "image_url": "https://cdn.example.com/products/product42_img1.jpg",
+        "product_id": "74b18f42-d2c8-45b1-a667-267660d1b81d"
+      },
+      {
+        "image_id": "c4ff0556-6a2b-488f-ae96-b541927d44d8",
+        "image_url": "https://cdn.example.com/products/product42_img2.jpg",
+        "product_id": "74b18f42-d2c8-45b1-a667-267660d1b81d"
+      },
+      {
+        "image_id": "38567857-abc6-4803-8080-a3622842c813",
+        "image_url": "https://cdn.example.com/products/product42_img3.jpg",
+        "product_id": "74b18f42-d2c8-45b1-a667-267660d1b81d"
+      },
+      {
+        "image_id": "e88d93ea-b1b8-46a7-953e-df01a308ee2a",
+        "image_url": "https://cdn.example.com/products/product42_img4.jpg",
+        "product_id": "74b18f42-d2c8-45b1-a667-267660d1b81d"
+      }
+    ]
+  },
+  {
+    "product_id": "4174693e-2ca7-40ed-9f13-e0f25b77c967",
+    "vendor_id": "fcee6fd6-546c-4e83-b5eb-fc8d6b5c83c7",
+    "name": "Product 43",
+    "decsription": "Description for Product 43",
+    "price": "361.02",
+    "created_at": "2025-01-28T20:49:42.906580Z",
+    "condition": "FAIR",
+    "is_available": true,
+    "subcategory_id": "e6535ee3-d057-4544-9c1c-ea942f4392e2",
+    "image": [
+      {
+        "image_id": "c594cb10-1bbf-49f0-a489-43ea7ee154a1",
+        "image_url": "https://cdn.example.com/products/product43_img1.jpg",
+        "product_id": "4174693e-2ca7-40ed-9f13-e0f25b77c967"
+      },
+      {
+        "image_id": "e270bca1-5abf-4ec6-8bfa-2de2cef7485b",
+        "image_url": "https://cdn.example.com/products/product43_img2.jpg",
+        "product_id": "4174693e-2ca7-40ed-9f13-e0f25b77c967"
+      },
+      {
+        "image_id": "665b6630-ea88-40ab-9668-2d37e7384e3a",
+        "image_url": "https://cdn.example.com/products/product43_img3.jpg",
+        "product_id": "4174693e-2ca7-40ed-9f13-e0f25b77c967"
+      }
+    ]
+  },
+  {
+    "product_id": "c9156741-9d99-4cd5-8eb6-62d137038265",
+    "vendor_id": "577c836f-597c-4501-8cbd-3d54b72e945c",
+    "name": "Product 44",
+    "decsription": "Description for Product 44",
+    "price": "575.54",
+    "created_at": "2024-09-25T20:49:42.906619Z",
+    "condition": "LIKE_NEW",
+    "is_available": true,
+    "subcategory_id": "32eddd0a-bac7-4b64-b92c-d9590f6337db",
+    "image": [
+      {
+        "image_id": "38aadc46-7a27-42aa-b5aa-c330f56572b7",
+        "image_url": "https://cdn.example.com/products/product44_img1.jpg",
+        "product_id": "c9156741-9d99-4cd5-8eb6-62d137038265"
+      },
+      {
+        "image_id": "7387bc24-81fa-413a-9f88-7ec48a28fe8a",
+        "image_url": "https://cdn.example.com/products/product44_img2.jpg",
+        "product_id": "c9156741-9d99-4cd5-8eb6-62d137038265"
+      },
+      {
+        "image_id": "5884b008-2b35-437b-8a4f-d4408c9944f1",
+        "image_url": "https://cdn.example.com/products/product44_img3.jpg",
+        "product_id": "c9156741-9d99-4cd5-8eb6-62d137038265"
+      }
+    ]
+  },
+  {
+    "product_id": "a6546661-01c1-4850-947a-8558df4575ab",
+    "vendor_id": "cce209ef-d1c2-410a-8623-d14e793d8817",
+    "name": "Product 45",
+    "decsription": "Description for Product 45",
+    "price": "205.25",
+    "created_at": "2024-11-04T20:49:42.906667Z",
+    "condition": "NEW",
+    "is_available": false,
+    "subcategory_id": "4dd6bdbf-951f-4e7e-b7b7-a22ee51d1fa2",
+    "image": [
+      {
+        "image_id": "34de7e75-c51d-4834-9acf-268bd0c9520a",
+        "image_url": "https://cdn.example.com/products/product45_img1.jpg",
+        "product_id": "a6546661-01c1-4850-947a-8558df4575ab"
+      },
+      {
+        "image_id": "9ee26977-dd64-4841-8c1e-20acaffe449b",
+        "image_url": "https://cdn.example.com/products/product45_img2.jpg",
+        "product_id": "a6546661-01c1-4850-947a-8558df4575ab"
+      }
+    ]
+  },
+  {
+    "product_id": "9bf4e3a5-8fc7-4e35-8a36-796048abde79",
+    "vendor_id": "bc67d57d-9e57-4ca4-ad25-9bb00e48ea75",
+    "name": "Product 46",
+    "decsription": "Description for Product 46",
+    "price": "143.36",
+    "created_at": "2025-02-11T20:49:42.906709Z",
+    "condition": "BAD",
+    "is_available": false,
+    "subcategory_id": "b6a6d079-5b53-417b-9997-9c8ccebc7922",
+    "image": [
+      {
+        "image_id": "540b6665-9cef-493a-aa9d-579751c61f47",
+        "image_url": "https://cdn.example.com/products/product46_img1.jpg",
+        "product_id": "9bf4e3a5-8fc7-4e35-8a36-796048abde79"
+      }
+    ]
+  },
+  {
+    "product_id": "219b1954-3b2d-44fe-862e-a3f8318c44c8",
+    "vendor_id": "50e938ce-980a-4a7f-b829-d18f2840e536",
+    "name": "Product 47",
+    "decsription": "Description for Product 47",
+    "price": "67.52",
+    "created_at": "2024-10-23T20:49:42.906781Z",
+    "condition": "LIKE_NEW",
+    "is_available": true,
+    "subcategory_id": "6204e2ab-6035-4b33-8648-f157b49eab56",
+    "image": [
+      {
+        "image_id": "38b18d84-5896-4a13-b74d-1ce8ba7ab57b",
+        "image_url": "https://cdn.example.com/products/product47_img1.jpg",
+        "product_id": "219b1954-3b2d-44fe-862e-a3f8318c44c8"
+      },
+      {
+        "image_id": "79b82f13-8c40-4d5b-900c-e5fa80dc96f7",
+        "image_url": "https://cdn.example.com/products/product47_img2.jpg",
+        "product_id": "219b1954-3b2d-44fe-862e-a3f8318c44c8"
+      }
+    ]
+  },
+  {
+    "product_id": "0814e81d-9e55-4dee-aa23-0514878f1d1c",
+    "vendor_id": "e6283a04-ca13-4904-86e3-ed8790596f04",
+    "name": "Product 48",
+    "decsription": "Description for Product 48",
+    "price": "253.77",
+    "created_at": "2024-07-11T20:49:42.906834Z",
+    "condition": "FAIR",
+    "is_available": true,
+    "subcategory_id": "efdb148a-d9ef-4470-aad1-18b94ebda3d6",
+    "image": [
+      {
+        "image_id": "a8fdf467-ddf7-42f2-b7de-7b04be3d80d5",
+        "image_url": "https://cdn.example.com/products/product48_img1.jpg",
+        "product_id": "0814e81d-9e55-4dee-aa23-0514878f1d1c"
+      },
+      {
+        "image_id": "213963e4-e1e4-4289-88b2-771f43beb9cc",
+        "image_url": "https://cdn.example.com/products/product48_img2.jpg",
+        "product_id": "0814e81d-9e55-4dee-aa23-0514878f1d1c"
+      }
+    ]
+  },
+  {
+    "product_id": "cf2a9929-ce2e-458a-a849-0dbd843d9e67",
+    "vendor_id": "60b70e59-03cd-4e42-880c-c83f151e8787",
+    "name": "Product 49",
+    "decsription": "Description for Product 49",
+    "price": "819.88",
+    "created_at": "2025-01-05T20:49:42.906868Z",
+    "condition": "NEW",
+    "is_available": true,
+    "subcategory_id": "b164df47-8d2f-4bbd-a201-8e8e18a19ef8",
+    "image": [
+      {
+        "image_id": "5db3ec2a-28af-43cf-a3bc-4878f0ce8fe4",
+        "image_url": "https://cdn.example.com/products/product49_img1.jpg",
+        "product_id": "cf2a9929-ce2e-458a-a849-0dbd843d9e67"
+      },
+      {
+        "image_id": "cd6ca2ac-07ff-4a7c-9a99-8cef8e698ea5",
+        "image_url": "https://cdn.example.com/products/product49_img2.jpg",
+        "product_id": "cf2a9929-ce2e-458a-a849-0dbd843d9e67"
+      },
+      {
+        "image_id": "76a48a5a-0c74-4871-87a3-e27e39522e06",
+        "image_url": "https://cdn.example.com/products/product49_img3.jpg",
+        "product_id": "cf2a9929-ce2e-458a-a849-0dbd843d9e67"
+      }
+    ]
+  },
+  {
+    "product_id": "0a35137e-b245-4cd4-8113-218a08f74548",
+    "vendor_id": "1497b2af-0104-48dc-b044-0172422214b2",
+    "name": "Product 50",
+    "decsription": "Description for Product 50",
+    "price": "34.4",
+    "created_at": "2024-10-07T20:49:42.906911Z",
+    "condition": "NEW",
+    "is_available": false,
+    "subcategory_id": "e36048f5-0cf4-48f1-ae90-1b279171ba4a",
+    "image": [
+      {
+        "image_id": "6b986aa1-a7c1-4457-a8f4-caf4033d289b",
+        "image_url": "https://cdn.example.com/products/product50_img1.jpg",
+        "product_id": "0a35137e-b245-4cd4-8113-218a08f74548"
+      },
+      {
+        "image_id": "efd8bac8-761e-414d-b31f-b7b7f6cbca39",
+        "image_url": "https://cdn.example.com/products/product50_img2.jpg",
+        "product_id": "0a35137e-b245-4cd4-8113-218a08f74548"
+      },
+      {
+        "image_id": "12a2a515-eb53-4596-9a6a-6d36f292a7d9",
+        "image_url": "https://cdn.example.com/products/product50_img3.jpg",
+        "product_id": "0a35137e-b245-4cd4-8113-218a08f74548"
+      }
+    ]
+  },
+  {
+    "product_id": "9562064b-14ce-4e1a-abdd-1f8f1c91a4e8",
+    "vendor_id": "45bfc1ac-0eaa-4a71-be0a-c8752bc0420c",
+    "name": "Product 51",
+    "decsription": "Description for Product 51",
+    "price": "650.96",
+    "created_at": "2024-06-23T20:49:42.906951Z",
+    "condition": "FAIR",
+    "is_available": true,
+    "subcategory_id": "e50b9db0-4d66-4694-af0e-09c8a866b70f",
+    "image": [
+      {
+        "image_id": "d05d26d6-5e7d-4278-b11f-d5ef0def29fa",
+        "image_url": "https://cdn.example.com/products/product51_img1.jpg",
+        "product_id": "9562064b-14ce-4e1a-abdd-1f8f1c91a4e8"
+      }
+    ]
+  },
+  {
+    "product_id": "d7a3b058-3b82-4703-bab1-8f07bc2b70ed",
+    "vendor_id": "9729ca0f-2ae0-422f-8c4f-9ecf5e6755bb",
+    "name": "Product 52",
+    "decsription": "Description for Product 52",
+    "price": "734.83",
+    "created_at": "2025-05-27T20:49:42.906984Z",
+    "condition": "NEW",
+    "is_available": false,
+    "subcategory_id": "03932cb5-32f0-4343-a610-7763cea6cb79",
+    "image": [
+      {
+        "image_id": "cd74bd1c-9037-495e-b6db-c258ca764e4c",
+        "image_url": "https://cdn.example.com/products/product52_img1.jpg",
+        "product_id": "d7a3b058-3b82-4703-bab1-8f07bc2b70ed"
+      },
+      {
+        "image_id": "3e678733-ee2e-4b03-b3f9-35fc1bb8a903",
+        "image_url": "https://cdn.example.com/products/product52_img2.jpg",
+        "product_id": "d7a3b058-3b82-4703-bab1-8f07bc2b70ed"
+      },
+      {
+        "image_id": "27388cdf-25c1-47aa-9c54-ade7b134f51a",
+        "image_url": "https://cdn.example.com/products/product52_img3.jpg",
+        "product_id": "d7a3b058-3b82-4703-bab1-8f07bc2b70ed"
+      },
+      {
+        "image_id": "926d3346-058e-4dc0-aa2f-870a8121ffbc",
+        "image_url": "https://cdn.example.com/products/product52_img4.jpg",
+        "product_id": "d7a3b058-3b82-4703-bab1-8f07bc2b70ed"
+      }
+    ]
+  },
+  {
+    "product_id": "61ae5488-1e7e-4c6f-8211-25ed4eb30942",
+    "vendor_id": "ce99bf0f-faac-4bc1-904b-7160a65a453c",
+    "name": "Product 53",
+    "decsription": "Description for Product 53",
+    "price": "801.03",
+    "created_at": "2025-01-30T20:49:42.907030Z",
+    "condition": "LIKE_NEW",
+    "is_available": true,
+    "subcategory_id": "a358c0ca-6a49-4cb7-bc00-bd9ec637c301",
+    "image": [
+      {
+        "image_id": "51e82cbc-0c9d-4692-a086-36f5bbbb40d5",
+        "image_url": "https://cdn.example.com/products/product53_img1.jpg",
+        "product_id": "61ae5488-1e7e-4c6f-8211-25ed4eb30942"
+      },
+      {
+        "image_id": "ef4bdcd1-c5a4-485d-ad6e-f5ecfc7accb2",
+        "image_url": "https://cdn.example.com/products/product53_img2.jpg",
+        "product_id": "61ae5488-1e7e-4c6f-8211-25ed4eb30942"
+      }
+    ]
+  },
+  {
+    "product_id": "8370936b-fe86-49df-871a-9557bf1a36ed",
+    "vendor_id": "962f80c3-94b0-4371-a977-c72f2fe9c568",
+    "name": "Product 54",
+    "decsription": "Description for Product 54",
+    "price": "102.03",
+    "created_at": "2024-08-24T20:49:42.907068Z",
+    "condition": "GOOD",
+    "is_available": true,
+    "subcategory_id": "8290fded-d554-494a-a7fa-498e5bd30883",
+    "image": [
+      {
+        "image_id": "aec95972-e2ba-41d9-bdd2-7756cb695496",
+        "image_url": "https://cdn.example.com/products/product54_img1.jpg",
+        "product_id": "8370936b-fe86-49df-871a-9557bf1a36ed"
+      },
+      {
+        "image_id": "e1a0f403-bb0f-44d1-8abe-5d81f314f9bc",
+        "image_url": "https://cdn.example.com/products/product54_img2.jpg",
+        "product_id": "8370936b-fe86-49df-871a-9557bf1a36ed"
+      },
+      {
+        "image_id": "c35c048c-f488-4777-a058-97f8a273d513",
+        "image_url": "https://cdn.example.com/products/product54_img3.jpg",
+        "product_id": "8370936b-fe86-49df-871a-9557bf1a36ed"
+      }
+    ]
+  },
+  {
+    "product_id": "01cfdb0e-29cd-4d24-ac41-96e2d2611f76",
+    "vendor_id": "47016aab-53f0-4cae-bc00-a69d2cc7eb06",
+    "name": "Product 55",
+    "decsription": "Description for Product 55",
+    "price": "608.71",
+    "created_at": "2025-02-26T20:49:42.907111Z",
+    "condition": "NEW",
+    "is_available": false,
+    "subcategory_id": "7bf092ce-f655-4f70-84a4-61622ef6e49d",
+    "image": [
+      {
+        "image_id": "6f45e4a1-454f-43e5-b7af-43daaea4c33c",
+        "image_url": "https://cdn.example.com/products/product55_img1.jpg",
+        "product_id": "01cfdb0e-29cd-4d24-ac41-96e2d2611f76"
+      }
+    ]
+  },
+  {
+    "product_id": "5458a654-937b-48bc-8ba1-03d0c6482d0d",
+    "vendor_id": "36e46e0d-51ae-4253-bec2-ac605dc0492b",
+    "name": "Product 56",
+    "decsription": "Description for Product 56",
+    "price": "14.94",
+    "created_at": "2025-06-17T20:49:42.907148Z",
+    "condition": "FAIR",
+    "is_available": false,
+    "subcategory_id": "529088b5-97b9-4392-a2ad-7bd1508f7fd9",
+    "image": [
+      {
+        "image_id": "bdac1afa-b03e-4641-9b08-83bdcf9bb867",
+        "image_url": "https://cdn.example.com/products/product56_img1.jpg",
+        "product_id": "5458a654-937b-48bc-8ba1-03d0c6482d0d"
+      },
+      {
+        "image_id": "20a014d5-6187-4c4b-939f-71c760f8e4f2",
+        "image_url": "https://cdn.example.com/products/product56_img2.jpg",
+        "product_id": "5458a654-937b-48bc-8ba1-03d0c6482d0d"
+      },
+      {
+        "image_id": "bd4da180-ce0c-402b-be1b-1c8a0c1aaceb",
+        "image_url": "https://cdn.example.com/products/product56_img3.jpg",
+        "product_id": "5458a654-937b-48bc-8ba1-03d0c6482d0d"
+      },
+      {
+        "image_id": "001a5a1b-e0c5-4f29-9ca5-320572d927a9",
+        "image_url": "https://cdn.example.com/products/product56_img4.jpg",
+        "product_id": "5458a654-937b-48bc-8ba1-03d0c6482d0d"
+      }
+    ]
+  },
+  {
+    "product_id": "f5a761f3-4008-459c-9699-0b32ac814286",
+    "vendor_id": "41c7c548-4c2d-42a9-8a6d-350fe3f7540d",
+    "name": "Product 57",
+    "decsription": "Description for Product 57",
+    "price": "807.06",
+    "created_at": "2024-08-11T20:49:42.907202Z",
+    "condition": "FAIR",
+    "is_available": false,
+    "subcategory_id": "dce6bcab-b2b0-4215-b7df-fab182ba5e92",
+    "image": [
+      {
+        "image_id": "b51e8122-7e69-4279-be4d-07a14a0c6b96",
+        "image_url": "https://cdn.example.com/products/product57_img1.jpg",
+        "product_id": "f5a761f3-4008-459c-9699-0b32ac814286"
+      },
+      {
+        "image_id": "287a0edb-4aa4-465a-a185-2536cf53bf41",
+        "image_url": "https://cdn.example.com/products/product57_img2.jpg",
+        "product_id": "f5a761f3-4008-459c-9699-0b32ac814286"
+      }
+    ]
+  },
+  {
+    "product_id": "5f8df346-2edf-4dea-ae5b-2299d170b087",
+    "vendor_id": "d8dc9dd4-2b3a-45a6-9316-05b2cc85fbb8",
+    "name": "Product 58",
+    "decsription": "Description for Product 58",
+    "price": "96.23",
+    "created_at": "2024-08-06T20:49:42.907236Z",
+    "condition": "GOOD",
+    "is_available": true,
+    "subcategory_id": "c99711f0-2a5e-4385-9804-9d818c170525",
+    "image": [
+      {
+        "image_id": "773efa86-3691-42c1-bc67-9e0a2ddb976e",
+        "image_url": "https://cdn.example.com/products/product58_img1.jpg",
+        "product_id": "5f8df346-2edf-4dea-ae5b-2299d170b087"
+      },
+      {
+        "image_id": "e2cf7868-abee-4aaa-bd4a-309bda8a9723",
+        "image_url": "https://cdn.example.com/products/product58_img2.jpg",
+        "product_id": "5f8df346-2edf-4dea-ae5b-2299d170b087"
+      }
+    ]
+  },
+  {
+    "product_id": "902e5117-1dbc-477a-bdf6-61d14f914c8f",
+    "vendor_id": "bc5aac26-55f9-4570-8eba-1d57251af79f",
+    "name": "Product 59",
+    "decsription": "Description for Product 59",
+    "price": "306.79",
+    "created_at": "2025-04-24T20:49:42.907431Z",
+    "condition": "NEW",
+    "is_available": false,
+    "subcategory_id": "c437c5ab-63d6-460d-8003-6f3ff45e1d22",
+    "image": [
+      {
+        "image_id": "ed779a50-7dfb-4076-8d75-9b26d41912a5",
+        "image_url": "https://cdn.example.com/products/product59_img1.jpg",
+        "product_id": "902e5117-1dbc-477a-bdf6-61d14f914c8f"
+      }
+    ]
+  },
+  {
+    "product_id": "40b58739-5a8b-46b0-b28e-9a6e77b70dde",
+    "vendor_id": "440770d7-2429-44e0-a81a-45ede5f977c0",
+    "name": "Product 60",
+    "decsription": "Description for Product 60",
+    "price": "955.01",
+    "created_at": "2024-11-19T20:49:42.907513Z",
+    "condition": "NEW",
+    "is_available": false,
+    "subcategory_id": "47401bae-047e-4730-bf2b-83652fe62de5",
+    "image": [
+      {
+        "image_id": "caaf9bf2-d310-453f-8dbd-cc8c68766ffa",
+        "image_url": "https://cdn.example.com/products/product60_img1.jpg",
+        "product_id": "40b58739-5a8b-46b0-b28e-9a6e77b70dde"
+      },
+      {
+        "image_id": "09ab8001-b9dc-488e-9041-a0eb92d466af",
+        "image_url": "https://cdn.example.com/products/product60_img2.jpg",
+        "product_id": "40b58739-5a8b-46b0-b28e-9a6e77b70dde"
+      }
+    ]
+  },
+  {
+    "product_id": "bcd40c98-8428-4dc3-831e-6e3c6105355d",
+    "vendor_id": "72090a92-a87c-4748-837d-8dc4f7d9e988",
+    "name": "Product 61",
+    "decsription": "Description for Product 61",
+    "price": "247.42",
+    "created_at": "2025-02-11T20:49:42.907569Z",
+    "condition": "LIKE_NEW",
+    "is_available": false,
+    "subcategory_id": "7854e73d-26ee-4a41-b9ce-8e8ab628a618",
+    "image": [
+      {
+        "image_id": "be711dfe-8734-4732-936e-d4e1409a2796",
+        "image_url": "https://cdn.example.com/products/product61_img1.jpg",
+        "product_id": "bcd40c98-8428-4dc3-831e-6e3c6105355d"
+      },
+      {
+        "image_id": "24c08f57-7cab-4388-a7d9-6490da6554e3",
+        "image_url": "https://cdn.example.com/products/product61_img2.jpg",
+        "product_id": "bcd40c98-8428-4dc3-831e-6e3c6105355d"
+      },
+      {
+        "image_id": "0cd4e090-6aee-478c-93dd-22768a152167",
+        "image_url": "https://cdn.example.com/products/product61_img3.jpg",
+        "product_id": "bcd40c98-8428-4dc3-831e-6e3c6105355d"
+      },
+      {
+        "image_id": "a88e57ca-bc5b-459a-9d82-e75981860d14",
+        "image_url": "https://cdn.example.com/products/product61_img4.jpg",
+        "product_id": "bcd40c98-8428-4dc3-831e-6e3c6105355d"
+      }
+    ]
+  },
+  {
+    "product_id": "caa6e16b-bc23-4252-a39a-9cc9ad6be9f3",
+    "vendor_id": "397ec893-8063-42f3-b21a-906ac9b50ddf",
+    "name": "Product 62",
+    "decsription": "Description for Product 62",
+    "price": "843.68",
+    "created_at": "2024-08-08T20:49:42.907631Z",
+    "condition": "BAD",
+    "is_available": true,
+    "subcategory_id": "922ac8b2-11fa-4aeb-90ee-f7b3640b616e",
+    "image": [
+      {
+        "image_id": "f7439f3c-79d5-47e9-a9d8-86083f850d7d",
+        "image_url": "https://cdn.example.com/products/product62_img1.jpg",
+        "product_id": "caa6e16b-bc23-4252-a39a-9cc9ad6be9f3"
+      }
+    ]
+  },
+  {
+    "product_id": "6fe38daf-0600-4093-91db-2aa3860658ad",
+    "vendor_id": "f3a988cc-b184-4d0c-aac4-d1d88e6206a4",
+    "name": "Product 63",
+    "decsription": "Description for Product 63",
+    "price": "152.06",
+    "created_at": "2024-11-22T20:49:42.907718Z",
+    "condition": "BAD",
+    "is_available": false,
+    "subcategory_id": "cc994d6d-aafc-4604-aea1-e5b74be93384",
+    "image": [
+      {
+        "image_id": "54484427-1277-46d2-a0d6-57e74cb82035",
+        "image_url": "https://cdn.example.com/products/product63_img1.jpg",
+        "product_id": "6fe38daf-0600-4093-91db-2aa3860658ad"
+      },
+      {
+        "image_id": "6c036f55-d294-442d-93bc-a41ae72cc169",
+        "image_url": "https://cdn.example.com/products/product63_img2.jpg",
+        "product_id": "6fe38daf-0600-4093-91db-2aa3860658ad"
+      },
+      {
+        "image_id": "06822902-df5b-4fcf-8099-6916b9db28d9",
+        "image_url": "https://cdn.example.com/products/product63_img3.jpg",
+        "product_id": "6fe38daf-0600-4093-91db-2aa3860658ad"
+      },
+      {
+        "image_id": "7c69d644-b2cc-4b53-8e39-e9283285769b",
+        "image_url": "https://cdn.example.com/products/product63_img4.jpg",
+        "product_id": "6fe38daf-0600-4093-91db-2aa3860658ad"
+      }
+    ]
+  },
+  {
+    "product_id": "762e8e52-64aa-4b1c-8ce7-4606bd902d3c",
+    "vendor_id": "bd0a8310-9165-4ed6-9905-8f376ba51eb0",
+    "name": "Product 64",
+    "decsription": "Description for Product 64",
+    "price": "205.76",
+    "created_at": "2024-07-30T20:49:42.908031Z",
+    "condition": "BAD",
+    "is_available": false,
+    "subcategory_id": "a368e43a-f083-4f62-b16b-982e8d317077",
+    "image": [
+      {
+        "image_id": "26599c41-1787-4f50-9606-248f152fe3b4",
+        "image_url": "https://cdn.example.com/products/product64_img1.jpg",
+        "product_id": "762e8e52-64aa-4b1c-8ce7-4606bd902d3c"
+      },
+      {
+        "image_id": "47c3722a-0adb-41d5-aab6-712090f7dbe3",
+        "image_url": "https://cdn.example.com/products/product64_img2.jpg",
+        "product_id": "762e8e52-64aa-4b1c-8ce7-4606bd902d3c"
+      }
+    ]
+  },
+  {
+    "product_id": "149e8b1c-df73-4f3b-b06d-92aea809697e",
+    "vendor_id": "93dbe4d8-4227-4356-90b1-f55113350355",
+    "name": "Product 65",
+    "decsription": "Description for Product 65",
+    "price": "651.45",
+    "created_at": "2024-08-19T20:49:42.908139Z",
+    "condition": "BAD",
+    "is_available": false,
+    "subcategory_id": "1398b3ba-be9b-45b2-9b9f-24a419e77c11",
+    "image": [
+      {
+        "image_id": "2147f247-4e63-4ef9-91ce-049e7a2b3743",
+        "image_url": "https://cdn.example.com/products/product65_img1.jpg",
+        "product_id": "149e8b1c-df73-4f3b-b06d-92aea809697e"
+      },
+      {
+        "image_id": "e5fa1ab0-9b85-4603-9c24-04bef461f185",
+        "image_url": "https://cdn.example.com/products/product65_img2.jpg",
+        "product_id": "149e8b1c-df73-4f3b-b06d-92aea809697e"
+      }
+    ]
+  },
+  {
+    "product_id": "869e8003-74a4-4a6c-bc9f-a850a8f42199",
+    "vendor_id": "730a9abc-199a-4ca2-bfab-614b5c5e8330",
+    "name": "Product 66",
+    "decsription": "Description for Product 66",
+    "price": "604.94",
+    "created_at": "2024-08-14T20:49:42.908196Z",
+    "condition": "NEW",
+    "is_available": true,
+    "subcategory_id": "539d37b3-216d-472e-863c-3fe5f039bb0f",
+    "image": [
+      {
+        "image_id": "69d9bada-8351-4264-9910-4c398a08f8be",
+        "image_url": "https://cdn.example.com/products/product66_img1.jpg",
+        "product_id": "869e8003-74a4-4a6c-bc9f-a850a8f42199"
+      }
+    ]
+  },
+  {
+    "product_id": "92317207-9a20-4133-aa8e-ecfa0d7c2c25",
+    "vendor_id": "3de8d487-30ad-443c-8db8-c7db4cf5f715",
+    "name": "Product 67",
+    "decsription": "Description for Product 67",
+    "price": "588.78",
+    "created_at": "2024-10-30T20:49:42.908264Z",
+    "condition": "NEW",
+    "is_available": false,
+    "subcategory_id": "9008ee5e-2921-487d-80ad-952c7b808bbb",
+    "image": [
+      {
+        "image_id": "3a9a1244-0137-4371-ae8e-4c54cf51918e",
+        "image_url": "https://cdn.example.com/products/product67_img1.jpg",
+        "product_id": "92317207-9a20-4133-aa8e-ecfa0d7c2c25"
+      },
+      {
+        "image_id": "21977b78-fe93-40fb-b81a-26773281b9a4",
+        "image_url": "https://cdn.example.com/products/product67_img2.jpg",
+        "product_id": "92317207-9a20-4133-aa8e-ecfa0d7c2c25"
+      }
+    ]
+  },
+  {
+    "product_id": "53d30796-9215-4631-99ed-0544b77c9a7e",
+    "vendor_id": "a3ceb177-f112-45f2-808d-396aa6087dce",
+    "name": "Product 68",
+    "decsription": "Description for Product 68",
+    "price": "586.09",
+    "created_at": "2024-09-22T20:49:42.908330Z",
+    "condition": "LIKE_NEW",
+    "is_available": true,
+    "subcategory_id": "531c4dad-3e7a-441c-b225-d4d3e8a82deb",
+    "image": [
+      {
+        "image_id": "6c00a168-64a1-4262-ac28-ba105ac4b1e2",
+        "image_url": "https://cdn.example.com/products/product68_img1.jpg",
+        "product_id": "53d30796-9215-4631-99ed-0544b77c9a7e"
+      },
+      {
+        "image_id": "18e39665-aedc-434c-aa65-d17d58a01efa",
+        "image_url": "https://cdn.example.com/products/product68_img2.jpg",
+        "product_id": "53d30796-9215-4631-99ed-0544b77c9a7e"
+      },
+      {
+        "image_id": "754106b2-7fae-4143-84d2-aeb41cee3979",
+        "image_url": "https://cdn.example.com/products/product68_img3.jpg",
+        "product_id": "53d30796-9215-4631-99ed-0544b77c9a7e"
+      },
+      {
+        "image_id": "fd21cddb-77d5-4deb-8e4e-f42f51ab0972",
+        "image_url": "https://cdn.example.com/products/product68_img4.jpg",
+        "product_id": "53d30796-9215-4631-99ed-0544b77c9a7e"
+      }
+    ]
+  },
+  {
+    "product_id": "8f0edbed-9d13-4ddb-8c55-e3f96d12e120",
+    "vendor_id": "c14197c8-ab9c-4f81-9089-9b7364e8d06f",
+    "name": "Product 69",
+    "decsription": "Description for Product 69",
+    "price": "96.88",
+    "created_at": "2024-08-09T20:49:42.908621Z",
+    "condition": "LIKE_NEW",
+    "is_available": true,
+    "subcategory_id": "6d2148b9-bc73-4d63-92f1-6daab7931584",
+    "image": [
+      {
+        "image_id": "c6a0ec21-5ec1-4c5a-99c6-0787eb9f7466",
+        "image_url": "https://cdn.example.com/products/product69_img1.jpg",
+        "product_id": "8f0edbed-9d13-4ddb-8c55-e3f96d12e120"
+      },
+      {
+        "image_id": "229e3158-0e5b-4700-8c92-9d7e7b56216f",
+        "image_url": "https://cdn.example.com/products/product69_img2.jpg",
+        "product_id": "8f0edbed-9d13-4ddb-8c55-e3f96d12e120"
+      },
+      {
+        "image_id": "b61c39f2-b4be-47bd-8a61-7143249f4d4c",
+        "image_url": "https://cdn.example.com/products/product69_img3.jpg",
+        "product_id": "8f0edbed-9d13-4ddb-8c55-e3f96d12e120"
+      }
+    ]
+  },
+  {
+    "product_id": "69987f28-7935-4b23-910d-6aefaa16f89d",
+    "vendor_id": "38f1c47f-8b9d-42b1-91ce-1be2c4f5b663",
+    "name": "Product 70",
+    "decsription": "Description for Product 70",
+    "price": "475.61",
+    "created_at": "2024-12-03T20:49:42.908744Z",
+    "condition": "FAIR",
+    "is_available": true,
+    "subcategory_id": "25b269d6-e345-4662-8494-b336cf5fdfa7",
+    "image": [
+      {
+        "image_id": "a5862686-8df3-4eb9-afbc-32469bba7cc4",
+        "image_url": "https://cdn.example.com/products/product70_img1.jpg",
+        "product_id": "69987f28-7935-4b23-910d-6aefaa16f89d"
+      },
+      {
+        "image_id": "e3e3aab1-90a4-482a-8225-86a6c9cf66de",
+        "image_url": "https://cdn.example.com/products/product70_img2.jpg",
+        "product_id": "69987f28-7935-4b23-910d-6aefaa16f89d"
+      },
+      {
+        "image_id": "a8922603-62c7-45cc-a365-272668357e89",
+        "image_url": "https://cdn.example.com/products/product70_img3.jpg",
+        "product_id": "69987f28-7935-4b23-910d-6aefaa16f89d"
+      },
+      {
+        "image_id": "b40db7a8-2b3e-4e00-83c2-1434b4eb10de",
+        "image_url": "https://cdn.example.com/products/product70_img4.jpg",
+        "product_id": "69987f28-7935-4b23-910d-6aefaa16f89d"
+      }
+    ]
+  },
+  {
+    "product_id": "973c8a5c-e4e7-4295-aff3-562e70a3bf92",
+    "vendor_id": "41a9c911-4549-4dbf-87ee-51adbcc75ab9",
+    "name": "Product 71",
+    "decsription": "Description for Product 71",
+    "price": "277.95",
+    "created_at": "2024-10-13T20:49:42.908830Z",
+    "condition": "GOOD",
+    "is_available": true,
+    "subcategory_id": "a002238f-5dcf-443e-a7ed-41dabaedf52b",
+    "image": [
+      {
+        "image_id": "3e051f45-1b89-4220-80b1-1e95f3fd438d",
+        "image_url": "https://cdn.example.com/products/product71_img1.jpg",
+        "product_id": "973c8a5c-e4e7-4295-aff3-562e70a3bf92"
+      },
+      {
+        "image_id": "6f7204f7-c133-47cf-a8e5-5a689457ed2d",
+        "image_url": "https://cdn.example.com/products/product71_img2.jpg",
+        "product_id": "973c8a5c-e4e7-4295-aff3-562e70a3bf92"
+      },
+      {
+        "image_id": "672177ae-9c42-4b55-95d0-f5e5ab368230",
+        "image_url": "https://cdn.example.com/products/product71_img3.jpg",
+        "product_id": "973c8a5c-e4e7-4295-aff3-562e70a3bf92"
+      }
+    ]
+  },
+  {
+    "product_id": "65e10bb4-0a4b-4c72-b8f4-4ffe79b36c90",
+    "vendor_id": "4acba015-f4da-41e5-8778-0d63819b8d3b",
+    "name": "Product 72",
+    "decsription": "Description for Product 72",
+    "price": "606.84",
+    "created_at": "2024-08-13T20:49:42.908967Z",
+    "condition": "FAIR",
+    "is_available": true,
+    "subcategory_id": "2af464c0-8b0b-477a-a12d-8daa64b75897",
+    "image": [
+      {
+        "image_id": "3c20b2c4-8d87-4f44-bf78-50c9989af3db",
+        "image_url": "https://cdn.example.com/products/product72_img1.jpg",
+        "product_id": "65e10bb4-0a4b-4c72-b8f4-4ffe79b36c90"
+      },
+      {
+        "image_id": "4abade0a-fe4c-4ed7-9fc1-63c5dbc8053d",
+        "image_url": "https://cdn.example.com/products/product72_img2.jpg",
+        "product_id": "65e10bb4-0a4b-4c72-b8f4-4ffe79b36c90"
+      },
+      {
+        "image_id": "1a4da5a6-58b5-4681-8c36-055f07f2fa42",
+        "image_url": "https://cdn.example.com/products/product72_img3.jpg",
+        "product_id": "65e10bb4-0a4b-4c72-b8f4-4ffe79b36c90"
+      },
+      {
+        "image_id": "05d5aed6-005b-44c4-8786-1d8e4b255e2e",
+        "image_url": "https://cdn.example.com/products/product72_img4.jpg",
+        "product_id": "65e10bb4-0a4b-4c72-b8f4-4ffe79b36c90"
+      }
+    ]
+  },
+  {
+    "product_id": "159524bb-eb3a-4a38-9056-37171c8533d5",
+    "vendor_id": "633e5d2f-a9f7-4243-8b80-dbf2e490d284",
+    "name": "Product 73",
+    "decsription": "Description for Product 73",
+    "price": "172.05",
+    "created_at": "2024-09-29T20:49:42.909105Z",
+    "condition": "LIKE_NEW",
+    "is_available": true,
+    "subcategory_id": "40143f77-16fc-436f-ab01-e72b4c7837e3",
+    "image": [
+      {
+        "image_id": "efbbad83-59c0-4d08-8e62-234e71c61407",
+        "image_url": "https://cdn.example.com/products/product73_img1.jpg",
+        "product_id": "159524bb-eb3a-4a38-9056-37171c8533d5"
+      },
+      {
+        "image_id": "beef60c6-13c7-4e19-afe4-e52017a783e8",
+        "image_url": "https://cdn.example.com/products/product73_img2.jpg",
+        "product_id": "159524bb-eb3a-4a38-9056-37171c8533d5"
+      },
+      {
+        "image_id": "4cfb6ac0-dc06-4a65-aab3-3d95b9d98f40",
+        "image_url": "https://cdn.example.com/products/product73_img3.jpg",
+        "product_id": "159524bb-eb3a-4a38-9056-37171c8533d5"
+      },
+      {
+        "image_id": "98ca400b-b242-4976-a3bc-25d256857e58",
+        "image_url": "https://cdn.example.com/products/product73_img4.jpg",
+        "product_id": "159524bb-eb3a-4a38-9056-37171c8533d5"
+      }
+    ]
+  },
+  {
+    "product_id": "f8643544-17da-42af-b239-163199ddc674",
+    "vendor_id": "9353078e-ab8b-412d-bbe4-5faab01220e1",
+    "name": "Product 74",
+    "decsription": "Description for Product 74",
+    "price": "34.57",
+    "created_at": "2024-11-29T20:49:42.909508Z",
+    "condition": "NEW",
+    "is_available": true,
+    "subcategory_id": "68bf39bc-3c8f-45ee-8c47-9f2b9ad89ba2",
+    "image": [
+      {
+        "image_id": "5b8e747f-d090-47b8-aa43-c95cc6b441e2",
+        "image_url": "https://cdn.example.com/products/product74_img1.jpg",
+        "product_id": "f8643544-17da-42af-b239-163199ddc674"
+      },
+      {
+        "image_id": "5543cc15-dd6e-420a-bdc3-126592e3c70d",
+        "image_url": "https://cdn.example.com/products/product74_img2.jpg",
+        "product_id": "f8643544-17da-42af-b239-163199ddc674"
+      },
+      {
+        "image_id": "ca1853f4-c556-4580-8ded-a40495867e49",
+        "image_url": "https://cdn.example.com/products/product74_img3.jpg",
+        "product_id": "f8643544-17da-42af-b239-163199ddc674"
+      }
+    ]
+  },
+  {
+    "product_id": "8da0d2f9-1fad-401a-9567-effd2b85d37b",
+    "vendor_id": "639b2207-5d78-47de-9043-4b777011e3b5",
+    "name": "Product 75",
+    "decsription": "Description for Product 75",
+    "price": "721.47",
+    "created_at": "2024-07-01T20:49:42.909593Z",
+    "condition": "LIKE_NEW",
+    "is_available": false,
+    "subcategory_id": "3ad63dc6-20d2-42d5-8529-00b5f33523e5",
+    "image": [
+      {
+        "image_id": "69a04b86-8364-43bb-82e2-c74544d79358",
+        "image_url": "https://cdn.example.com/products/product75_img1.jpg",
+        "product_id": "8da0d2f9-1fad-401a-9567-effd2b85d37b"
+      },
+      {
+        "image_id": "e8338e9a-bf78-4a8f-9e26-a0f39d2e7ade",
+        "image_url": "https://cdn.example.com/products/product75_img2.jpg",
+        "product_id": "8da0d2f9-1fad-401a-9567-effd2b85d37b"
+      }
+    ]
+  },
+  {
+    "product_id": "fb2a7068-44f6-401a-8a3f-e30b00ff7e8e",
+    "vendor_id": "28c302c6-7544-4444-a4ff-b62cf1948af6",
+    "name": "Product 76",
+    "decsription": "Description for Product 76",
+    "price": "160.36",
+    "created_at": "2025-05-13T20:49:42.909668Z",
+    "condition": "LIKE_NEW",
+    "is_available": true,
+    "subcategory_id": "1ca21266-f76e-4e58-a40b-e219d3a3be93",
+    "image": [
+      {
+        "image_id": "d9e07e49-ba6c-4fdd-804d-bc52e8d06b92",
+        "image_url": "https://cdn.example.com/products/product76_img1.jpg",
+        "product_id": "fb2a7068-44f6-401a-8a3f-e30b00ff7e8e"
+      },
+      {
+        "image_id": "a1a96490-c719-4f7e-bca0-cd03aeeab467",
+        "image_url": "https://cdn.example.com/products/product76_img2.jpg",
+        "product_id": "fb2a7068-44f6-401a-8a3f-e30b00ff7e8e"
+      },
+      {
+        "image_id": "e238649d-403f-40d0-acfe-4c47809be90c",
+        "image_url": "https://cdn.example.com/products/product76_img3.jpg",
+        "product_id": "fb2a7068-44f6-401a-8a3f-e30b00ff7e8e"
+      }
+    ]
+  },
+  {
+    "product_id": "d7c53544-ccb3-4a17-83d2-acfb4eca7e9e",
+    "vendor_id": "427ffbf0-9b3f-47fa-af6c-a9f16d8e7039",
+    "name": "Product 77",
+    "decsription": "Description for Product 77",
+    "price": "178.57",
+    "created_at": "2024-12-13T20:49:42.909780Z",
+    "condition": "LIKE_NEW",
+    "is_available": false,
+    "subcategory_id": "ed8ed301-b9e6-4913-a13d-4ddb96a7d58b",
+    "image": [
+      {
+        "image_id": "79b1261a-5a28-46fa-b36c-474f3651f55c",
+        "image_url": "https://cdn.example.com/products/product77_img1.jpg",
+        "product_id": "d7c53544-ccb3-4a17-83d2-acfb4eca7e9e"
+      }
+    ]
+  },
+  {
+    "product_id": "671e8ee7-48ce-4357-8db6-12aa0ed782fc",
+    "vendor_id": "0cf88537-ea4d-420a-906a-0991408d3131",
+    "name": "Product 78",
+    "decsription": "Description for Product 78",
+    "price": "37.18",
+    "created_at": "2025-06-10T20:49:42.909848Z",
+    "condition": "BAD",
+    "is_available": false,
+    "subcategory_id": "2736e362-97a6-45f4-84c8-96aa3622d658",
+    "image": [
+      {
+        "image_id": "a1e4263c-24f9-4545-a559-b902c57eab10",
+        "image_url": "https://cdn.example.com/products/product78_img1.jpg",
+        "product_id": "671e8ee7-48ce-4357-8db6-12aa0ed782fc"
+      },
+      {
+        "image_id": "b75141ac-3c49-4671-b842-c850f68641b5",
+        "image_url": "https://cdn.example.com/products/product78_img2.jpg",
+        "product_id": "671e8ee7-48ce-4357-8db6-12aa0ed782fc"
+      },
+      {
+        "image_id": "cbb006f9-75c7-4464-b876-400f7e0ac9bb",
+        "image_url": "https://cdn.example.com/products/product78_img3.jpg",
+        "product_id": "671e8ee7-48ce-4357-8db6-12aa0ed782fc"
+      }
+    ]
+  },
+  {
+    "product_id": "2397306c-7d0a-41ae-a86b-1c93992a7315",
+    "vendor_id": "93286351-a06a-45c8-9dfa-f5b8c5b0b020",
+    "name": "Product 79",
+    "decsription": "Description for Product 79",
+    "price": "955.74",
+    "created_at": "2024-09-21T20:49:42.909916Z",
+    "condition": "NEW",
+    "is_available": false,
+    "subcategory_id": "7da113ed-0f2c-4033-99d1-638ef2a399f8",
+    "image": [
+      {
+        "image_id": "fe8d2ebb-f2c6-41b5-b715-00553d712987",
+        "image_url": "https://cdn.example.com/products/product79_img1.jpg",
+        "product_id": "2397306c-7d0a-41ae-a86b-1c93992a7315"
+      },
+      {
+        "image_id": "75af272a-ac39-4f8d-871b-75fcd5edd81e",
+        "image_url": "https://cdn.example.com/products/product79_img2.jpg",
+        "product_id": "2397306c-7d0a-41ae-a86b-1c93992a7315"
+      },
+      {
+        "image_id": "f8f8b4f4-67e2-4c49-a3e8-2da34d0f55ff",
+        "image_url": "https://cdn.example.com/products/product79_img3.jpg",
+        "product_id": "2397306c-7d0a-41ae-a86b-1c93992a7315"
+      }
+    ]
+  },
+  {
+    "product_id": "b2ec6fa6-45f9-4fd0-8cf0-e78f834ce5a3",
+    "vendor_id": "2ed1c274-88bb-4abd-837f-5672b64e2173",
+    "name": "Product 80",
+    "decsription": "Description for Product 80",
+    "price": "925.63",
+    "created_at": "2024-08-24T20:49:42.909982Z",
+    "condition": "FAIR",
+    "is_available": true,
+    "subcategory_id": "7d0b3264-502b-4dca-86fe-559f7ac5e49c",
+    "image": [
+      {
+        "image_id": "5419aa89-c60f-45c4-976d-06e583fea46c",
+        "image_url": "https://cdn.example.com/products/product80_img1.jpg",
+        "product_id": "b2ec6fa6-45f9-4fd0-8cf0-e78f834ce5a3"
+      },
+      {
+        "image_id": "dd66a461-c220-491c-8d6a-212517527676",
+        "image_url": "https://cdn.example.com/products/product80_img2.jpg",
+        "product_id": "b2ec6fa6-45f9-4fd0-8cf0-e78f834ce5a3"
+      },
+      {
+        "image_id": "21fee231-f053-451d-aaac-2ac9d9f84044",
+        "image_url": "https://cdn.example.com/products/product80_img3.jpg",
+        "product_id": "b2ec6fa6-45f9-4fd0-8cf0-e78f834ce5a3"
+      },
+      {
+        "image_id": "6ad4465c-b6e2-4db0-a6ab-1156d307c44d",
+        "image_url": "https://cdn.example.com/products/product80_img4.jpg",
+        "product_id": "b2ec6fa6-45f9-4fd0-8cf0-e78f834ce5a3"
+      }
+    ]
+  },
+  {
+    "product_id": "b072a1bb-3cd5-4fcc-90ba-f6b989da6ba5",
+    "vendor_id": "e69ca7e1-9c20-4d49-b028-3a8d83462e9c",
+    "name": "Product 81",
+    "decsription": "Description for Product 81",
+    "price": "61.59",
+    "created_at": "2025-02-10T20:49:42.910048Z",
+    "condition": "FAIR",
+    "is_available": true,
+    "subcategory_id": "668bfab6-3b6c-4fbe-94aa-5ce66b2eaa4d",
+    "image": [
+      {
+        "image_id": "5595bf59-6906-48c1-83ab-912c64f0df41",
+        "image_url": "https://cdn.example.com/products/product81_img1.jpg",
+        "product_id": "b072a1bb-3cd5-4fcc-90ba-f6b989da6ba5"
+      },
+      {
+        "image_id": "7f9df9a7-ebb5-4ad6-8237-cda2378c2328",
+        "image_url": "https://cdn.example.com/products/product81_img2.jpg",
+        "product_id": "b072a1bb-3cd5-4fcc-90ba-f6b989da6ba5"
+      }
+    ]
+  },
+  {
+    "product_id": "c3264ea1-0f14-4cef-860c-6d8023224187",
+    "vendor_id": "2cbb06ae-139e-475e-b971-0912d1ce303b",
+    "name": "Product 82",
+    "decsription": "Description for Product 82",
+    "price": "365.24",
+    "created_at": "2025-02-20T20:49:42.910120Z",
+    "condition": "BAD",
+    "is_available": false,
+    "subcategory_id": "81d97cad-432e-4ffa-9849-0809a05f6fc5",
+    "image": [
+      {
+        "image_id": "1920791b-f52b-4a1a-bbc3-4929e6276a6c",
+        "image_url": "https://cdn.example.com/products/product82_img1.jpg",
+        "product_id": "c3264ea1-0f14-4cef-860c-6d8023224187"
+      }
+    ]
+  },
+  {
+    "product_id": "000479b7-7a36-4a8d-a510-b93943c726be",
+    "vendor_id": "feda2699-f495-4ae4-8a3e-de922535eb2d",
+    "name": "Product 83",
+    "decsription": "Description for Product 83",
+    "price": "858.97",
+    "created_at": "2024-08-21T20:49:42.910158Z",
+    "condition": "BAD",
+    "is_available": false,
+    "subcategory_id": "4fb2722e-ad26-4828-b14d-c1a9d6d055ec",
+    "image": [
+      {
+        "image_id": "806db230-be84-4587-8717-af98f8d83944",
+        "image_url": "https://cdn.example.com/products/product83_img1.jpg",
+        "product_id": "000479b7-7a36-4a8d-a510-b93943c726be"
+      },
+      {
+        "image_id": "d89ba1fc-44fc-49a7-a67e-8980d60b7a11",
+        "image_url": "https://cdn.example.com/products/product83_img2.jpg",
+        "product_id": "000479b7-7a36-4a8d-a510-b93943c726be"
+      },
+      {
+        "image_id": "f072948c-5327-452b-aab8-56cf96cd6b40",
+        "image_url": "https://cdn.example.com/products/product83_img3.jpg",
+        "product_id": "000479b7-7a36-4a8d-a510-b93943c726be"
+      },
+      {
+        "image_id": "f6e3cdf8-8e30-4e5a-9869-b70ef78053dc",
+        "image_url": "https://cdn.example.com/products/product83_img4.jpg",
+        "product_id": "000479b7-7a36-4a8d-a510-b93943c726be"
+      }
+    ]
+  },
+  {
+    "product_id": "e75c5eb2-4eea-4fbc-8776-baab27b8dd90",
+    "vendor_id": "12a62f2f-e6c9-43a1-b568-d3605cc0bc0e",
+    "name": "Product 84",
+    "decsription": "Description for Product 84",
+    "price": "373.02",
+    "created_at": "2025-02-23T20:49:42.910222Z",
+    "condition": "FAIR",
+    "is_available": false,
+    "subcategory_id": "859e9188-272f-4629-911e-b65306088465",
+    "image": [
+      {
+        "image_id": "f66b0d2e-acbc-4c7e-a8e1-38a86d8d6455",
+        "image_url": "https://cdn.example.com/products/product84_img1.jpg",
+        "product_id": "e75c5eb2-4eea-4fbc-8776-baab27b8dd90"
+      },
+      {
+        "image_id": "4d3b0153-be8c-4d1e-a0aa-4559dcbc5d67",
+        "image_url": "https://cdn.example.com/products/product84_img2.jpg",
+        "product_id": "e75c5eb2-4eea-4fbc-8776-baab27b8dd90"
+      }
+    ]
+  },
+  {
+    "product_id": "a83ddff2-b1b7-4205-a6ca-dba4e2f56c97",
+    "vendor_id": "1e7ff6bc-3e74-4feb-981a-f9cb59fd5e93",
+    "name": "Product 85",
+    "decsription": "Description for Product 85",
+    "price": "873.21",
+    "created_at": "2024-08-31T20:49:42.910331Z",
+    "condition": "NEW",
+    "is_available": true,
+    "subcategory_id": "c25a961e-7ce5-440f-9d13-30a0a4910d31",
+    "image": [
+      {
+        "image_id": "b289e5b6-805b-4678-b54b-ae9baf85b31a",
+        "image_url": "https://cdn.example.com/products/product85_img1.jpg",
+        "product_id": "a83ddff2-b1b7-4205-a6ca-dba4e2f56c97"
+      }
+    ]
+  },
+  {
+    "product_id": "4f8526f2-2ce4-45f8-850d-8fd8e295d7db",
+    "vendor_id": "4cb749e6-bddf-4191-9977-fd8880984502",
+    "name": "Product 86",
+    "decsription": "Description for Product 86",
+    "price": "242.24",
+    "created_at": "2024-11-16T20:49:42.910397Z",
+    "condition": "NEW",
+    "is_available": false,
+    "subcategory_id": "49c4d086-4a4a-4043-8a44-95702eeb54b3",
+    "image": [
+      {
+        "image_id": "e3fc6f80-902c-4695-bad2-a41cc8c522f1",
+        "image_url": "https://cdn.example.com/products/product86_img1.jpg",
+        "product_id": "4f8526f2-2ce4-45f8-850d-8fd8e295d7db"
+      },
+      {
+        "image_id": "f3323761-863e-498b-8922-556b7d058dbb",
+        "image_url": "https://cdn.example.com/products/product86_img2.jpg",
+        "product_id": "4f8526f2-2ce4-45f8-850d-8fd8e295d7db"
+      }
+    ]
+  },
+  {
+    "product_id": "53cfb002-e448-4709-935e-2d71f04e6ca6",
+    "vendor_id": "47496810-94d9-42b0-a5c2-4571c975e4a9",
+    "name": "Product 87",
+    "decsription": "Description for Product 87",
+    "price": "145.56",
+    "created_at": "2024-09-09T20:49:42.910469Z",
+    "condition": "BAD",
+    "is_available": false,
+    "subcategory_id": "ee4e09e0-34eb-483a-8122-bbc127d846ce",
+    "image": [
+      {
+        "image_id": "99d4ad02-93c7-4449-bd45-78fcfc5b28ca",
+        "image_url": "https://cdn.example.com/products/product87_img1.jpg",
+        "product_id": "53cfb002-e448-4709-935e-2d71f04e6ca6"
+      },
+      {
+        "image_id": "56b4d7c6-02a1-485d-aa16-795a5df894f4",
+        "image_url": "https://cdn.example.com/products/product87_img2.jpg",
+        "product_id": "53cfb002-e448-4709-935e-2d71f04e6ca6"
+      }
+    ]
+  },
+  {
+    "product_id": "690a94c8-3e50-4bc0-8318-46e2e952ae3a",
+    "vendor_id": "4417ed39-d1c6-4089-bc16-c4caf75bb7d8",
+    "name": "Product 88",
+    "decsription": "Description for Product 88",
+    "price": "747.61",
+    "created_at": "2024-09-01T20:49:42.910538Z",
+    "condition": "GOOD",
+    "is_available": false,
+    "subcategory_id": "30eb01c6-8ab8-43ec-a88b-1ab3b1741bc7",
+    "image": [
+      {
+        "image_id": "5a839236-a385-453e-a462-f2f0b0bb418f",
+        "image_url": "https://cdn.example.com/products/product88_img1.jpg",
+        "product_id": "690a94c8-3e50-4bc0-8318-46e2e952ae3a"
+      },
+      {
+        "image_id": "2dadfc39-924a-41b0-9bf5-db4c72388d88",
+        "image_url": "https://cdn.example.com/products/product88_img2.jpg",
+        "product_id": "690a94c8-3e50-4bc0-8318-46e2e952ae3a"
+      },
+      {
+        "image_id": "207ac60e-4fe9-4729-bead-b07a87b3657f",
+        "image_url": "https://cdn.example.com/products/product88_img3.jpg",
+        "product_id": "690a94c8-3e50-4bc0-8318-46e2e952ae3a"
+      },
+      {
+        "image_id": "1dd0ac90-07da-451d-9135-8fd52ec0043d",
+        "image_url": "https://cdn.example.com/products/product88_img4.jpg",
+        "product_id": "690a94c8-3e50-4bc0-8318-46e2e952ae3a"
+      }
+    ]
+  },
+  {
+    "product_id": "25e76772-9a67-4678-b294-c0d7c18dfc31",
+    "vendor_id": "0db5312c-c775-44ab-9b37-78e7400e8cf7",
+    "name": "Product 89",
+    "decsription": "Description for Product 89",
+    "price": "328.62",
+    "created_at": "2025-05-23T20:49:42.910656Z",
+    "condition": "LIKE_NEW",
+    "is_available": true,
+    "subcategory_id": "db892fed-adc8-4d50-a9d6-8d6b3332295c",
+    "image": [
+      {
+        "image_id": "eb60ba7c-eabd-451d-83e1-382978c9adac",
+        "image_url": "https://cdn.example.com/products/product89_img1.jpg",
+        "product_id": "25e76772-9a67-4678-b294-c0d7c18dfc31"
+      },
+      {
+        "image_id": "bb19fadb-539b-4986-ac92-08f2b39ee792",
+        "image_url": "https://cdn.example.com/products/product89_img2.jpg",
+        "product_id": "25e76772-9a67-4678-b294-c0d7c18dfc31"
+      }
+    ]
+  },
+  {
+    "product_id": "5097e9a6-91e5-4b6c-9050-40a4c7b3cd6e",
+    "vendor_id": "f8ebab40-c72d-43d7-abfc-8d858017cb62",
+    "name": "Product 90",
+    "decsription": "Description for Product 90",
+    "price": "394.34",
+    "created_at": "2025-03-14T20:49:42.910733Z",
+    "condition": "LIKE_NEW",
+    "is_available": true,
+    "subcategory_id": "dc8b00d1-afa8-4a13-90e1-be1555dc4bab",
+    "image": [
+      {
+        "image_id": "14934e29-31a9-490a-aae6-c47a2fa96df3",
+        "image_url": "https://cdn.example.com/products/product90_img1.jpg",
+        "product_id": "5097e9a6-91e5-4b6c-9050-40a4c7b3cd6e"
+      },
+      {
+        "image_id": "723c6584-b1f3-4433-87bc-690bbedf3a5a",
+        "image_url": "https://cdn.example.com/products/product90_img2.jpg",
+        "product_id": "5097e9a6-91e5-4b6c-9050-40a4c7b3cd6e"
+      }
+    ]
+  },
+  {
+    "product_id": "4f4b6259-5da1-42d8-81fb-786c2a25ba4e",
+    "vendor_id": "f92a548e-abb3-4f2c-ad5e-dc23dafb548d",
+    "name": "Product 91",
+    "decsription": "Description for Product 91",
+    "price": "519.93",
+    "created_at": "2025-04-30T20:49:42.910807Z",
+    "condition": "BAD",
+    "is_available": true,
+    "subcategory_id": "23f0fdb5-7564-4984-9403-2c56e958a22d",
+    "image": [
+      {
+        "image_id": "60e1e6cb-9fe1-4ded-8745-f24ab10574cb",
+        "image_url": "https://cdn.example.com/products/product91_img1.jpg",
+        "product_id": "4f4b6259-5da1-42d8-81fb-786c2a25ba4e"
+      }
+    ]
+  },
+  {
+    "product_id": "b5d60dab-382b-49b1-b8bb-cbd5c96d2178",
+    "vendor_id": "2f19aa7e-ead3-43c3-895d-01221a50bafd",
+    "name": "Product 92",
+    "decsription": "Description for Product 92",
+    "price": "840.59",
+    "created_at": "2025-02-22T20:49:42.910881Z",
+    "condition": "BAD",
+    "is_available": true,
+    "subcategory_id": "6a380f2e-0f5d-4209-ac60-04e2a778117f",
+    "image": [
+      {
+        "image_id": "6db48bf1-49d9-4bf7-afbf-32cbdaa32d58",
+        "image_url": "https://cdn.example.com/products/product92_img1.jpg",
+        "product_id": "b5d60dab-382b-49b1-b8bb-cbd5c96d2178"
+      },
+      {
+        "image_id": "2aa31663-8a97-4ba5-ae93-362d19f50bfa",
+        "image_url": "https://cdn.example.com/products/product92_img2.jpg",
+        "product_id": "b5d60dab-382b-49b1-b8bb-cbd5c96d2178"
+      }
+    ]
+  },
+  {
+    "product_id": "deb4c189-994c-4cdf-81be-eeb4783c9102",
+    "vendor_id": "1bac58cc-a1d2-4f09-8d3a-b653c2d3df2c",
+    "name": "Product 93",
+    "decsription": "Description for Product 93",
+    "price": "577.45",
+    "created_at": "2025-03-28T20:49:42.910948Z",
+    "condition": "FAIR",
+    "is_available": true,
+    "subcategory_id": "5d97dca7-8eb2-4158-92ef-767ab89a12b7",
+    "image": [
+      {
+        "image_id": "e300c148-3d32-4bf7-86ea-f3d1fc50921a",
+        "image_url": "https://cdn.example.com/products/product93_img1.jpg",
+        "product_id": "deb4c189-994c-4cdf-81be-eeb4783c9102"
+      },
+      {
+        "image_id": "91106757-73e5-4183-b8f4-1e9de8b2769c",
+        "image_url": "https://cdn.example.com/products/product93_img2.jpg",
+        "product_id": "deb4c189-994c-4cdf-81be-eeb4783c9102"
+      },
+      {
+        "image_id": "8a253588-e218-4207-ad28-1a2657e68b3c",
+        "image_url": "https://cdn.example.com/products/product93_img3.jpg",
+        "product_id": "deb4c189-994c-4cdf-81be-eeb4783c9102"
+      },
+      {
+        "image_id": "838f5fa0-49ff-42fb-8de2-17d412da6c12",
+        "image_url": "https://cdn.example.com/products/product93_img4.jpg",
+        "product_id": "deb4c189-994c-4cdf-81be-eeb4783c9102"
+      }
+    ]
+  },
+  {
+    "product_id": "9f0e6bc3-86be-4938-9e39-b5c714f191dc",
+    "vendor_id": "5e3f0486-5801-4d6c-8322-2fc9f1209460",
+    "name": "Product 94",
+    "decsription": "Description for Product 94",
+    "price": "586.34",
+    "created_at": "2025-02-02T20:49:42.911056Z",
+    "condition": "BAD",
+    "is_available": false,
+    "subcategory_id": "d5f2c750-7156-4de6-98a6-04ecf04122a1",
+    "image": [
+      {
+        "image_id": "fefa6974-b57a-46b9-8d5e-93968c0e1386",
+        "image_url": "https://cdn.example.com/products/product94_img1.jpg",
+        "product_id": "9f0e6bc3-86be-4938-9e39-b5c714f191dc"
+      },
+      {
+        "image_id": "bb81970b-2a25-4bbc-b0df-8bd17b213036",
+        "image_url": "https://cdn.example.com/products/product94_img2.jpg",
+        "product_id": "9f0e6bc3-86be-4938-9e39-b5c714f191dc"
+      },
+      {
+        "image_id": "81c697d8-9a59-4292-ad0c-e7d344bb05ae",
+        "image_url": "https://cdn.example.com/products/product94_img3.jpg",
+        "product_id": "9f0e6bc3-86be-4938-9e39-b5c714f191dc"
+      },
+      {
+        "image_id": "77b5c46d-01ed-4893-954c-f624279ce9c9",
+        "image_url": "https://cdn.example.com/products/product94_img4.jpg",
+        "product_id": "9f0e6bc3-86be-4938-9e39-b5c714f191dc"
+      }
+    ]
+  },
+  {
+    "product_id": "da164313-acfd-4974-9840-ee86ee4e1fb7",
+    "vendor_id": "cf1b03a8-3a51-4d39-a0cd-fe99f9df3d8f",
+    "name": "Product 95",
+    "decsription": "Description for Product 95",
+    "price": "706.56",
+    "created_at": "2025-04-20T20:49:42.911170Z",
+    "condition": "LIKE_NEW",
+    "is_available": true,
+    "subcategory_id": "30f950ad-70b7-4c86-9423-c390d309081d",
+    "image": [
+      {
+        "image_id": "b1990ba6-060c-4de3-b388-af3dec0537ee",
+        "image_url": "https://cdn.example.com/products/product95_img1.jpg",
+        "product_id": "da164313-acfd-4974-9840-ee86ee4e1fb7"
+      },
+      {
+        "image_id": "1e08209d-d6b5-4831-90b7-6953f204aea4",
+        "image_url": "https://cdn.example.com/products/product95_img2.jpg",
+        "product_id": "da164313-acfd-4974-9840-ee86ee4e1fb7"
+      },
+      {
+        "image_id": "bc5af9d6-11e1-4da4-b839-6e9fe393cfb0",
+        "image_url": "https://cdn.example.com/products/product95_img3.jpg",
+        "product_id": "da164313-acfd-4974-9840-ee86ee4e1fb7"
+      }
+    ]
+  },
+  {
+    "product_id": "e03c6711-c458-4f1d-99c6-7d051f379b39",
+    "vendor_id": "89c31b46-60d2-4b31-a994-051aff6bb3a8",
+    "name": "Product 96",
+    "decsription": "Description for Product 96",
+    "price": "624.63",
+    "created_at": "2025-03-17T20:49:42.911247Z",
+    "condition": "BAD",
+    "is_available": false,
+    "subcategory_id": "83d89911-508b-4a73-aa4b-75fa2f1fbe77",
+    "image": [
+      {
+        "image_id": "e779fd5e-0f55-4caa-993b-81ea46cde86f",
+        "image_url": "https://cdn.example.com/products/product96_img1.jpg",
+        "product_id": "e03c6711-c458-4f1d-99c6-7d051f379b39"
+      },
+      {
+        "image_id": "e676ac7b-8592-4a84-9446-dfbe6b46e736",
+        "image_url": "https://cdn.example.com/products/product96_img2.jpg",
+        "product_id": "e03c6711-c458-4f1d-99c6-7d051f379b39"
+      }
+    ]
+  },
+  {
+    "product_id": "e9aead3d-1dff-45ee-abc8-be7a5fe704a6",
+    "vendor_id": "42d5301d-fbb5-4378-aa3e-aed7351092d7",
+    "name": "Product 97",
+    "decsription": "Description for Product 97",
+    "price": "310.83",
+    "created_at": "2024-11-19T20:49:42.911311Z",
+    "condition": "GOOD",
+    "is_available": true,
+    "subcategory_id": "848c0b79-4079-4d6a-b4f7-09dc7f8b6173",
+    "image": [
+      {
+        "image_id": "7c147bb1-3cac-465c-b758-2387ed85a26c",
+        "image_url": "https://cdn.example.com/products/product97_img1.jpg",
+        "product_id": "e9aead3d-1dff-45ee-abc8-be7a5fe704a6"
+      },
+      {
+        "image_id": "69ff6f4d-ffc9-4c9f-82d6-73cfee8aff3c",
+        "image_url": "https://cdn.example.com/products/product97_img2.jpg",
+        "product_id": "e9aead3d-1dff-45ee-abc8-be7a5fe704a6"
+      },
+      {
+        "image_id": "c29be0fd-3a2e-4df6-bffa-757c10602ece",
+        "image_url": "https://cdn.example.com/products/product97_img3.jpg",
+        "product_id": "e9aead3d-1dff-45ee-abc8-be7a5fe704a6"
+      }
+    ]
+  },
+  {
+    "product_id": "651404aa-48e6-4029-b8d8-076745d9dc45",
+    "vendor_id": "468c8258-4511-450d-8658-e883ded79eda",
+    "name": "Product 98",
+    "decsription": "Description for Product 98",
+    "price": "470.72",
+    "created_at": "2025-03-16T20:49:42.911395Z",
+    "condition": "BAD",
+    "is_available": true,
+    "subcategory_id": "c2f6a6a3-f6e1-49ca-9d2c-18fa88a231c1",
+    "image": [
+      {
+        "image_id": "adf60fc0-8be9-40f0-8af4-67c97d8e7849",
+        "image_url": "https://cdn.example.com/products/product98_img1.jpg",
+        "product_id": "651404aa-48e6-4029-b8d8-076745d9dc45"
+      },
+      {
+        "image_id": "c3b4efeb-d7ab-4c41-b157-29a6192ef93d",
+        "image_url": "https://cdn.example.com/products/product98_img2.jpg",
+        "product_id": "651404aa-48e6-4029-b8d8-076745d9dc45"
+      }
+    ]
+  },
+  {
+    "product_id": "757ff849-9735-4b53-afff-b7693e6af1a0",
+    "vendor_id": "4a797685-0d04-46e3-bb5e-96c4c1049e11",
+    "name": "Product 99",
+    "decsription": "Description for Product 99",
+    "price": "653.24",
+    "created_at": "2024-07-31T20:49:42.911468Z",
+    "condition": "FAIR",
+    "is_available": false,
+    "subcategory_id": "7b0c33af-1c02-42a3-92da-bb88a2767d39",
+    "image": [
+      {
+        "image_id": "c8de7243-bbf4-4885-9470-682d4f0dc16e",
+        "image_url": "https://cdn.example.com/products/product99_img1.jpg",
+        "product_id": "757ff849-9735-4b53-afff-b7693e6af1a0"
+      },
+      {
+        "image_id": "1ebc693f-f86a-4080-bf96-1b0fa1bc9a86",
+        "image_url": "https://cdn.example.com/products/product99_img2.jpg",
+        "product_id": "757ff849-9735-4b53-afff-b7693e6af1a0"
+      },
+      {
+        "image_id": "314339f0-d430-4ae1-bec9-95c015b89d61",
+        "image_url": "https://cdn.example.com/products/product99_img3.jpg",
+        "product_id": "757ff849-9735-4b53-afff-b7693e6af1a0"
+      },
+      {
+        "image_id": "5b1acb60-34dd-48e8-8347-213e03dbb3fc",
+        "image_url": "https://cdn.example.com/products/product99_img4.jpg",
+        "product_id": "757ff849-9735-4b53-afff-b7693e6af1a0"
+      }
+    ]
+  },
+  {
+    "product_id": "5ba55297-475e-41ad-a2a6-582f1b267830",
+    "vendor_id": "09550e49-e3f7-4e10-bcd0-5d431814fe54",
+    "name": "Product 100",
+    "decsription": "Description for Product 100",
+    "price": "349.93",
+    "created_at": "2024-10-10T20:49:42.911559Z",
+    "condition": "FAIR",
+    "is_available": true,
+    "subcategory_id": "80e8265a-e2a3-428a-8d17-b0304cbc3388",
+    "image": [
+      {
+        "image_id": "c2272ab6-9b98-48ef-b445-3eede75c6f4c",
+        "image_url": "https://cdn.example.com/products/product100_img1.jpg",
+        "product_id": "5ba55297-475e-41ad-a2a6-582f1b267830"
+      },
+      {
+        "image_id": "200d08ac-5bdc-4deb-8741-441c67209bb4",
+        "image_url": "https://cdn.example.com/products/product100_img2.jpg",
+        "product_id": "5ba55297-475e-41ad-a2a6-582f1b267830"
+      }
+    ]
+  }
+]
