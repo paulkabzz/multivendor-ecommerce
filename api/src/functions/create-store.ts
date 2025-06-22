@@ -32,6 +32,17 @@ async function createStore(request: HttpRequest, context: InvocationContext, dec
                 };
             };
 
+            if (decodedToken?.role !== "CUSTOMER" && decodedToken?.role !== "ADMIN") {
+                return {
+                    status: 403,
+                    headers,
+                    body: JSON.stringify({
+                        success: false,
+                        message: "Only customers and admins can create stores"
+                    })
+                }
+            }
+
             if (!store_name || store_name.length < 2 || store_name === "") {
                 return {
                     status: 400,
@@ -63,8 +74,29 @@ async function createStore(request: HttpRequest, context: InvocationContext, dec
                 image_url: image_url ?? null
             };
 
-            await prisma.vendor.create({
-                data,
+            await prisma.$transaction(async tx => {
+                const user = await prisma.users.findFirst({ where: { user_id }});
+
+                if (user?.role !== "CUSTOMER" && user?.role !== "ADMIN") {
+                    return {
+                        status: 403,
+                        headers,
+                        body: JSON.stringify({
+                            success: false,
+                            message: "Only customers and admins can create stores"
+                        })
+                    }
+                }
+
+                if (user?.role === "CUSTOMER") {
+                    await tx.users.update({
+                        where: {user_id},
+                        data: {role: "VENDOR"}
+                    });
+                }
+
+
+                await tx.vendor.create({ data });
             });
 
             return {
@@ -85,6 +117,8 @@ async function createStore(request: HttpRequest, context: InvocationContext, dec
                     message: "Internal server error"
                 })
             }
+        } finally {
+            await prisma.$disconnect();
         }
 
     }

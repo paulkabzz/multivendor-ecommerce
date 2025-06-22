@@ -44,7 +44,18 @@ async function deleteStore(request: HttpRequest, context: InvocationContext, dec
                 };
             };
 
-            await prisma.vendor.delete({ where: { vendor_id, user_id }});
+            await prisma.$transaction(async tx => {
+
+                if (decodedToken?.role === "VENDOR") {
+                    await tx.users.update({
+                        where: { user_id },
+                        data: { role: "CUSTOMER"}
+                    });
+
+                }
+                  
+                await tx.vendor.delete({ where: { vendor_id, user_id }});
+            });
 
             return {
                 status: 201,
@@ -64,6 +75,8 @@ async function deleteStore(request: HttpRequest, context: InvocationContext, dec
                     message: "Internal server error"
                 })
             }
+        } finally {
+            await prisma.$disconnect();
         }
     }
 
