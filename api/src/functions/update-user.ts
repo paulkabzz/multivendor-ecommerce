@@ -6,7 +6,7 @@ import { withAuth } from "../utils/middleware";
 import { generateVerificationToken } from "../utils/tokenUtils";
 import { sendVerificationEmail } from "../utils/gmailService";
 import { headers, isValidUCTEmail } from "../utils/helpers";
-import { backendImageService } from "../utils/appwrite-profile-pic";
+import { Avatar } from "../utils/avatars";
 import * as multipart from "parse-multipart-data";
 
 interface IUpdateUserWithAvatarRequest extends IUpdateUserRequest {
@@ -143,6 +143,7 @@ async function updateUserHandler(request: HttpRequest, context: InvocationContex
 
             // Build update data object with only changed fields
             const updateData: Partial<IUpdateUserWithAvatarRequest> = {};
+            
             if (first_name && first_name !== existingUser.first_name) updateData.first_name = first_name;
             if (last_name && last_name !== existingUser.last_name) updateData.last_name = last_name;
             if (phone && phone !== existingUser.phone) updateData.phone = phone;
@@ -151,7 +152,7 @@ async function updateUserHandler(request: HttpRequest, context: InvocationContex
             let imageUploadResult = null;
             if (imageFile) {
                 try {
-                    imageUploadResult = await backendImageService.uploadAvatar(
+                    imageUploadResult = await Avatar.uploadUserAvatar(
                         imageFile.buffer,
                         imageFile.filename,
                         imageFile.mimeType,
