@@ -4,11 +4,12 @@ import { headers } from "../utils/helpers";
 import { withAuth } from "../utils/middleware";
 import { ICreateStore } from "../utils/types";
 import prisma from "../utils/database";
+import * as multipart from "parse-multipart-data";
 
 async function createStore(request: HttpRequest, context: InvocationContext, decodedToken?: DecodedToken): Promise<HttpResponseInit> {
     if (request.method === "POST") {
         try {
-            const { user_id, store_name, bio, image_url } = await request.json() as ICreateStore;
+            const { user_id, store_name, bio } = await request.json() as ICreateStore;
 
             if (!user_id) {
                 return {
@@ -31,6 +32,53 @@ async function createStore(request: HttpRequest, context: InvocationContext, dec
                     })
                 };
             };
+
+            let requestData: ICreateStore;
+            let imageFile: { buffer: Buffer; filename: string; mimeType: string } | null = null;
+
+            const contentType = request.headers.get("content-type") || "";
+            
+            if (contentType.includes("multipart/form-data")) {
+
+                const boundary = contentType.split("boundary=")[1];
+                if (!boundary) {
+                    return {
+                        status: 400,
+                        headers,
+                        body: JSON.stringify({
+                            success: false,
+                            message: "Invalid multipart boundary"
+                        })
+                    };
+                }
+
+                const body = await request.arrayBuffer();
+                const parts = multipart.parse(Buffer.from(body), boundary);
+                
+                requestData = { user_id: "", store_name: "" };
+                
+                for (const part of parts) {
+                    const name = part.name;
+                    
+                    if (name === "avatar" && part.data && part.data.length > 0) {
+
+                        imageFile = {
+                            buffer: part.data,
+                            filename: part.filename || `avatar_${Date.now()}.jpg`,
+                            mimeType: part.type || "image/jpeg"
+                        };
+                    } else if (part.data && typeof name === "string" && name) {
+
+                        const value = part.data.toString('utf8');
+                        if (value && value.trim()) {
+                            (requestData as any)[name] = value;
+                        }
+                    }
+                }
+            } else {
+                requestData = await request.json() as ICreateStore;
+            }
+
 
             if (decodedToken?.role !== "CUSTOMER" && decodedToken?.role !== "ADMIN") {
                 return {
@@ -71,7 +119,6 @@ async function createStore(request: HttpRequest, context: InvocationContext, dec
                 user_id,
                 store_name,
                 bio: bio ?? null,
-                image_url: image_url ?? null
             };
 
             await prisma.$transaction(async tx => {

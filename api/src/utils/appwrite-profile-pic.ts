@@ -2,11 +2,11 @@ import { Client, Storage, Models } from "node-appwrite";
 import { IAppwriteConfig, IUploadResult } from "./types";
 
 
-export interface ProfileImageUploadResult extends IUploadResult {
-  oldImageDeleted?: boolean;
+export interface AvatarUploadResult extends IUploadResult {
+  oldAvatarDeleted?: boolean;
 }
 
-class AppwriteProfilePic {
+class AppwriteAvatar {
   private client: Client;
   private storage: Storage;
   private config: IAppwriteConfig;
@@ -18,7 +18,7 @@ class AppwriteProfilePic {
     this.storage = new Storage(this.client);
   }
 
-  private generateProfileFileId(userId: string): string {
+  private generateAvatarFileId(userId: string): string {
     let hash: number = 0;
     for (let i = 0; i < userId.length; i++) {
       const char = userId.charCodeAt(i);
@@ -28,35 +28,35 @@ class AppwriteProfilePic {
 
     const hashStr: string = Math.abs(hash).toString(36);
     const timestamp: string = Date.now().toString(36).slice(-6);
-    const fileId: string = `prof_${hashStr}_${timestamp}`;
+    const fileId: string = `avatar_${hashStr}_${timestamp}`;
 
-    return fileId.length <= 36 ? fileId : `prof_${hashStr}`.slice(0, 36);
+    return fileId.length <= 36 ? fileId : `avatar_${hashStr}`.slice(0, 36);
   }
 
-  private async getExistingProfileFileId(userId: string): Promise<string | null> {
+  private async getExistingAvatarFileId(userId: string): Promise<string | null> {
     try {
-      const files: Models.FileList = await this.storage.listFiles(this.config.userProfilePicBucketId);
+      const files: Models.FileList = await this.storage.listFiles(this.config.userAvatarBucketId);
       
       const userFiles: Models.File[] = files.files.filter(
         (file) =>
           file.name?.includes(`user_${userId}`) || 
-          file.$id.startsWith("prof_") ||
+          file.$id.startsWith("avatar_") ||
           file.name?.includes(userId)
       );
 
       return userFiles.length > 0 ? userFiles[0].$id : null;
     } catch (error) {
-      console.error("Error finding existing profile image:", error);
+      console.error("Error finding existing avatar:", error);
       return null;
     }
   }
 
-  public async uploadProfileImage(fileBuffer: Buffer,  fileName: string,  mimeType: string,  userId: string): Promise<ProfileImageUploadResult> {
+  public async uploadAvatar(fileBuffer: Buffer,  fileName: string,  mimeType: string,  userId: string): Promise<AvatarUploadResult> {
     try {
       if (!userId || !userId.trim()) {
         return {
           success: false,
-          error: "User ID is required for profile image upload",
+          error: "User ID is required for avatar upload",
         };
       }
 
@@ -98,30 +98,30 @@ class AppwriteProfilePic {
         };
       }
 
-      let oldImageDeleted: boolean = false;
-      const existingFileId: string | null = await this.getExistingProfileFileId(userId);
+      let oldAvatarDeleted: boolean = false;
+      const existingFileId: string | null = await this.getExistingAvatarFileId(userId);
 
       if (existingFileId) {
         try {
           await this.storage.deleteFile(
-            this.config.userProfilePicBucketId,
+            this.config.userAvatarBucketId,
             existingFileId
           );
-          oldImageDeleted = true;
-          console.log(`Deleted existing profile image for user: ${userId}`);
+          oldAvatarDeleted = true;
+          console.log(`Deleted existing avatar for user: ${userId}`);
 
         } catch (error: unknown) {
-          console.warn("Could not delete existing profile image:", error);
+          console.warn("Could not delete existing avatar:", error);
         }
       }
 
-      const fileId: string = this.generateProfileFileId(userId);
+      const fileId: string = this.generateAvatarFileId(userId);
       
       let uploadedFile;
       
       try {
         uploadedFile = await this.storage.createFile(
-          this.config.userProfilePicBucketId,
+          this.config.userAvatarBucketId,
           fileId,
           new File([fileBuffer], normalizedFileName, { type: mimeType }),
         );
@@ -133,7 +133,7 @@ class AppwriteProfilePic {
             const fileObject: File = new File([fileBuffer], normalizedFileName, { type: mimeType });
 
             uploadedFile = await this.storage.createFile(
-              this.config.userProfilePicBucketId,
+              this.config.userAvatarBucketId,
               fileId,
               fileObject
             );
@@ -148,7 +148,7 @@ class AppwriteProfilePic {
             };
             
             uploadedFile = await this.storage.createFile(
-              this.config.userProfilePicBucketId,
+              this.config.userAvatarBucketId,
               fileId,
               fileData as any
             );
@@ -159,19 +159,19 @@ class AppwriteProfilePic {
         }
       }
 
-      const imageUrl: string = this.getImageUrl(uploadedFile.$id);
+      const imageUrl: string = this._getAvatarUrl(uploadedFile.$id);
 
       return {
         success: true,
         fileId: uploadedFile.$id,
         imageUrl,
-        oldImageDeleted,
+        oldAvatarDeleted,
       };
 
     } catch (error: any) {
-      console.error("Error uploading profile image:", error);
+      console.error("Error uploading avatar:", error);
 
-      let errorMessage: string = "Failed to upload profile image";
+      let errorMessage: string = "Failed to upload avatar";
 
       if (error.message?.includes("fileId")) {
         errorMessage = "Invalid file identifier. Please try again.";
@@ -192,39 +192,39 @@ class AppwriteProfilePic {
     }
   }
 
-  public async getProfileImageUrl(userId: string): Promise<string> {
+  public async getAvatarUrl(userId: string): Promise<string> {
     try {
-      const fileId: string | null = await this.getExistingProfileFileId(userId);
+      const fileId: string | null = await this.getExistingAvatarFileId(userId);
       
       if (!fileId) {
         return "";
       }
 
-      return this.getImageUrl(fileId);
+      return this._getAvatarUrl(fileId);
     } catch (error: unknown) {
-      console.error("Error generating profile image URL:", error);
+      console.error("Error generating avatar URL:", error);
       return "";
     }
   }
 
-  public getImageUrl(fileId: string, width?: number, height?: number, quality: number = 80): string {
+  public _getAvatarUrl(fileId: string, width?: number, height?: number, quality: number = 80): string {
     try {
 
       if (!width && !height) {
 
-        const baseUrl: string = `${this.config.endpoint}/storage/buckets/${this.config.userProfilePicBucketId}/files/${fileId}/view?project=${this.config.projectId}`;
+        const baseUrl: string = `${this.config.endpoint}/storage/buckets/${this.config.userAvatarBucketId}/files/${fileId}/view?project=${this.config.projectId}`;
         return baseUrl;
       }
 
       try {
 
-        const previewUrl: string = `${this.config.endpoint}/storage/buckets/${this.config.userProfilePicBucketId}/files/${fileId}/preview?project=${this.config.projectId}&width=${width}&height=${height}&gravity=center&quality=${quality}`;
+        const previewUrl: string = `${this.config.endpoint}/storage/buckets/${this.config.userAvatarBucketId}/files/${fileId}/preview?project=${this.config.projectId}&width=${width}&height=${height}&gravity=center&quality=${quality}`;
         return previewUrl;
 
       } catch (transformError) {
 
         console.warn("Image transformations not available, falling back to direct view:", transformError);
-        const baseUrl: string = `${this.config.endpoint}/storage/buckets/${this.config.userProfilePicBucketId}/files/${fileId}/view?project=${this.config.projectId}`;
+        const baseUrl: string = `${this.config.endpoint}/storage/buckets/${this.config.userAvatarBucketId}/files/${fileId}/view?project=${this.config.projectId}`;
         return baseUrl;
 
       }
@@ -236,7 +236,7 @@ class AppwriteProfilePic {
     }
   }
 
-  public async deleteProfileImage(userId: string): Promise<{ success: boolean; error?: string }> {
+  public async deleteAvatar(userId: string): Promise<{ success: boolean; error?: string }> {
 
     try {
       if (!userId || !userId.trim()) {
@@ -246,33 +246,33 @@ class AppwriteProfilePic {
         };
       }
 
-      const fileId: string | null = await this.getExistingProfileFileId(userId);
+      const fileId: string | null = await this.getExistingAvatarFileId(userId);
 
       if (!fileId) {
         return {
           success: false,
-          error: "No profile image found for this user",
+          error: "No avatar found for this user",
         };
       }
 
-      await this.storage.deleteFile(this.config.userProfilePicBucketId, fileId);
+      await this.storage.deleteFile(this.config.userAvatarBucketId, fileId);
       return { success: true };
 
     } catch (error: any) {
 
-      console.error("Error deleting profile image:", error);
+      console.error("Error deleting avatar:", error);
       return {
         success: false,
-        error: error.message || "Failed to delete profile image",
+        error: error.message || "Failed to delete avatar",
       };
 
     }
 
   }
 
-  public async hasProfileImage(userId: string): Promise<boolean> {
+  public async hasAvatar(userId: string): Promise<boolean> {
     try {
-      const fileId: string | null = await this.getExistingProfileFileId(userId);
+      const fileId: string | null = await this.getExistingAvatarFileId(userId);
       return !!fileId;
     } catch {
       return false;
@@ -284,7 +284,7 @@ const appwriteConfig: IAppwriteConfig = {
   endpoint: process.env.APPWRITE_ENDPOINT || "" as string,
   projectId: process.env.APPWRITE_PROJECT_ID || "" as string,
   apiKey: process.env.APPWRITE_API_KEY || "" as string,
-  userProfilePicBucketId: process.env.APPWRITE_USER_PROFILE_PIC_BUCKET_ID || "" as string,
+  userAvatarBucketId: process.env.APPWRITE_USER_AVATAR_BUCKET_ID || "" as string,
 };
 
-export const backendImageService: AppwriteProfilePic = new AppwriteProfilePic(appwriteConfig);
+export const backendImageService: AppwriteAvatar = new AppwriteAvatar(appwriteConfig);

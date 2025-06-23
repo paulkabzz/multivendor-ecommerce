@@ -9,15 +9,15 @@ import { headers, isValidUCTEmail } from "../utils/helpers";
 import { backendImageService } from "../utils/appwrite-profile-pic";
 import * as multipart from "parse-multipart-data";
 
-interface IUpdateUserWithImageRequest extends IUpdateUserRequest {
-    profile_pic_url?: string;
+interface IUpdateUserWithAvatarRequest extends IUpdateUserRequest {
+    avatar_url?: string;
 }
 
 async function updateUserHandler(request: HttpRequest, context: InvocationContext, decodedToken?: DecodedToken): Promise<HttpResponseInit> {
 
     if (request.method === "PATCH") {
         try {
-            let requestData: IUpdateUserWithImageRequest;
+            let requestData: IUpdateUserWithAvatarRequest;
             let imageFile: { buffer: Buffer; filename: string; mimeType: string } | null = null;
 
             const contentType = request.headers.get("content-type") || "";
@@ -44,11 +44,11 @@ async function updateUserHandler(request: HttpRequest, context: InvocationContex
                 for (const part of parts) {
                     const name = part.name;
                     
-                    if (name === "profile_image" && part.data && part.data.length > 0) {
+                    if (name === "avatar" && part.data && part.data.length > 0) {
 
                         imageFile = {
                             buffer: part.data,
-                            filename: part.filename || `profile_${Date.now()}.jpg`,
+                            filename: part.filename || `avatar_${Date.now()}.jpg`,
                             mimeType: part.type || "image/jpeg"
                         };
                     } else if (part.data && typeof name === "string" && name) {
@@ -60,7 +60,7 @@ async function updateUserHandler(request: HttpRequest, context: InvocationContex
                     }
                 }
             } else {
-                requestData = await request.json() as IUpdateUserWithImageRequest;
+                requestData = await request.json() as IUpdateUserWithAvatarRequest;
             }
 
             const { first_name, last_name,email, phone, user_id } = requestData;
@@ -96,7 +96,7 @@ async function updateUserHandler(request: HttpRequest, context: InvocationContex
                     last_name: true,
                     email: true,
                     phone: true,
-                    profile_pic_url: true,
+                    avatar_url: true,
                     role: true,
                     vendor: true,
                     is_verified: true,
@@ -142,16 +142,16 @@ async function updateUserHandler(request: HttpRequest, context: InvocationContex
             }
 
             // Build update data object with only changed fields
-            const updateData: Partial<IUpdateUserWithImageRequest> = {};
+            const updateData: Partial<IUpdateUserWithAvatarRequest> = {};
             if (first_name && first_name !== existingUser.first_name) updateData.first_name = first_name;
             if (last_name && last_name !== existingUser.last_name) updateData.last_name = last_name;
             if (phone && phone !== existingUser.phone) updateData.phone = phone;
             
-            // Handle profile image upload
+            // Handle avatar upload
             let imageUploadResult = null;
             if (imageFile) {
                 try {
-                    imageUploadResult = await backendImageService.uploadProfileImage(
+                    imageUploadResult = await backendImageService.uploadAvatar(
                         imageFile.buffer,
                         imageFile.filename,
                         imageFile.mimeType,
@@ -159,18 +159,18 @@ async function updateUserHandler(request: HttpRequest, context: InvocationContex
                     );
 
                     if (imageUploadResult.success && imageUploadResult.imageUrl) {
-                        updateData.profile_pic_url = imageUploadResult.imageUrl;
+                        updateData.avatar_url = imageUploadResult.imageUrl;
                     } else {
                         return {
                             status: 400,
                             headers,
                             body: JSON.stringify({
                                 success: false,
-                                message: imageUploadResult.error || "Failed to upload profile image"
+                                message: imageUploadResult.error || "Failed to upload avatar"
                             })
                         };
                     }
-                } catch (error) {
+                } catch (error: unknown) {
                     context.log("Error uploading image:", error);
                     return {
                         status: 500,
@@ -235,7 +235,7 @@ async function updateUserHandler(request: HttpRequest, context: InvocationContex
                     last_name: true,
                     email: true,
                     phone: true,
-                    profile_pic_url: true,
+                    avatar_url: true,
                     role: true,
                     vendor: true,
                     is_verified: true
@@ -271,7 +271,7 @@ async function updateUserHandler(request: HttpRequest, context: InvocationContex
             if (emailUpdated) {
                 message = "User updated successfully. A verification email has been sent to your new email address. Please verify your email to complete the update.";
             } else if (imageFile) {
-                message = "Profile picture updated successfully";
+                message = "Avatar updated successfully";
             }
             
             return {
@@ -285,7 +285,7 @@ async function updateUserHandler(request: HttpRequest, context: InvocationContex
                     imageUpload: imageUploadResult ? {
                         success: imageUploadResult.success,
                         fileId: imageUploadResult.fileId,
-                        oldImageDeleted: imageUploadResult.oldImageDeleted
+                        oldImageDeleted: imageUploadResult.oldAvatarDeleted
                     } : undefined
                 })
             };
@@ -512,7 +512,7 @@ async function updateUserHandler(request: HttpRequest, context: InvocationContex
 //                 headers,
 //                 body: JSON.stringify({
 //                     success: true,
-//                     message: "Profile image uploaded successfully",
+//                     message: "avatar uploaded successfully",
 //                     user: updatedUser,
 //                     imageUpload: {
 //                         fileId: uploadResult.fileId,

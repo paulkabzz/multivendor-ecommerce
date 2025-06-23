@@ -47,7 +47,7 @@ async function getMe(request: HttpRequest, context: InvocationContext, decodedTo
                 first_name: updatedUser.first_name,
                 last_name: updatedUser.last_name,
                 email: updatedUser.email,
-                profile_pic_url: updatedUser.profile_pic_url ?? null,
+                avatar_url: updatedUser.avatar_url ?? null,
                 phone: updatedUser.phone ?? null,
                 role: updatedUser.role ?? "CUSTOMER",
                 vendor: vendor ?? undefined

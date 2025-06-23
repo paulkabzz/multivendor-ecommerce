@@ -126,7 +126,7 @@ async function login(request: HttpRequest, context: InvocationContext): Promise<
                     role: user.role || 'CUSTOMER',
                     is_verified: user.is_verified || false,
                     phone: user.phone ?? null,
-                    profile_pic_url: user.profile_pic_url ?? null,
+                    avatar_url: user.avatar_url ?? null,
                     vendor: (vendor ? vendor : undefined)
                 },
                 token

@@ -5,14 +5,14 @@ export interface IUser {
   phone?: string | null;
   role?: 'CUSTOMER' | 'VENDOR' | 'ADMIN';
   password: string;
-  profile_pic_url?: string | null;
+  avatar_url?: string | null;
 }
 
 export interface IVendor {
     user_id: string;
     store_name: string;
     bio: string | null;
-    image_url: string | null;
+    avatar_url: string | null;
     vendor_id: string;
 }
 
@@ -32,7 +32,7 @@ export interface ILoginResponse {
     email: string;
     role: string;
     is_verified: boolean;
-    profile_pic_url: string | null;
+    avatar_url: string | null;
     phone: string | null;
     vendor?: IVendor;
   };
@@ -95,7 +95,7 @@ export interface ICreateStore {
   user_id: string;
   store_name: string;
   bio?: string | null;
-  image_url?: string | null;
+  // avatar: string | null;
 }
 
 
@@ -104,7 +104,7 @@ export interface IAppwriteConfig {
   endpoint: string;
   projectId: string;
   apiKey: string;
-  userProfilePicBucketId: string;
+  userAvatarBucketId: string;
 }
 
 export interface IUploadResult {
