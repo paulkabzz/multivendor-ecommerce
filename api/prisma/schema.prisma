@@ -78,12 +78,12 @@ model users {
   profile_pic_url String?     @db.VarChar(255)
   orderitem       orderitem[]
   orders          orders[]
-  vendor          vendor[]
+  vendor          vendor?
 }
 
 model vendor {
   vendor_id  String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  user_id    String    @db.Uuid
+  user_id    String    @unique(map: "u_user_id") @db.Uuid
   store_name String    @db.VarChar(100)
   bio        String?
   image_url  String?   @db.VarChar(255)

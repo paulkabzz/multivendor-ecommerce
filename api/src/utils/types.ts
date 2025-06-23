@@ -8,6 +8,14 @@ export interface IUser {
   profile_pic_url?: string | null;
 }
 
+export interface IVendor {
+    user_id: string;
+    store_name: string;
+    bio: string | null;
+    image_url: string | null;
+    vendor_id: string;
+}
+
 // Auth interfaces
 export interface ILoginRequest {
   email: string;
@@ -26,6 +34,7 @@ export interface ILoginResponse {
     is_verified: boolean;
     profile_pic_url: string | null;
     phone: string | null;
+    vendor?: IVendor;
   };
   token?: string;
   emailSent?: boolean;
@@ -87,4 +96,20 @@ export interface ICreateStore {
   store_name: string;
   bio?: string | null;
   image_url?: string | null;
+}
+
+
+// Appwrite related interfaces
+export interface IAppwriteConfig {
+  endpoint: string;
+  projectId: string;
+  apiKey: string;
+  userProfilePicBucketId: string;
+}
+
+export interface IUploadResult {
+  success: boolean;
+  fileId?: string;
+  imageUrl?: string;
+  error?: string;
 }

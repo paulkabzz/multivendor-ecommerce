@@ -3,7 +3,12 @@ import { DecodedToken } from "../utils/authMiddleware";
 import { headers } from "../utils/helpers";
 import { withAuth } from "../utils/middleware";
 import prisma from "../utils/database";
-import { IUser } from "../utils/types";
+import { IUser, IVendor } from "../utils/types";
+
+interface IUsefuleUserDetails extends IUser {
+    user_id: string;
+    vendor?: IVendor;
+}
 
 async function getMe(request: HttpRequest, context: InvocationContext, decodedToken?: DecodedToken): Promise<HttpResponseInit> {
     if (request.method === "GET") {
@@ -24,6 +29,8 @@ async function getMe(request: HttpRequest, context: InvocationContext, decodedTo
                 where: {  user_id: decodedToken.user_id },
             });
 
+            const vendor = await prisma.vendor.findUnique({ where: { user_id: updatedUser?.user_id }});
+
             if (!updatedUser) {
                 return {
                     status: 404,
@@ -35,14 +42,15 @@ async function getMe(request: HttpRequest, context: InvocationContext, decodedTo
                 }
             }
 
-            const data: Partial<IUser & {user_id: string}> = {
+            const data: Partial<IUsefuleUserDetails> = {
                 user_id: updatedUser.user_id,
                 first_name: updatedUser.first_name,
                 last_name: updatedUser.last_name,
                 email: updatedUser.email,
                 profile_pic_url: updatedUser.profile_pic_url ?? null,
                 phone: updatedUser.phone ?? null,
-                role: updatedUser.role ?? "CUSTOMER"
+                role: updatedUser.role ?? "CUSTOMER",
+                vendor: vendor ?? undefined
             }
 
             return {

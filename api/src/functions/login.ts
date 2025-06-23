@@ -7,7 +7,6 @@ import { generateVerificationToken } from "../utils/tokenUtils";
 import { sendVerificationEmail } from "../utils/gmailService";
 import { headers } from "../utils/helpers";
 
-
 async function login(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
     context.log(`Processing login request for URL "${request.url}"`);
 
@@ -32,8 +31,9 @@ async function login(request: HttpRequest, context: InvocationContext): Promise<
             const user = await prisma.users.findUnique({
                 where: {
                     email: email.toLowerCase().trim()
-                }
+                },
             });
+
 
             if (!user) {
                 const response: ILoginResponse = {
@@ -46,6 +46,10 @@ async function login(request: HttpRequest, context: InvocationContext): Promise<
                     body: JSON.stringify(response)
                 };
             }
+
+            const vendor = await prisma.vendor.findFirst({
+                where: { user_id: user?.user_id }
+            })
 
             const url: URL = new URL(request.url);
             const baseUrl: string = `${url.protocol}//localhost:5173`;
@@ -122,7 +126,8 @@ async function login(request: HttpRequest, context: InvocationContext): Promise<
                     role: user.role || 'CUSTOMER',
                     is_verified: user.is_verified || false,
                     phone: user.phone ?? null,
-                    profile_pic_url: user.profile_pic_url ?? null
+                    profile_pic_url: user.profile_pic_url ?? null,
+                    vendor: (vendor ? vendor : undefined)
                 },
                 token
             };
