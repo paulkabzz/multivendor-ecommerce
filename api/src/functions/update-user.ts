@@ -25,7 +25,7 @@ if (request.method === "PATCH") {
 
             const processingResult = await processImageFromMultipart(
                 request,
-                'avatar', // field name for the image
+                'avatar',
                 {
                     maxSizeBytes: 20 * 1024 * 1024, // 20MB
                     outputQuality: 85,
@@ -33,7 +33,7 @@ if (request.method === "PATCH") {
                     maxHeight: 1024,
                     convertToJpeg: true
                 },
-                context // for logging
+                context
             );
 
             if (!processingResult.success) {

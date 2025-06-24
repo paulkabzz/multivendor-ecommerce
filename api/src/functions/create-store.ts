@@ -17,7 +17,7 @@ async function createStore(request: HttpRequest, context: InvocationContext, dec
             if (contentType.includes("multipart/form-data")) {
                 const processingResult = await processImageFromMultipart(
                     request,
-                    'avatar', // field name for the image
+                    'avatar',
                     {
                         maxSizeBytes: 20 * 1024 * 1024, // 20MB
                         outputQuality: 85,
@@ -25,7 +25,7 @@ async function createStore(request: HttpRequest, context: InvocationContext, dec
                         maxHeight: 1024,
                         convertToJpeg: true
                     },
-                    context // for logging
+                    context
                 );
 
                 if (!processingResult.success) {
@@ -185,7 +185,6 @@ async function createStore(request: HttpRequest, context: InvocationContext, dec
         } catch (error: unknown) {
             context.error("Error creating store:", error);
             
-            // Return appropriate error message
             if (error instanceof Error) {
                 if (error.message.includes("Only customers and admins")) {
                     return {

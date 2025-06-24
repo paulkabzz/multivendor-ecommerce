@@ -13,14 +13,6 @@ const DEFAULT_OPTIONS: Required<ImageProcessingOptions> = {
   convertToJpeg: true
 };
 
-/**
- * Processes multipart form data and extracts image files with optional conversion and resizing
- * @param request - The incoming request object
- * @param imageFieldName - The name of the form field containing the image (e.g., 'avatar', 'profile_pic')
- * @param options - Processing options for the image
- * @param context - Optional context object for logging
- * @returns Promise<ImageProcessingResult>
- */
 export async function processImageFromMultipart(
   request: HttpRequest,
   imageFieldName: string = 'avatar',
@@ -38,7 +30,6 @@ export async function processImageFromMultipart(
       };
     }
 
-    // Extract boundary
     const boundary = contentType.split("boundary=")[1];
     if (!boundary) {
       return {
@@ -47,7 +38,6 @@ export async function processImageFromMultipart(
       };
     }
 
-    // Parse multipart data
     const body = await request.arrayBuffer();
     const parts = multipart.parse(Buffer.from(body), boundary);
     
@@ -87,13 +77,6 @@ export async function processImageFromMultipart(
   }
 }
 
-/**
- * Processes a single image buffer with conversion and resizing
- * @param part - Multipart data part containing the image
- * @param options - Processing options
- * @param context - Optional context for logging
- * @returns Promise<ImageProcessingResult>
- */
 async function processImageBuffer(
   part: { data: Buffer; type?: string; filename?: string },
   options: Required<ImageProcessingOptions>,
@@ -156,9 +139,6 @@ async function processImageBuffer(
   }
 }
 
-/**
- * Processes HEIC images by converting them to JPEG
- */
 async function processHeicImage(
   buffer: Buffer,
   filename: string,
@@ -175,7 +155,6 @@ async function processHeicImage(
       quality: 0.8
     });
 
-    // Further process with Sharp
     const processedBuffer = await sharp(Buffer.from(jpegBuffer))
       .jpeg({ 
         quality: options.outputQuality,
@@ -208,9 +187,6 @@ async function processHeicImage(
   }
 }
 
-/**
- * Processes regular images (JPEG, PNG, WebP) with resizing
- */
 async function processRegularImage(
   buffer: Buffer,
   filename: string,
@@ -289,11 +265,7 @@ async function processRegularImage(
   }
 }
 
-/**
- * Simple wrapper for processing just JSON data (no images)
- * @param request - The incoming request
- * @returns Promise<any> - Parsed JSON data
- */
+
 export async function parseJsonRequest(request: HttpRequest): Promise<any> {
   try {
     return await request.json();
@@ -315,16 +287,3 @@ export const headers = {
     'Content-Type': 'application/json',
     'Access-Control-Allow-Headers': 'Content-Type, Authorization'
 } as const;
-
-export const isValidAppwriteImageUrl = (url: string, userId: string): boolean => {
-    try {
-        // This'll check if URL contains the expected pattern for the Appwrite instance
-        const urlPattern = /\/storage\/buckets\/[^\/]+\/files\/[^\/]+\/(preview|view)/;
-        const isValidPattern = urlPattern.test(url);
-        
-        return isValidPattern;
-    } catch (error) {
-        console.error('Error validating image URL:', error);
-        return false;
-    }
-}
