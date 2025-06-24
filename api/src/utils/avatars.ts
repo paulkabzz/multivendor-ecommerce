@@ -77,14 +77,13 @@ class AppwriteAvatarService {
         "image/jpg", 
         "image/png",
         "image/webp",
-        "image/heic", //HEIC would be a common image extension due to the number of iphone users, but struggling to get it to submit. TODO: fix
         "image/svg+xml",
       ];
       
       if (!allowedTypes.includes(mimeType)) {
         return {
           success: false,
-          error: "Invalid file type. Please upload a valid image file (JPEG, PNG, HEIC, WEBP, or SVG).",
+          error: "Invalid file type. Please upload a valid image file (JPEG, PNG, WEBP, or SVG). Provided mime type: " + mimeType,
         };
       }
 
@@ -94,11 +93,10 @@ class AppwriteAvatarService {
       }
       
       if (!normalizedFileName.includes('.')) {
-        const extension: '.jpg' | '.png' | '.webp' | '.svg' | '.heic' = 
+        const extension: '.jpg' | '.png' | '.webp' | '.svg'  = 
           mimeType === 'image/jpeg' ? '.jpg' : 
           mimeType === 'image/png' ? '.png' :
           mimeType === 'image/webp' ? '.webp' :
-          mimeType === 'image/heic' ? '.heic' :
           mimeType === 'image/svg+xml' ? '.svg' : '.jpg';
 
         normalizedFileName = `${normalizedFileName}${extension}`;
