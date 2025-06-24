@@ -7,9 +7,6 @@ import { generateVerificationToken } from "../utils/tokenUtils";
 import { sendVerificationEmail } from "../utils/gmailService";
 import { headers, isValidUCTEmail, parseJsonRequest, processImageFromMultipart } from "../utils/helpers";
 import { Avatar } from "../utils/avatars";
-import * as multipart from "parse-multipart-data";
-import convert from 'heic-convert';
-import sharp from 'sharp';
 
 interface IUpdateUserWithAvatarRequest extends IUpdateUserRequest {
     avatar_url?: string;
@@ -25,7 +22,7 @@ if (request.method === "PATCH") {
         const contentType = request.headers.get("content-type") || "";
         
         if (contentType.includes("multipart/form-data")) {
-            // Use the reusable image processing function
+
             const processingResult = await processImageFromMultipart(
                 request,
                 'avatar', // field name for the image
@@ -61,7 +58,7 @@ if (request.method === "PATCH") {
             };
 
         } else {
-            // Handle JSON requests
+
             requestData = await parseJsonRequest(request) as IUpdateUserWithAvatarRequest;
         }
 
@@ -300,9 +297,7 @@ if (request.method === "PATCH") {
                 message: "Internal server error"
             })
         };
-    } finally {
-        await prisma.$disconnect();
-    }
+    } 
 }
     return {
         status: 405,

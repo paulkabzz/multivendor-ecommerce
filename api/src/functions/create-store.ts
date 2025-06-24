@@ -1,15 +1,56 @@
 import { app, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/functions";
 import { DecodedToken } from "../utils/authMiddleware";
-import { headers } from "../utils/helpers";
+import { headers, parseJsonRequest, processImageFromMultipart } from "../utils/helpers";
 import { withAuth } from "../utils/middleware";
 import { ICreateStore } from "../utils/types";
 import prisma from "../utils/database";
-import * as multipart from "parse-multipart-data";
+import { Avatar } from "../utils/avatars";
 
 async function createStore(request: HttpRequest, context: InvocationContext, decodedToken?: DecodedToken): Promise<HttpResponseInit> {
     if (request.method === "POST") {
         try {
-            const { user_id, store_name, bio } = await request.json() as ICreateStore;
+            let requestData: ICreateStore;
+            let imageFile: { buffer: Buffer; filename: string; mimeType: string } | null = null;
+
+            const contentType = request.headers.get("content-type") || "";
+            
+            if (contentType.includes("multipart/form-data")) {
+                const processingResult = await processImageFromMultipart(
+                    request,
+                    'avatar', // field name for the image
+                    {
+                        maxSizeBytes: 20 * 1024 * 1024, // 20MB
+                        outputQuality: 85,
+                        maxWidth: 1024,
+                        maxHeight: 1024,
+                        convertToJpeg: true
+                    },
+                    context // for logging
+                );
+
+                if (!processingResult.success) {
+                    return {
+                        status: 400,
+                        headers,
+                        body: JSON.stringify({
+                            success: false,
+                            message: processingResult.error
+                        })
+                    };
+                }
+
+                // Extract the processed image and form data
+                imageFile = processingResult.imageFile || null;
+                requestData = { 
+                    user_id: processingResult.formData?.user_id || "",
+                    store_name: processingResult.formData?.store_name || "",
+                    bio: processingResult.formData?.bio || null
+                };
+            } else {
+                requestData = await parseJsonRequest(request) as ICreateStore;
+            }
+
+            const { user_id, store_name, bio } = requestData;
 
             if (!user_id) {
                 return {
@@ -31,54 +72,7 @@ async function createStore(request: HttpRequest, context: InvocationContext, dec
                         message: "Please log in to create a store"
                     })
                 };
-            };
-
-            let requestData: ICreateStore;
-            let imageFile: { buffer: Buffer; filename: string; mimeType: string } | null = null;
-
-            const contentType = request.headers.get("content-type") || "";
-            
-            if (contentType.includes("multipart/form-data")) {
-
-                const boundary = contentType.split("boundary=")[1];
-                if (!boundary) {
-                    return {
-                        status: 400,
-                        headers,
-                        body: JSON.stringify({
-                            success: false,
-                            message: "Invalid multipart boundary"
-                        })
-                    };
-                }
-
-                const body = await request.arrayBuffer();
-                const parts = multipart.parse(Buffer.from(body), boundary);
-                
-                requestData = { user_id: "", store_name: "" };
-                
-                for (const part of parts) {
-                    const name = part.name;
-                    
-                    if (name === "avatar" && part.data && part.data.length > 0) {
-
-                        imageFile = {
-                            buffer: part.data,
-                            filename: part.filename || `avatar_${Date.now()}.jpg`,
-                            mimeType: part.type || "image/jpeg"
-                        };
-                    } else if (part.data && typeof name === "string" && name) {
-
-                        const value = part.data.toString('utf8');
-                        if (value && value.trim()) {
-                            (requestData as any)[name] = value;
-                        }
-                    }
-                }
-            } else {
-                requestData = await request.json() as ICreateStore;
             }
-
 
             if (decodedToken?.role !== "CUSTOMER" && decodedToken?.role !== "ADMIN") {
                 return {
@@ -115,35 +109,62 @@ async function createStore(request: HttpRequest, context: InvocationContext, dec
                 }
             }
 
-            const data: ICreateStore = {
-                user_id,
-                store_name,
-                bio: bio ?? null,
-            };
-
-            await prisma.$transaction(async tx => {
-                const user = await prisma.users.findFirst({ where: { user_id }});
+            // Execute the transaction
+            const result = await prisma.$transaction(async tx => {
+                const user = await tx.users.findFirst({ where: { user_id }});
 
                 if (user?.role !== "CUSTOMER" && user?.role !== "ADMIN") {
-                    return {
-                        status: 403,
-                        headers,
-                        body: JSON.stringify({
-                            success: false,
-                            message: "Only customers and admins can create stores"
-                        })
-                    }
+                    throw new Error("Only customers and admins can create stores");
                 }
 
                 if (user?.role === "CUSTOMER") {
                     await tx.users.update({
-                        where: {user_id},
-                        data: {role: "VENDOR"}
+                        where: { user_id },
+                        data: { role: "VENDOR" }
                     });
                 }
 
+                // Create vendor first without avatar_url
+                const vendorData: ICreateStore = {
+                    user_id,
+                    store_name,
+                    bio: bio ?? null,
+                };
 
-                await tx.vendor.create({ data });
+                const vendor = await tx.vendor.create({ data: vendorData });
+
+                // Now handle image upload if present
+                let avatarUrl: string | null = null;
+                if (imageFile) {
+                    try {
+                        const imageUploadResult = await Avatar.uploadVendorAvatar(
+                            imageFile.buffer,
+                            imageFile.filename,
+                            imageFile.mimeType,
+                            vendor.vendor_id,
+                            process.env.APPWRITE_VENDOR_AVATAR_BUCKET_ID ?? ""
+                        );
+
+                        if (imageUploadResult.success && imageUploadResult.imageUrl) {
+                            avatarUrl = imageUploadResult.imageUrl;
+                        } else {
+                            throw new Error(imageUploadResult.error || "Failed to upload avatar");
+                        }
+                    } catch (error: unknown) {
+                        context.error("Error uploading image:", error);
+                        throw new Error("Failed to process image upload");
+                    }
+                }
+
+                // Update vendor with avatar URL if upload was successful
+                if (avatarUrl) {
+                    await tx.vendor.update({ 
+                        where: { vendor_id: vendor.vendor_id }, 
+                        data: { avatar_url: avatarUrl }
+                    });
+                }
+
+                return { vendor, avatarUrl };
             });
 
             return {
@@ -151,11 +172,43 @@ async function createStore(request: HttpRequest, context: InvocationContext, dec
                 headers,
                 body: JSON.stringify({
                     success: true,
-                    message: "Store successfully created"
+                    message: "Store successfully created",
+                    data: {
+                        vendor_id: result.vendor.vendor_id,
+                        store_name: result.vendor.store_name,
+                        avatar_url: result.avatarUrl,
+                        bio: result.vendor.bio
+                    }
                 })
-            }            
+            };
+            
         } catch (error: unknown) {
-            context.log("Error creating store", error);
+            context.error("Error creating store:", error);
+            
+            // Return appropriate error message
+            if (error instanceof Error) {
+                if (error.message.includes("Only customers and admins")) {
+                    return {
+                        status: 403,
+                        headers,
+                        body: JSON.stringify({
+                            success: false,
+                            message: error.message
+                        })
+                    };
+                }
+                if (error.message.includes("Failed to process image") || error.message.includes("Failed to upload avatar")) {
+                    return {
+                        status: 400,
+                        headers,
+                        body: JSON.stringify({
+                            success: false,
+                            message: error.message
+                        })
+                    };
+                }
+            }
+            
             return {
                 status: 500,
                 headers,
@@ -163,11 +216,10 @@ async function createStore(request: HttpRequest, context: InvocationContext, dec
                     success: false,
                     message: "Internal server error"
                 })
-            }
+            };
         } finally {
             await prisma.$disconnect();
         }
-
     }
 
     return {

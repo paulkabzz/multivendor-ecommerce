@@ -2,27 +2,8 @@ import sharp from 'sharp';
 import convert  from 'heic-convert';
 import * as multipart from 'parse-multipart-data';
 import { HttpRequest } from '@azure/functions';
+import { ImageProcessingOptions, ImageProcessingResult, ProcessedImageFile } from './types';
 
-export interface ProcessedImageFile {
-  buffer: Buffer;
-  filename: string;
-  mimeType: string;
-}
-
-export interface ImageProcessingOptions {
-  maxSizeBytes?: number;
-  outputQuality?: number;
-  maxWidth?: number;
-  maxHeight?: number;
-  convertToJpeg?: boolean;
-}
-
-export interface ImageProcessingResult {
-  success: boolean;
-  imageFile?: ProcessedImageFile;
-  error?: string;
-  formData?: Record<string, string>;
-}
 
 const DEFAULT_OPTIONS: Required<ImageProcessingOptions> = {
   maxSizeBytes: 20 * 1024 * 1024, // 20MB

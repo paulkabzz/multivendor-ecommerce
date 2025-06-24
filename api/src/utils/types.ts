@@ -95,7 +95,7 @@ export interface ICreateStore {
   user_id: string;
   store_name: string;
   bio?: string | null;
-  // avatar: string | null;
+  avatar_url?: string | null;
 }
 
 
@@ -112,4 +112,25 @@ export interface IUploadResult {
   fileId?: string;
   imageUrl?: string;
   error?: string;
+}
+
+export interface ProcessedImageFile {
+  buffer: Buffer;
+  filename: string;
+  mimeType: string;
+}
+
+export interface ImageProcessingOptions {
+  maxSizeBytes?: number;
+  outputQuality?: number;
+  maxWidth?: number;
+  maxHeight?: number;
+  convertToJpeg?: boolean;
+}
+
+export interface ImageProcessingResult {
+  success: boolean;
+  imageFile?: ProcessedImageFile;
+  error?: string;
+  formData?: Record<string, string>;
 }
