@@ -5,7 +5,7 @@ import { DecodedToken } from "../utils/authMiddleware";
 import { withAuth } from "../utils/middleware";
 import { generateVerificationToken } from "../utils/tokenUtils";
 import { sendVerificationEmail } from "../utils/gmailService";
-import { headers, isValidUCTEmail } from "../utils/helpers";
+import { headers, isValidUCTEmail, parseJsonRequest, processImageFromMultipart } from "../utils/helpers";
 import { Avatar } from "../utils/avatars";
 import * as multipart from "parse-multipart-data";
 import convert from 'heic-convert';
@@ -16,6 +16,7 @@ interface IUpdateUserWithAvatarRequest extends IUpdateUserRequest {
 }
 
 async function updateUserHandler(request: HttpRequest, context: InvocationContext, decodedToken?: DecodedToken): Promise<HttpResponseInit> {
+
 if (request.method === "PATCH") {
     try {
         let requestData: IUpdateUserWithAvatarRequest;
@@ -24,134 +25,47 @@ if (request.method === "PATCH") {
         const contentType = request.headers.get("content-type") || "";
         
         if (contentType.includes("multipart/form-data")) {
+            // Use the reusable image processing function
+            const processingResult = await processImageFromMultipart(
+                request,
+                'avatar', // field name for the image
+                {
+                    maxSizeBytes: 20 * 1024 * 1024, // 20MB
+                    outputQuality: 85,
+                    maxWidth: 1024,
+                    maxHeight: 1024,
+                    convertToJpeg: true
+                },
+                context // for logging
+            );
 
-            const boundary = contentType.split("boundary=")[1];
-            if (!boundary) {
+            if (!processingResult.success) {
                 return {
                     status: 400,
                     headers,
                     body: JSON.stringify({
                         success: false,
-                        message: "Invalid multipart boundary"
+                        message: processingResult.error
                     })
                 };
             }
 
-            const body = await request.arrayBuffer();
-            const parts = multipart.parse(Buffer.from(body), boundary);
-            
-            requestData = { user_id: "" };
-            
-            for (const part of parts) {
-                const name = part.name;
-                
-                if (name === "avatar" && part.data && part.data.length > 0) {
-                    let processedBuffer = part.data;
-                    let processedMimeType = part.type || "image/jpeg";
-                    let processedFilename = part.filename || `avatar_${Date.now()}.jpg`;
+            // Extract the processed image and form data
+            imageFile = processingResult.imageFile || null;
+            requestData = { 
+                user_id: processingResult.formData?.user_id || "",
+                first_name: processingResult.formData?.first_name,
+                last_name: processingResult.formData?.last_name,
+                email: processingResult.formData?.email,
+                phone: processingResult.formData?.phone
+            };
 
-                    // Check if the uploaded file is HEIC/HEIF
-                    const isHeic = processedMimeType.toLowerCase().includes('heic') || 
-                                  processedMimeType.toLowerCase().includes('heif') ||
-                                  processedFilename.toLowerCase().endsWith('.heic') ||
-                                  processedFilename.toLowerCase().endsWith('.heif') ||
-
-                                  processedMimeType === 'image/heif';
-
-                    if (isHeic) {
-                        try {
-                            context.log(`Converting HEIC image to JPEG: ${processedFilename}`);
-                            
-                            // Convert HEIC to JPEG using heic-convert
-                            const jpegBuffer = await convert({
-                                buffer: processedBuffer,
-                                format: 'JPEG',
-                                quality: 0.8 
-                            });
-
-
-                            processedBuffer = await sharp(Buffer.from(jpegBuffer))
-                                .jpeg({ 
-                                    quality: 85,
-                                    progressive: true 
-                                })
-                                .resize(1024, 1024, { 
-                                    fit: 'inside',
-                                    withoutEnlargement: true 
-                                })
-                                .toBuffer();
-
-                            processedMimeType = "image/jpeg";
-                            
-                            const nameWithoutExt = processedFilename.replace(/\.(heic|heif)$/i, '');
-                            processedFilename = `${nameWithoutExt}.jpg`;
-                            
-                            context.log(`Successfully converted HEIC to JPEG: ${processedFilename}, size: ${processedBuffer.length} bytes`);
-                            
-                        } catch (conversionError) {
-                            context.error("Error converting HEIC to JPEG:", conversionError);
-                            return {
-                                status: 400,
-                                headers,
-                                body: JSON.stringify({
-                                    success: false,
-                                    message: "Failed to convert HEIC image. Please try uploading a JPEG or PNG file instead."
-                                })
-                            };
-                        }
-                    } else {
-
-                        try {
-                            const imageInfo = await sharp(processedBuffer).metadata();
-                            
-
-                            if (imageInfo.format && ['jpeg', 'jpg', 'png', 'webp'].includes(imageInfo.format)) {
-                                processedBuffer = await sharp(processedBuffer)
-                                    .resize(1024, 1024, { 
-                                        fit: 'inside',
-                                        withoutEnlargement: true 
-                                    })
-                                    .jpeg({ quality: 85 })
-                                    .toBuffer();
-                                
-                                processedMimeType = "image/jpeg";
-
-                                if (!processedFilename.toLowerCase().endsWith('.jpg') && !processedFilename.toLowerCase().endsWith('.jpeg')) {
-                                    const nameWithoutExt = processedFilename.replace(/\.(png|webp|gif|bmp)$/i, '');
-                                    processedFilename = `${nameWithoutExt}.jpg`;
-                                }
-                            }
-                        } catch (imageProcessError) {
-                            context.log("Image processing skipped:", imageProcessError);
-                            return {
-                                status: 400,
-                                headers,
-                                body: JSON.stringify({
-                                    success: false,
-                                    message: "Failed to process image"
-                                })
-                            }
-                        }
-                    }
-
-                    imageFile = {
-                        buffer: processedBuffer,
-                        filename: processedFilename,
-                        mimeType: processedMimeType
-                    };
-                } else if (part.data && typeof name === "string" && name) {
-
-                    const value = part.data.toString('utf8');
-                    if (value && value.trim()) {
-                        (requestData as any)[name] = value;
-                    }
-                }
-            }
         } else {
-            requestData = await request.json() as IUpdateUserWithAvatarRequest;
+            // Handle JSON requests
+            requestData = await parseJsonRequest(request) as IUpdateUserWithAvatarRequest;
         }
 
-        const { first_name, last_name,email, phone, user_id } = requestData;
+        const { first_name, last_name, email, phone, user_id } = requestData;
     
         if (!user_id) {
             return {
@@ -236,7 +150,6 @@ if (request.method === "PATCH") {
         if (last_name && last_name !== existingUser.last_name) updateData.last_name = last_name;
         if (phone && phone !== existingUser.phone) updateData.phone = phone;
         
-
         let imageUploadResult = null;
         if (imageFile) {
             try {
@@ -277,7 +190,6 @@ if (request.method === "PATCH") {
         let verificationToken = null;
         
         if (email && email !== existingUser.email) {
-
             if (!isValidUCTEmail(email)) {
                 return {
                     status: 400,
@@ -341,7 +253,6 @@ if (request.method === "PATCH") {
                 })
             }
         }
-
         
         // If email was updated, send verification email to the new email address
         let emailSent = false;
@@ -380,7 +291,6 @@ if (request.method === "PATCH") {
         };
 
     } catch (error: unknown) {
-
         context.error("Error updating user", error);
         return {
             status: 500,
@@ -390,8 +300,9 @@ if (request.method === "PATCH") {
                 message: "Internal server error"
             })
         };
+    } finally {
+        await prisma.$disconnect();
     }
-
 }
     return {
         status: 405,
