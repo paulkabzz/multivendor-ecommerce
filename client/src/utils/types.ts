@@ -48,7 +48,7 @@ export interface IUser {
   role?: "CUSTOMER" | "VENDOR" | "ADMIN";
   password: string;
   is_verified?: boolean;
-  profile_pic_url?: string;
+  avatar_url?: string;
 }
 
 export interface UserState {
@@ -59,7 +59,7 @@ export interface UserState {
     email?: string;
     role?: string;
     is_verified?: boolean;
-    profile_pic_url?: string;
+    avatar_url?: string;
   } | null;
   token: string | null;
   isAuthenticated: boolean;

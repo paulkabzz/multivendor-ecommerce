@@ -16,10 +16,14 @@ async function updateUserHandler(request: HttpRequest, context: InvocationContex
 
 if (request.method === "PATCH") {
     try {
+
+        context.warn(request)
         let requestData: IUpdateUserWithAvatarRequest;
         let imageFile: { buffer: Buffer; filename: string; mimeType: string } | null = null;
 
         const contentType = request.headers.get("content-type") || "";
+
+        context.warn(contentType)
         
         if (contentType.includes("multipart/form-data")) {
 

@@ -134,6 +134,50 @@ export const updateUser = createAsyncThunk(
   },
 );
 
+// Async thunk for updating usr avatar
+export const updateUserAvatar = createAsyncThunk(
+  "user/updateAvatar",
+  async (
+    { userId, avatarFile }: { userId: string; avatarFile: File },
+    { getState, rejectWithValue },
+  ) => {
+    try {
+      const state = getState() as { user: UserState };
+      const token = state.user.token;
+
+      if (!token) {
+        return rejectWithValue("No authentication token found");
+      }
+
+      const formData = new FormData();
+      formData.append('user_id', userId);
+      formData.append('avatar', avatarFile);
+
+      const response = await fetch(`${BASE_URL}/update-user`, {
+        method: "PATCH",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (!data.success) {
+        return rejectWithValue(data.message);
+      }
+
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      return data;
+    } catch (error) {
+      console.error("Error updating avatar: " + error);
+      return rejectWithValue("Failed to update avatar. Please try again.");
+    }
+  },
+);
+
 // Create the user slice
 const userSlice = createSlice({
   name: "user",
@@ -154,7 +198,6 @@ const userSlice = createSlice({
       state.error = null;
     },
     updateUserLocal: (state, action: PayloadAction<Partial<IUser>>) => {
-      // For optimistic updates or local state changes
       if (state.user) {
         state.user = { ...state.user, ...action.payload };
         localStorage.setItem("user", JSON.stringify(state.user));
@@ -198,9 +241,21 @@ const userSlice = createSlice({
       .addCase(updateUser.fulfilled, (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.user = action.payload.user;
-        // Keep the same token and authentication status
       })
       .addCase(updateUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      // Update avatar cases
+      .addCase(updateUserAvatar.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateUserAvatar.fulfilled, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.user = action.payload.user;
+      })
+      .addCase(updateUserAvatar.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       });

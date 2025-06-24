@@ -62,9 +62,9 @@ export const ProfileSideBar: React.FC<IProfileSideBar> = ({
       <div className="p-6 border-b border-gray-100">
         <div className="flex items-center space-x-4">
           <div className="w-16 h-16 rounded-full flex items-center justify-center overflow-hidden">
-            {user?.profile_pic_url ? (
+            {user?.avatar_url ? (
               <img
-                src={user.profile_pic_url}
+                src={user.avatar_url}
                 alt="Profile"
                 className="w-full h-full object-cover"
               />

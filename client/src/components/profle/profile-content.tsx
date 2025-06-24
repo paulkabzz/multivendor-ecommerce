@@ -5,10 +5,9 @@ import { Input } from "../common/input/input";
 import defaultProfilePic from "@assets/ui/default.png";
 import { ProfileSideBar } from "./profile-sidebar";
 import { Camera, CreditCard, MapPin, ShoppingBag, X, Upload, Loader2 } from "lucide-react";
-import { updateUser } from "@/src/store/slices/userSlice";
+import { updateUser, updateUserAvatar } from "@/src/store/slices/userSlice";
 import type { AppDispatch, RootState } from "@/src/store/index";
 import FileUploader from "../common/file-uploader/file-uploader";
-import { imageService } from "@src/appwrite/imageService";
 
 interface IProfileContentProps {
   user: any;
@@ -17,8 +16,6 @@ interface IProfileContentProps {
 const ProfileContent: React.FC<IProfileContentProps> = ({ user }) => {
   const dispatch = useDispatch<AppDispatch>();
   const { loading, error } = useSelector((state: RootState) => state.user);
-  const token =
-    useSelector((state: RootState) => state.user.token) ?? undefined;
 
   const [activeTab, setActiveTab] = useState(1);
   const [formData, setFormData] = useState({
@@ -33,27 +30,7 @@ const ProfileContent: React.FC<IProfileContentProps> = ({ user }) => {
   const [showUploader, setShowUploader] = useState(false);
   const [profileImage, setProfileImage] = useState<File[]>([]);
   const [isClosing, setIsClosing] = useState(false);
-  const [imageUploading, setImageUploading] = useState(false);
   const [imageUploadError, setImageUploadError] = useState<string | null>(null);
-  const [currentProfileImageUrl, setCurrentProfileImageUrl] =
-    useState<string>("");
-
-  // Load current profile image URL
-  useEffect(() => {
-    const loadProfileImage = async () => {
-      if (user?.user_id) {
-        try {
-          const imageUrl = await imageService.getProfileImageUrl(user.user_id);
-          setCurrentProfileImageUrl(imageUrl || user?.profile_pic_url || "");
-        } catch (error) {
-          console.error("Error loading profile image:", error);
-          setCurrentProfileImageUrl(user?.profile_pic_url || "");
-        }
-      }
-    };
-
-    loadProfileImage();
-  }, [user?.user_id, user?.profile_pic_url]);
 
   // Update form data when user prop changes
   useEffect(() => {
@@ -166,71 +143,32 @@ const ProfileContent: React.FC<IProfileContentProps> = ({ user }) => {
       return;
     }
 
-    setImageUploading(true);
-    setImageUploadError(null);
-
     try {
       const file = profileImage[0];
       console.log("Uploading profile image for user:", user.user_id);
 
-      const uploadResult = await imageService.uploadProfileImage(
-        file,
-        user.user_id,
-        token,
-      );
+      const resultAction = await dispatch(updateUserAvatar({
+        userId: user.user_id,
+        avatarFile: file
+      }));
 
-      if (uploadResult.success && uploadResult.imageUrl) {
-        console.log("Image uploaded successfully:", uploadResult);
-
-        // Update user profile with new image URL
-        const updateData = {
-          user_id: user.user_id,
-          profile_pic_url: uploadResult.imageUrl,
-        };
-
-        const resultAction = await dispatch(updateUser(updateData));
-
-        if (updateUser.fulfilled.match(resultAction)) {
-          console.log("Profile updated with new image URL");
-
-          setCurrentProfileImageUrl(uploadResult.imageUrl);
-
-          handleCloseModal();
-
-          setSaveSuccess(true);
-          setTimeout(() => {
-            setSaveSuccess(false);
-          }, 3000);
-        } else {
-          // Handle backend update failure
-          console.error("Backend update failed:", resultAction.payload);
-
-          // Don't redirect - just show error
-          throw new Error(
-            (resultAction.payload as string) ||
-              "Failed to update profile with new image URL",
-          );
-        }
+      if (updateUserAvatar.fulfilled.match(resultAction)) {
+        // Success! Close the modal and show success message
+        handleCloseModal();
+        setSaveSuccess(true);
+        setTimeout(() => setSaveSuccess(false), 3000);
+        console.log("Profile image uploaded successfully:", resultAction.payload);
       } else {
-        throw new Error(uploadResult.error || "Failed to upload image");
+        // Handle error from the thunk
+        const errorMessage = resultAction.payload as string;
+        setImageUploadError(errorMessage || "Failed to upload image");
       }
+
     } catch (error: any) {
       console.error("Error uploading profile image:", error);
-
-      const errorMessage = handleImageUploadError(error);
-      setImageUploadError(errorMessage);
-
-      // Don't redirect on error - stay on the same page
-    } finally {
-      setImageUploading(false);
+      setImageUploadError("An unexpected error occurred while uploading the image.");
     }
   };
-
-  function handleImageUploadError(error: any): string {
-    if (error?.message) return error.message;
-    if (typeof error === "string") return error;
-    return "An unexpected error occurred while uploading the image.";
-  }
 
   const renderContent = () => {
     switch (activeTab) {
@@ -271,7 +209,7 @@ const ProfileContent: React.FC<IProfileContentProps> = ({ user }) => {
           <div className="w-32 h-32 rounded-full overflow-hidden">
             <div className="w-full h-full rounded-full overflow-hidden">
               <img
-                src={currentProfileImageUrl || defaultProfilePic}
+                src={user?.avatar_url || defaultProfilePic}
                 alt={`${user?.first_name}'s profile`}
                 className="w-full h-full object-cover"
               />
@@ -280,9 +218,9 @@ const ProfileContent: React.FC<IProfileContentProps> = ({ user }) => {
           <button
             onClick={() => setShowUploader(true)}
             className="absolute bottom-1 right-1 w-7 h-7 bg-primary-dark text-white rounded-full flex items-center justify-center shadow-lg transition-all duration-200 hover:shadow-xl hover:scale-110 transform hover:from-blue-700 hover:to-blue-800"
-            disabled={imageUploading}
+            disabled={loading}
           >
-            {imageUploading ? (
+            {loading ? (
               <Loader2 size={18} className="animate-spin" />
             ) : (
               <Camera size={18} />
@@ -432,7 +370,7 @@ const ProfileContent: React.FC<IProfileContentProps> = ({ user }) => {
         <div className={`fixed inset-0 z-50 flex items-center justify-center p-4 transition-all duration-300 ease-out ${isClosing ? "opacity-0" : "opacity-100"}`}>
 
           {/* Backdrop */}
-          <div className={`absolute inset-0 bg-black transition-opacity duration-300 ${isClosing ? "opacity-0" : "opacity-50"}`} onClick={!imageUploading ? handleCloseModal : undefined}/>
+          <div className={`absolute inset-0 bg-black transition-opacity duration-300 ${isClosing ? "opacity-0" : "opacity-50"}`} onClick={!loading ? handleCloseModal : undefined}/>
 
           {/* Modal */}
           <div className={`relative bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden transition-all duration-300 ease-out ${isClosing ? "scale-95 opacity-0" : "scale-100 opacity-100"}`}>
@@ -453,7 +391,7 @@ const ProfileContent: React.FC<IProfileContentProps> = ({ user }) => {
                     </p>
                   </div>
                 </div>
-                <button onClick={handleCloseModal} disabled={imageUploading} className="w-8 h-8 bg-white bg-opacity-20 cursor-pointer rounded-full flex items-center justify-center hover:bg-opacity-30 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                <button onClick={handleCloseModal} disabled={loading} className="w-8 h-8 bg-white bg-opacity-20 cursor-pointer rounded-full flex items-center justify-center hover:bg-opacity-30 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
                   <X size={18} />
                 </button>
               </div>
@@ -470,7 +408,7 @@ const ProfileContent: React.FC<IProfileContentProps> = ({ user }) => {
               )}
 
               <div className="h-96">
-                <FileUploader fieldChange={handleProfileImageChange} mediaUrl={user?.profile_pic_url || ""}/>
+                <FileUploader fieldChange={handleProfileImageChange} mediaUrl={user?.avatar_url || ""}/>
               </div>
             </div>
 
@@ -485,14 +423,14 @@ const ProfileContent: React.FC<IProfileContentProps> = ({ user }) => {
                 <Button
                   text="Cancel"
                   action={handleCloseModal}
-                  disabled={imageUploading}
+                  disabled={loading}
                   className="px-4 py-2 !bg-gray-200 !text-gray-700 hover:!bg-gray-300 rounded-lg font-medium transition-all duration-200 disabled:opacity-50"
                 />
                 <Button
-                  text={imageUploading ? "Uploading..." : profileImage.length > 0 ? "Save Image" : "Choose Image"}
+                  text={loading ? "Uploading..." : profileImage.length > 0 ? "Save Image" : "Choose Image"}
                   action={handleSaveProfileImage}
-                  disabled={profileImage.length === 0 || imageUploading}
-                  className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 flex items-center space-x-2 ${ profileImage.length > 0 && !imageUploading ? " !text-white !bg-[rgb(46,152,111)] shadow-lg hover:shadow-xl transform hover:scale-[1.01]" : "!bg-gray-300 !text-gray-500 cursor-not-allowed" }`}
+                  disabled={profileImage.length === 0 || loading}
+                  className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 flex items-center space-x-2 ${ profileImage.length > 0 && !loading ? " !text-white !bg-[rgb(46,152,111)] shadow-lg hover:shadow-xl transform hover:scale-[1.01]" : "!bg-gray-300 !text-gray-500 cursor-not-allowed" }`}
                 />
               </div>
             </div>

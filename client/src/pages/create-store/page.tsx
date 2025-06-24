@@ -24,7 +24,7 @@ const {  user, token } = useAppSelector((state) => state.user);
       setFormData({
         store_name: `${user.first_name} ${user.last_name}`.trim() || '',
         bio: `Welcome to ${user.first_name}'s store!` || '',
-        image_url: user.profile_pic_url || ''
+        image_url: user.avatar_url || ''
       });
     } else if (!useProfileDetails) {
       setFormData({
@@ -163,7 +163,7 @@ const {  user, token } = useAppSelector((state) => state.user);
                     <div className="flex items-center space-x-3">
                       <div className="w-10 h-10 rounded-full overflow-hidden">
                         <img
-                          src={user.profile_pic_url || '/default-avatar.png'}
+                          src={user.avatar_url || '/default-avatar.png'}
                           alt={user.first_name}
                           className="w-full h-full object-cover"
                         />
