@@ -58,8 +58,8 @@ async function getMe(request: HttpRequest, context: InvocationContext, decodedTo
                 headers,
                 body: JSON.stringify({
                     success: true,
-                    message: "User details updated",
-                    data
+                    message: "User details retrieved successfully",
+                    user: data
                 })
             }
         } catch (error: unknown) {

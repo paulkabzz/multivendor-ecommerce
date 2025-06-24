@@ -17,7 +17,7 @@ import {
   Verification,
 } from "@src/routes";
 import RootLayout from "@src/root-layout";
-import ProtectedRoute from "@src/components/common/ProtectedRoute";
+import ProtectedRoute from "@/src/components/common/protected-route";
 
 function App(): React.ReactElement {
   return (

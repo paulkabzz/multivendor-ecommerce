@@ -1,22 +1,30 @@
 import { useState, useEffect } from 'react';
-import { Store, CheckCircle2, Loader2 } from 'lucide-react';
+import { CheckCircle2, Loader2, Camera, Upload, X } from 'lucide-react';
 import { Button } from '@/src/components/common/buttons/button';
 import { useAppSelector } from '@/src/store/hooks';
 import { BASE_URL } from '@/src/utils/url';
+import FileUploader from '@/src/components/common/file-uploader/file-uploader';
+import defaultStore from '@assets/ui/default-store.png'
 
 const CreateStore = () => {
-const {  user, token } = useAppSelector((state) => state.user);
+  const { user, token } = useAppSelector((state) => state.user);
     
-  
   const [useProfileDetails, setUseProfileDetails] = useState(false);
   const [formData, setFormData] = useState({
     store_name: '',
     bio: '',
-    image_url: ''
+    avatar: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
+  
+  // Avatar upload modal states
+  const [showUploader, setShowUploader] = useState(false);
+  const [avatarFile, setAvatarFile] = useState<File[]>([]);
+  const [isClosing, setIsClosing] = useState(false);
+  const [imageUploadError, setImageUploadError] = useState<string | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string>('');
 
   // Update form data when checkbox is toggled
   useEffect(() => {
@@ -24,14 +32,16 @@ const {  user, token } = useAppSelector((state) => state.user);
       setFormData({
         store_name: `${user.first_name} ${user.last_name}`.trim() || '',
         bio: `Welcome to ${user.first_name}'s store!` || '',
-        image_url: user.avatar_url || ''
+        avatar: user.avatar_url || '',
       });
+      setPreviewUrl(user.avatar_url || '');
     } else if (!useProfileDetails) {
       setFormData({
         store_name: '',
         bio: '',
-        image_url: ''
+        avatar: ''
       });
+      setPreviewUrl('');
     }
   }, [useProfileDetails, user]);
 
@@ -40,6 +50,8 @@ const {  user, token } = useAppSelector((state) => state.user);
       ...prev,
       [field]: value
     }));
+
+    console.warn(value);
     
     // Clear error when user starts typing
     if (error) {
@@ -47,62 +59,111 @@ const {  user, token } = useAppSelector((state) => state.user);
     }
   };
 
-  const handleSubmit = async () => {
-    if (!user?.user_id) {
-      setError('Please log in to create a store');
-      return;
-    }
+const handleCloseModal = () => {
+  setIsClosing(true);
+  setTimeout(() => {
+    setShowUploader(false);
+    setIsClosing(false);
+    // DON'T clear avatarFile here - we need it for form submission
+    // setAvatarFile([]);
+    setImageUploadError(null);
+  }, 200);
+};
 
-    if (!formData.store_name.trim() || formData.store_name.length < 2) {
-      setError('Store name must be at least 2 characters long');
-      return;
-    }
-
-    setIsSubmitting(true);
-    setError('');
-
-    try {
-      const response = await fetch(`${BASE_URL}/create-store`, {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          user_id: user.user_id,
-          store_name: formData.store_name.trim(),
-          bio: formData.bio.trim() || null,
-          image_url: formData.image_url || null
-        })
-      });
-
-      const data = await response.json();
-
-      if (!data.success) {
-        setError(data.message);
-        return;
-      }
-
-      setSuccess(true);
-      
-      // Redirect to store dashboard or show success message
-      setTimeout(() => {
-        // Navigate to store dashboard
-        // navigate('/store/dashboard');
-      }, 2000);
-
-    } catch (error) {
-      console.error('Error creating store:', error);
-      setError('Failed to create store. Please try again.');
-    } finally {
-      setIsSubmitting(false);
+  const handleAvatarChange = (files: File[]) => {
+    setAvatarFile(files);
+    setImageUploadError(null);
+    
+    // Create preview URL
+    if (files.length > 0) {
+      const file = files[0];
+      const url = URL.createObjectURL(file);
+      setPreviewUrl(url);
     }
   };
 
+  const handleSaveAvatar = () => {
+    if (avatarFile.length === 0) {
+      setImageUploadError("Please select an image");
+      return;
+    }
+    
+    // Close modal and keep the selected file for form submission
+    handleCloseModal();
+  };
+
+const handleSubmit = async () => {
+  if (!user?.user_id) {
+    setError('Please log in to create a store');
+    return;
+  }
+
+  if (!formData.store_name.trim() || formData.store_name.length < 2) {
+    setError('Store name must be at least 2 characters long');
+    return;
+  }
+
+  setIsSubmitting(true);
+  setError('');
+
+  try {
+    // Create FormData for multipart/form-data request
+    const formDataToSend = new FormData();
+    formDataToSend.append('user_id', user.user_id);
+    formDataToSend.append('store_name', formData.store_name.trim());
+    
+    if (formData.bio.trim()) {
+      formDataToSend.append('bio', formData.bio.trim());
+    }
+    
+    // Add avatar file if selected
+    if (avatarFile.length > 0) {
+      console.log('Adding avatar file:', avatarFile[0]); // DEBUG
+      formDataToSend.append('avatar', avatarFile[0]);
+    } else {
+      console.log('No avatar file to send'); // DEBUG
+    }
+
+    // Debug: Log all FormData entries
+    console.log('FormData entries:');
+    for (let [key, value] of formDataToSend.entries()) {
+      console.log(key, value);
+    }
+
+    const response = await fetch(`${BASE_URL}/create-store`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`
+        // Don't set Content-Type header - let browser set it for multipart/form-data
+      },
+      body: formDataToSend
+    });
+
+    const data = await response.json();
+
+    if (!data.success) {
+      setError(data.message);
+      return;
+    }
+
+    setSuccess(true);
+    // Redirect to store dashboard or show success message
+    setTimeout(() => {
+      // Navigate to store dashboard
+      // navigate('/store/dashboard');
+    }, 2000);
+
+  } catch (error) {
+    console.error('Error creating store:', error);
+    setError('Failed to create store. Please try again.');
+  } finally {
+    setIsSubmitting(false);
+  }
+};
+
   if (success) {
     return (
-      <section className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 flex flex-col justify-center items-center px-4">
+      <section className="min-h-screen bg-white flex flex-col justify-center items-center px-4">
         <div className="bg-white rounded-3xl shadow-2xl p-12 max-w-md w-full text-center">
           <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <CheckCircle2 size={40} className="text-green-600" />
@@ -120,13 +181,10 @@ const {  user, token } = useAppSelector((state) => state.user);
   }
 
   return (
-    <section className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 flex flex-col justify-center items-center px-4 py-8">
-      <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-12 max-w-2xl w-full">
+    <section className="min-h-screen bg-white flex flex-col justify-center items-center px-4 py-8">
+      <div className="max-w-2xl w-full">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="w-20 h-20 bg-gradient-to-r from-blue-600 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
-            <Store size={40} className="text-white" />
-          </div>
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Create Your Store</h1>
           <p className="text-gray-600">Set up your online presence and start selling</p>
         </div>
@@ -163,7 +221,7 @@ const {  user, token } = useAppSelector((state) => state.user);
                     <div className="flex items-center space-x-3">
                       <div className="w-10 h-10 rounded-full overflow-hidden">
                         <img
-                          src={user.avatar_url || '/default-avatar.png'}
+                          src={user.avatar_url || defaultStore}
                           alt={user.first_name}
                           className="w-full h-full object-cover"
                         />
@@ -181,6 +239,38 @@ const {  user, token } = useAppSelector((state) => state.user);
             </div>
           </div>
         )}
+
+        {/* Store Avatar Section */}
+        <div className="mb-8">
+          <label className="block text-sm font-semibold text-gray-700 mb-4">
+            Store Avatar
+          </label>
+          <div className="flex flex-col items-center">
+            <div className="relative group">
+              <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-gray-200">
+                <img
+                  src={previewUrl || defaultStore}
+                  alt="Store avatar"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <button
+                onClick={() => setShowUploader(true)}
+                className="absolute bottom-1 right-1 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center shadow-lg transition-all duration-200 hover:shadow-xl hover:scale-110 transform hover:bg-blue-700"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <Loader2 size={18} className="animate-spin" />
+                ) : (
+                  <Camera size={18} />
+                )}
+              </button>
+            </div>
+            <p className="text-xs text-gray-500 mt-2 text-center">
+              Optional - Upload an avatar for your store
+            </p>
+          </div>
+        </div>
 
         {/* Form */}
         <div className="space-y-6">
@@ -210,7 +300,7 @@ const {  user, token } = useAppSelector((state) => state.user);
           {/* Bio */}
           <div>
             <label htmlFor="bio" className="block text-sm font-semibold text-gray-700 mb-2">
-              Store Description
+              Store Bio
             </label>
             <textarea
               id="bio"
@@ -230,50 +320,21 @@ const {  user, token } = useAppSelector((state) => state.user);
             </p>
           </div>
 
-          {/* Store Image URL */}
-          <div>
-            <label htmlFor="image_url" className="block  text-sm font-semibold text-gray-700 mb-2">
-              Store Image URL
-            </label>
-            <input
-              type="url"
-              id="image_url"
-              value={formData.image_url}
-              placeholder="https://example.com/store-image.jpg"
-              onChange={(e) => handleInputChange('image_url', e.target.value)}
-              disabled={useProfileDetails || isSubmitting}
-              className={`w-full px-4 border-solid py-3 rounded-xl border text-sm transition-all duration-200 ${
-                useProfileDetails 
-                  ? 'bg-gray-100 text-gray-600 border-solid cursor-not-allowed border-gray-200' 
-                  : 'bg-white border-2 border-gray-200 focus:border-blue-500 focus:outline-none'
-              }`}
-            />
-            <p className="text-xs text-gray-500 mt-1">
-              Optional - Add a logo or banner image for your store
-            </p>
-          </div>
-
           {/* Submit Button */}
           <div className="pt-6">
             <button
               onClick={handleSubmit}
               disabled={isSubmitting || !formData.store_name.trim() || formData.store_name.length < 2}
-              className={`w-full py-4 rounded-xl font-semibold text-base transition-all duration-200 flex items-center justify-center space-x-2 ${
+              className={`text-[14px] bg-[#131313] rounded-3xl py-2 w-full  ${
                 isSubmitting || !formData.store_name.trim() || formData.store_name.length < 2
-                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                  : 'bg-gradient-to-r from-blue-600 to-green-600 text-white shadow-lg hover:shadow-xl transform hover:scale-[1.02]'
+                  ? ' text-primary-light cursor-not-allowed opacity-20 hover:opacity-25'
+                  : 'opacity-95 text-white hover:opacity-100'
               }`}
             >
-              {isSubmitting && <Loader2 size={20} className="animate-spin" />}
-              <span>{isSubmitting ? "Creating Store..." : "Create Store"}</span>
+              {isSubmitting && <Loader2 size={10} className="animate-spin" />}
+              <span className='bg-transparent'>{isSubmitting ? "Creating Store..." : "Create Store"}</span>
             </button>
-            
-            <p className="text-xs text-center text-gray-500 mt-4">
-              Already have a store?{" "}
-              <a href="/store/dashboard" className="text-blue-600 hover:text-blue-700 font-medium">
-                Go to Dashboard
-              </a>
-            </p>
+
           </div>
         </div>
 
@@ -287,6 +348,84 @@ const {  user, token } = useAppSelector((state) => state.user);
           </p>
         </div>
       </div>
+
+      {/* File Uploader Modal */}
+      {showUploader && (
+        <div className={`fixed inset-0 z-50 flex items-center justify-center p-4 transition-all duration-300 ease-out ${isClosing ? "opacity-0" : "opacity-100"}`}>
+          {/* Backdrop */}
+          <div className={`absolute inset-0 bg-black transition-opacity duration-300 ${isClosing ? "opacity-0" : "opacity-50"}`} onClick={!isSubmitting ? handleCloseModal : undefined}/>
+
+          {/* Modal */}
+          <div className={`relative bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden transition-all duration-300 ease-out ${isClosing ? "scale-95 opacity-0" : "scale-100 opacity-100"}`}>
+            {/* Header */}
+            <div className="bg-primary-dark px-6 py-4 text-white relative">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                    <Upload size={20} />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold">
+                      Upload Store Avatar
+                    </h3>
+                    <p className="text-blue-100 text-sm">
+                      Choose an image for your store
+                    </p>
+                  </div>
+                </div>
+                <button 
+                  onClick={handleCloseModal} 
+                  disabled={isSubmitting} 
+                  className="w-8 h-8 bg-white bg-opacity-20 cursor-pointer rounded-full flex items-center justify-center hover:bg-opacity-30 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+            </div>
+
+            {/* Content */}
+            <div className="p-6">
+              {/* Upload Error */}
+              {imageUploadError && (
+                <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                  <p className="text-red-600 text-sm">{imageUploadError}</p>
+                </div>
+              )}
+
+              <div className="h-96">
+                <FileUploader fieldChange={handleAvatarChange} mediaUrl={previewUrl || ""}/>
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="bg-gray-50 px-6 py-4 flex items-center justify-between border-t border-gray-200">
+              <div className="text-sm text-gray-500">
+                <p>Supported formats: PNG, JPG, JPEG, WEBP, SVG</p>
+                <p className="text-xs">Maximum file size: 20MB</p>
+              </div>
+
+              <div className="flex items-center space-x-3">
+                <Button
+                  text="Cancel"
+                  action={handleCloseModal}
+                  disabled={isSubmitting}
+                  className="px-4 py-2 !bg-gray-200 !text-gray-700 hover:!bg-gray-300 rounded-lg font-medium transition-all duration-200 disabled:opacity-50"
+                />
+                <Button
+                  text={avatarFile.length > 0 ? "Save Avatar" : "Choose Image"}
+                  action={handleSaveAvatar}
+                  disabled={avatarFile.length === 0}
+                  className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 flex items-center space-x-2 ${
+                    avatarFile.length > 0 
+                      ? "!text-white !bg-[rgb(46,152,111)] shadow-lg hover:shadow-xl transform hover:scale-[1.01]" 
+                      : "!bg-gray-300 !text-gray-500 cursor-not-allowed"
+                  }`}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 };
