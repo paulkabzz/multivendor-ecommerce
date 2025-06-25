@@ -3,8 +3,7 @@ import { useState, useEffect } from "react";
 import { Input } from "@components/common/input/input";
 import { Button } from "@components/common/buttons/button";
 import { Link, useNavigate } from "react-router";
-import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
-import { loginUser, clearError } from "@/src/store/slices/userSlice";
+import { useAuth } from "@src/hooks/use-auth"; // Import the useAuth hook
 
 const Login: React.FC = (): React.ReactElement => {
   const [credentials, setCredentials] = useState({
@@ -12,28 +11,37 @@ const Login: React.FC = (): React.ReactElement => {
     password: "",
   });
 
-  const dispatch = useAppDispatch();
-  const { isAuthenticated, loading, error } = useAppSelector(
-    (state) => state.user,
-  );
   const navigate = useNavigate();
+  const {
+    login,
+    isAuthenticated,
+    isLoginLoading,
+    loginError,
+  } = useAuth();
 
   // when user is not authenticated and wants to access protected route, login first, proceed to desired route after authentication
-  const callbackUrl: string = new URLSearchParams(location.search).get('callbackUrl') || '/'
+  const callbackUrl: string = new URLSearchParams(location.search).get('callbackUrl') || '/';
 
   useEffect(() => {
     // Redirect if already authenticated
     if (isAuthenticated) {
-      navigate(callbackUrl, {replace: true});
+      navigate(callbackUrl, { replace: true });
     }
-
-    // Clear any previous errors when component mounts
-    dispatch(clearError());
-  }, [isAuthenticated, navigate, dispatch]);
+  }, [isAuthenticated, navigate, callbackUrl]);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    dispatch(loginUser(credentials));
+    
+    try {
+      await login({
+        email: credentials.email.trim(),
+        password: credentials.password,
+      });
+      // Navigation will be handled by the useEffect when isAuthenticated becomes true
+    } catch (error) {
+      // Error is already handled by the useAuth hook and available in loginError
+      console.error('Login failed:', error);
+    }
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -75,10 +83,10 @@ const Login: React.FC = (): React.ReactElement => {
         </div>
         <div className="w-full mt-2">
           <Button
-            text={loading ? "Logging in..." : "Login"}
+            text={isLoginLoading ? "Logging in..." : "Login"}
             className="!text-[12px] w-full"
             type="submit"
-            disabled={loading}
+            disabled={isLoginLoading}
           />
           <p className="text-[12px] mt-3">
             Don't have an account yet?{" "}
@@ -87,9 +95,9 @@ const Login: React.FC = (): React.ReactElement => {
             </Link>
           </p>
         </div>
-        {error && (
+        {loginError && (
           <p className="text-[rgb(255,0,0)] text-[14px] font-[600] py-2 w-full text-center">
-            {error}
+            {loginError}
           </p>
         )}
       </form>

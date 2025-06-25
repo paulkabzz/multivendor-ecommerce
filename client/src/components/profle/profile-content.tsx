@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { Button } from "../common/buttons/button";
 import { Input } from "../common/input/input";
 import defaultProfilePic from "@assets/ui/default.png";
 import { ProfileSideBar } from "./profile-sidebar";
 import { Camera, CreditCard, MapPin, ShoppingBag, X, Upload, Loader2 } from "lucide-react";
 import FileUploader from "../common/file-uploader/file-uploader";
-import { useAuth } from "@src/hooks/use-auth"; // Import your custom hook
+import { useAuth } from "@src/hooks/use-auth"; // Updated import path
 import Loader from "../common/loader/loader";
 
 const ProfileContent: React.FC = () => {
@@ -37,28 +37,30 @@ const ProfileContent: React.FC = () => {
   const [profileImage, setProfileImage] = useState<File[]>([]);
   const [isClosing, setIsClosing] = useState(false);
 
-  // Update form data when user data changes
-  useEffect(() => {
-    if (user) {
-      setFormData({
-        first_name: user.first_name || "",
-        last_name: user.last_name || "",
-        email: user.email || "",
-        phone: user.phone || "",
-      });
-    }
-  }, [user]);
-
-  // Check for changes whenever formData updates
-  useEffect(() => {
-    if (!user) return;
-
-    const originalData = {
+  // Memoize the original data to prevent unnecessary re-calculations
+  const originalData = useMemo(() => {
+    if (!user) return null;
+    return {
       first_name: user.first_name || "",
       last_name: user.last_name || "",
       email: user.email || "",
       phone: user.phone || "",
     };
+  }, [user?.first_name, user?.last_name, user?.email, user?.phone]);
+
+  // Update form data when user data changes (only when originalData changes)
+  useEffect(() => {
+    if (originalData) {
+      setFormData(originalData);
+    }
+  }, [originalData]);
+
+  // Check for changes whenever formData updates
+  useEffect(() => {
+    if (!originalData) {
+      setHasChanges(false);
+      return;
+    }
 
     const keys = Object.keys(formData) as Array<keyof typeof formData>;
     const isChanged = keys.some(
@@ -68,9 +70,9 @@ const ProfileContent: React.FC = () => {
     );
 
     setHasChanges(isChanged);
-  }, [formData, user]);
+  }, [formData, originalData]);
 
-  const handleInputChange = (field: string, value: string) => {
+  const handleInputChange = useCallback((field: string, value: string) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
@@ -79,17 +81,10 @@ const ProfileContent: React.FC = () => {
     if (saveSuccess) {
       setSaveSuccess(false);
     }
-  };
+  }, [saveSuccess]);
 
-  const getChangedFields = () => {
-    if (!user) return {};
-
-    const originalData = {
-      first_name: user.first_name || "",
-      last_name: user.last_name || "",
-      email: user.email || "",
-      phone: user.phone || "",
-    };
+  const getChangedFields = useCallback(() => {
+    if (!user || !originalData) return {};
 
     const changedFields: any = {
       user_id: user.user_id,
@@ -107,9 +102,9 @@ const ProfileContent: React.FC = () => {
     });
 
     return changedFields;
-  };
+  }, [user, originalData, formData]);
 
-  const handleSave = async () => {
+  const handleSave = useCallback(async () => {
     if (!hasChanges || !user) return;
 
     try {
@@ -129,23 +124,23 @@ const ProfileContent: React.FC = () => {
       console.error("Error updating user:", error);
       // Error is already handled by the mutation
     }
-  };
+  }, [hasChanges, user, getChangedFields, updateUser]);
 
-  const handleCloseModal = () => {
+  const handleCloseModal = useCallback(() => {
     setIsClosing(true);
     setTimeout(() => {
       setShowUploader(false);
       setIsClosing(false);
       setProfileImage([]);
     }, 200);
-  };
+  }, []);
 
-  const handleProfileImageChange = (files: File[]) => {
+  const handleProfileImageChange = useCallback((files: File[]) => {
     setProfileImage(files);
     console.log("Profile image selected:", files);
-  };
+  }, []);
 
-  const handleSaveProfileImage = async () => {
+  const handleSaveProfileImage = useCallback(async () => {
     if (profileImage.length === 0 || !user?.user_id) {
       console.error("No image selected or user ID missing");
       return;
@@ -169,10 +164,10 @@ const ProfileContent: React.FC = () => {
       console.error("Error uploading profile image:", error);
       // Error is already handled by the mutation
     }
-  };
+  }, [profileImage, user?.user_id, updateAvatar, handleCloseModal]);
 
   // Handle loading states
-  if (!isAuthenticated) {
+  if (!isLoading && !isAuthenticated) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">

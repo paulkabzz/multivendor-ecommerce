@@ -4,11 +4,25 @@ import profileIcon from "@assets/icons/profile.png";
 import { Hamburger } from "../hamburger/hamburger";
 import searchIcon from "@assets/icons/search.png";
 import { Link } from "react-router";
-import { useAppSelector } from "@/src/store/hooks";
 import { Button } from "../buttons/button";
+import { useAuth } from "@src/hooks/use-auth"; // Updated import
 
 export const Nav: React.FC = (): React.ReactElement => {
-  const { user, isAuthenticated } = useAppSelector((state) => state.user);
+  const { user, isAuthenticated, isLoading } = useAuth();
+  
+  // Debug logging (remove after testing)
+  console.log('Nav render - isAuthenticated:', isAuthenticated, 'user:', user);
+  
+  const getProfileLink = () => {
+    if (isLoading) return "#"; // Don't navigate while loading
+    
+    if (isAuthenticated && user?.user_id) {
+      return `/profile/${user.user_id}`;
+    }
+    
+    return "/login";
+  };
+
   return (
     <header className="sticky top-0 right-0 bg-[#131313] h-[55px] w-full mt-[50px] px-[200px] py-[.5rem] flex flex-col justify-center z-[150]">
       <div className="flex items-center justify-between text-[#fff]">
@@ -30,7 +44,7 @@ export const Nav: React.FC = (): React.ReactElement => {
           <Link to="#cart">
             <img src={shoppingBag} alt="Cart" className="w-[20px] h-[20px]" />
           </Link>
-          <Link to={isAuthenticated ? "/profile/" + user?.user_id : "/login"}>
+          <Link to={getProfileLink()}>
             <img
               src={profileIcon}
               alt="Profile"

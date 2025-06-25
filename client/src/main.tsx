@@ -6,6 +6,7 @@ import { BrowserRouter } from "react-router";
 import { Provider } from "react-redux";
 import { store } from "@src/store";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { AuthProvider } from "./hooks/use-auth";
 
 const queryCLient = new QueryClient({
   defaultOptions: {
@@ -23,7 +24,9 @@ createRoot(document.getElementById("root")!).render(
         <Provider store={store}>
           <BrowserRouter>
               <QueryClientProvider client={queryCLient}>
-                <App />
+                <AuthProvider>
+                    <App />
+                </AuthProvider>
               </QueryClientProvider>
           </BrowserRouter>
         </Provider>  

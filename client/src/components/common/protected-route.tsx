@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from "react-router";
-import { useAppSelector } from "@/src/store/hooks";
+import { useAuth } from "@/src/hooks/use-auth";
 
 interface ProtectedRouteProps {
   redirectPath?: string;
@@ -10,10 +10,9 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   redirectPath = `/login?callbackUrl=${encodeURIComponent(location.pathname + location.search)}`,
   children,
 }) => {
-  const { isAuthenticated, user } = useAppSelector((state) => state.user);
+  const { isAuthenticated, isLoading } =  useAuth();
 
-  // Check if user is authenticated and verified
-  if (!isAuthenticated || !user?.is_verified) {
+  if (!isLoading && !isAuthenticated) {
     return <Navigate to={redirectPath} replace />;
   }
 

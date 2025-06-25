@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 import { CheckCircle2, Loader2, Camera, Upload, X } from 'lucide-react';
 import { Button } from '@/src/components/common/buttons/button';
-import { useAppSelector } from '@/src/store/hooks';
 import { BASE_URL } from '@/src/utils/url';
 import FileUploader from '@/src/components/common/file-uploader/file-uploader';
 import defaultStore from '@assets/ui/default-store.png'
+import { useAuth } from '@/src/hooks/use-auth';
 
 const CreateStore = () => {
-  const { user, token } = useAppSelector((state) => state.user);
+  const { user } = useAuth();
+
     
   const [useProfileDetails, setUseProfileDetails] = useState(false);
   const [formData, setFormData] = useState({
@@ -129,6 +130,8 @@ const handleSubmit = async () => {
     for (let [key, value] of formDataToSend.entries()) {
       console.log(key, value);
     }
+
+    const token = localStorage.getItem('token');
 
     const response = await fetch(`${BASE_URL}/create-store`, {
       method: 'POST',

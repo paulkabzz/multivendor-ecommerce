@@ -1,7 +1,33 @@
-// hooks/useAuth.ts
+// contexts/AuthContext.tsx
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { BASE_URL } from '@/src/utils/url';
 import type { IUpdateUserRequest } from '@/src/utils/types';
+
+interface User {
+  user_id: string;
+  [key: string]: any;
+}
+
+interface AuthContextType {
+  user: User | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  error: any;
+  login: (credentials: { email: string; password: string }) => Promise<any>;
+  updateUser: (updateData: Partial<IUpdateUserRequest>) => Promise<any>;
+  updateAvatar: (data: { userId: string; avatarFile: File }) => Promise<any>;
+  logout: () => void;
+  refetchUser: () => void;
+  isLoginLoading: boolean;
+  isUpdateLoading: boolean;
+  isAvatarLoading: boolean;
+  loginError: string | undefined;
+  updateError: string | undefined;
+  avatarError: string | undefined;
+}
+
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // Auth token management
 export const getStoredToken = (): string | null => {
@@ -17,7 +43,7 @@ export const setStoredToken = (token: string) => {
 
 export const removeStoredToken = () => {
   localStorage.removeItem('token');
-  localStorage.removeItem('user'); // Clean up old user data if exists
+  localStorage.removeItem('user');
 };
 
 // API functions
@@ -103,10 +129,26 @@ const updateUserAvatarAPI = async ({ userId, avatarFile, token }: { userId: stri
   return data;
 };
 
-// Custom hooks
-export const useAuth = () => {
+interface AuthProviderProps {
+  children: React.ReactNode;
+}
+
+export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const queryClient = useQueryClient();
-  const token = getStoredToken();
+  const [token, setToken] = useState<string | null>(() => getStoredToken());
+  const [forceUpdate, setForceUpdate] = useState(0);
+
+  // Watch for token changes
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const currentToken = getStoredToken();
+      if (currentToken !== token) {
+        setToken(currentToken);
+      }
+    }, 100); // Check every 100ms
+
+    return () => clearInterval(interval);
+  }, [token]);
 
   // User query
   const {
@@ -115,27 +157,25 @@ export const useAuth = () => {
     error,
     refetch: refetchUser,
   } = useQuery({
-    queryKey: ['user'],
+    queryKey: ['user', token, forceUpdate],
     queryFn: () => fetchUser(token),
     enabled: !!token,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    retry: 3,
+    staleTime: 5 * 60 * 1000,
+    retry: false, // Don't retry failed requests
   });
 
-  const user = userData?.user;
+  const user = userData?.user || null;
   const isAuthenticated = !!token && !!user;
 
   // Login mutation
   const loginMutation = useMutation({
     mutationFn: loginAPI,
     onSuccess: (data) => {
-      // Store token
       setStoredToken(data.token);
-      
-      // Set user data in cache
-      queryClient.setQueryData(['user'], data);
-      
-      // Invalidate and refetch user data to ensure consistency
+      console.warn(data)
+      setToken(data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+      queryClient.setQueryData(['user', data.token, forceUpdate], data);
       queryClient.invalidateQueries({ queryKey: ['user'] });
     },
     onError: (error) => {
@@ -147,10 +187,7 @@ export const useAuth = () => {
   const updateUserMutation = useMutation({
     mutationFn: (updateData: Partial<IUpdateUserRequest>) => updateUserAPI(updateData, token!),
     onSuccess: (data) => {
-      // Update user data in cache immediately
-      queryClient.setQueryData(['user'], data);
-      
-      // Optional: Also invalidate to refetch from server
+      queryClient.setQueryData(['user', token, forceUpdate], data);
       queryClient.invalidateQueries({ queryKey: ['user'] });
     },
     onError: (error) => {
@@ -163,10 +200,7 @@ export const useAuth = () => {
     mutationFn: ({ userId, avatarFile }: { userId: string; avatarFile: File }) => 
       updateUserAvatarAPI({ userId, avatarFile, token: token! }),
     onSuccess: (data) => {
-      // Update user data in cache immediately
-      queryClient.setQueryData(['user'], data);
-      
-      // Optional: Also invalidate to refetch from server
+      queryClient.setQueryData(['user', token, forceUpdate], data);
       queryClient.invalidateQueries({ queryKey: ['user'] });
     },
     onError: (error) => {
@@ -174,82 +208,49 @@ export const useAuth = () => {
     },
   });
 
-  // Logout function
+  // Logout function that forces immediate re-render
   const logout = () => {
+    // Clear everything
     removeStoredToken();
+    setToken(null);
+    
+    // Clear React Query cache completely
+    queryClient.clear();
+    
+    // Force immediate re-render of all components
+    setForceUpdate(prev => prev + 1);
+    
+    // Additional cleanup
     queryClient.removeQueries({ queryKey: ['user'] });
-    queryClient.clear(); // Clear all cached data
+    queryClient.setQueryData(['user', null, forceUpdate + 1], null);
   };
 
-  return {
-    // User data
+  const value: AuthContextType = {
     user,
     isAuthenticated,
     isLoading,
     error,
-    
-    // Actions
     login: loginMutation.mutateAsync,
     updateUser: updateUserMutation.mutateAsync,
     updateAvatar: updateAvatarMutation.mutateAsync,
     logout,
     refetchUser,
-    
-    // Loading states
     isLoginLoading: loginMutation.isPending,
     isUpdateLoading: updateUserMutation.isPending,
     isAvatarLoading: updateAvatarMutation.isPending,
-    
-    // Errors
     loginError: loginMutation.error?.message,
     updateError: updateUserMutation.error?.message,
     avatarError: updateAvatarMutation.error?.message,
   };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
-// // Optional: Simplified Redux slice (if you want to keep minimal auth state)
-// // userSlice.ts - MINIMAL VERSION
-// import { createSlice } from "@reduxjs/toolkit";
-
-// interface MinimalUserState {
-//   token: string | null;
-//   isAuthenticated: boolean;
-// }
-
-// const getInitialState = (): MinimalUserState => {
-//   if (typeof window !== "undefined") {
-//     const token = localStorage.getItem("token");
-//     return {
-//       token,
-//       isAuthenticated: !!token,
-//     };
-//   }
-//   return {
-//     token: null,
-//     isAuthenticated: false,
-//   };
-// };
-
-// const userSlice = createSlice({
-//   name: "user",
-//   initialState: getInitialState(),
-//   reducers: {
-//     setToken: (state, action) => {
-//       state.token = action.payload;
-//       state.isAuthenticated = !!action.payload;
-//       if (action.payload) {
-//         localStorage.setItem("token", action.payload);
-//       } else {
-//         localStorage.removeItem("token");
-//       }
-//     },
-//     clearToken: (state) => {
-//       state.token = null;
-//       state.isAuthenticated = false;
-//       localStorage.removeItem("token");
-//     },
-//   },
-// });
-
-// export const { setToken, clearToken } = userSlice.actions;
-// export default userSlice.reducer;
+// Custom hook
+export const useAuth = (): AuthContextType => {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};
