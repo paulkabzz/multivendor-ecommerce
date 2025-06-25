@@ -19,6 +19,8 @@ import {
 } from "@src/routes";
 import RootLayout from "@src/root-layout";
 import ProtectedRoute from "@/src/components/common/protected-route";
+import VendorRoute from "./components/common/vendor-route";
+import AdminRoute from "./components/common/admin-route";
 
 function App(): React.ReactElement {
   return (
@@ -44,7 +46,15 @@ function App(): React.ReactElement {
             <Route path="/profile/:user_id" element={<Profile />} />
             <Route path="/checkout/:user_id" element={<Checkout />} />
             <Route path="/create-store" element={<CreateStore />} />
-            <Route path="/my-store/:store_id" element={<MyStore />} />
+
+            {/* Vendor Routes */}
+            <Route element={<VendorRoute />}>
+              <Route path="/my-store/:store_id" element={<MyStore />} />
+            </Route>
+            
+            {/* Admin Routes */}
+            <Route element={<AdminRoute />} >
+            </Route>
           </Route>
 
           {/* Not Found */}
