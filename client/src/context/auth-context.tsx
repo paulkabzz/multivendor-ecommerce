@@ -1,4 +1,3 @@
-// contexts/AuthContext.tsx
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { BASE_URL } from '@/src/utils/url';
@@ -29,7 +28,7 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Auth token management
+
 export const getStoredToken = (): string | null => {
   if (typeof window !== 'undefined') {
     return localStorage.getItem('token');
@@ -46,7 +45,7 @@ export const removeStoredToken = () => {
   localStorage.removeItem('user');
 };
 
-// API functions
+
 const fetchUser = async (token: string | null) => {
   if (!token) {
     throw new Error('No authentication token provided');
@@ -138,19 +137,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [token, setToken] = useState<string | null>(() => getStoredToken());
   const [forceUpdate, setForceUpdate] = useState(0);
 
-  // Watch for token changes
+  // we must lookout for token changes
   useEffect(() => {
     const interval = setInterval(() => {
       const currentToken = getStoredToken();
       if (currentToken !== token) {
         setToken(currentToken);
       }
-    }, 100); // Check every 100ms
+    }, 100);
 
     return () => clearInterval(interval);
   }, [token]);
 
-  // User query
+
   const {
     data: userData,
     isLoading,
@@ -161,13 +160,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     queryFn: () => fetchUser(token),
     enabled: !!token,
     staleTime: 5 * 60 * 1000,
-    retry: false, // Don't retry failed requests
+    retry: false,
   });
 
   const user = userData?.user || null;
   const isAuthenticated = !!token && !!user;
 
-  // Login mutation
   const loginMutation = useMutation({
     mutationFn: loginAPI,
     onSuccess: (data) => {
@@ -183,7 +181,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     },
   });
 
-  // Update user mutation
   const updateUserMutation = useMutation({
     mutationFn: (updateData: Partial<IUpdateUserRequest>) => updateUserAPI(updateData, token!),
     onSuccess: (data) => {
@@ -195,7 +192,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     },
   });
 
-  // Update avatar mutation
   const updateAvatarMutation = useMutation({
     mutationFn: ({ userId, avatarFile }: { userId: string; avatarFile: File }) => 
       updateUserAvatarAPI({ userId, avatarFile, token: token! }),
@@ -208,19 +204,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     },
   });
 
-  // Logout function that forces immediate re-render
+
   const logout = () => {
-    // Clear everything
+
     removeStoredToken();
     setToken(null);
     
-    // Clear React Query cache completely
     queryClient.clear();
     
-    // Force immediate re-render of all components
     setForceUpdate(prev => prev + 1);
     
-    // Additional cleanup
     queryClient.removeQueries({ queryKey: ['user'] });
     queryClient.setQueryData(['user', null, forceUpdate + 1], null);
   };
@@ -246,7 +239,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
-// Custom hook
 export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
   if (context === undefined) {

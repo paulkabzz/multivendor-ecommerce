@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Input } from "@components/common/input/input";
 import { Button } from "@components/common/buttons/button";
 import { Link, useNavigate } from "react-router";
-import { useAuth } from "@src/hooks/use-auth"; // Import the useAuth hook
+import { useAuth } from "@/src/context/auth-context"; // Import the useAuth hook
 
 const Login: React.FC = (): React.ReactElement => {
   const [credentials, setCredentials] = useState({
@@ -23,7 +23,7 @@ const Login: React.FC = (): React.ReactElement => {
   const callbackUrl: string = new URLSearchParams(location.search).get('callbackUrl') || '/';
 
   useEffect(() => {
-    // Redirect if already authenticated
+
     if (isAuthenticated) {
       navigate(callbackUrl, { replace: true });
     }
@@ -37,9 +37,8 @@ const Login: React.FC = (): React.ReactElement => {
         email: credentials.email.trim(),
         password: credentials.password,
       });
-      // Navigation will be handled by the useEffect when isAuthenticated becomes true
+
     } catch (error) {
-      // Error is already handled by the useAuth hook and available in loginError
       console.error('Login failed:', error);
     }
   };

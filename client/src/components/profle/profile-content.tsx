@@ -5,7 +5,7 @@ import defaultProfilePic from "@assets/ui/default.png";
 import { ProfileSideBar } from "./profile-sidebar";
 import { Camera, CreditCard, MapPin, ShoppingBag, X, Upload, Loader2 } from "lucide-react";
 import FileUploader from "../common/file-uploader/file-uploader";
-import { useAuth } from "@src/hooks/use-auth"; // Updated import path
+import { useAuth } from "@/src/context/auth-context"; // Updated import path
 import Loader from "../common/loader/loader";
 
 const ProfileContent: React.FC = () => {

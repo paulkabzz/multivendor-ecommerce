@@ -1,81 +1,80 @@
 import { useState, useEffect } from 'react';
 import { CheckCircle2, Loader2, Camera, Upload, X } from 'lucide-react';
 import { Button } from '@/src/components/common/buttons/button';
-import { BASE_URL } from '@/src/utils/url';
 import FileUploader from '@/src/components/common/file-uploader/file-uploader';
 import defaultStore from '@assets/ui/default-store.png'
-import { useAuth } from '@/src/hooks/use-auth';
+import { useAuth } from '@src/context/auth-context';
+import { useStore } from '@src/context/store-context';
+import { useNavigate } from 'react-router';
 
 const CreateStore = () => {
   const { user } = useAuth();
-
-    
+  const { createStore, isCreateLoading, createError, resetCreateError, hasStore, store } = useStore();
+  
   const [useProfileDetails, setUseProfileDetails] = useState(false);
   const [formData, setFormData] = useState({
     store_name: '',
     bio: '',
-    avatar: '',
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [error, setError] = useState('');
+
+  const navigate = useNavigate();
   
-  // Avatar upload modal states
   const [showUploader, setShowUploader] = useState(false);
   const [avatarFile, setAvatarFile] = useState<File[]>([]);
   const [isClosing, setIsClosing] = useState(false);
   const [imageUploadError, setImageUploadError] = useState<string | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>('');
 
-  // Update form data when checkbox is toggled
+  useEffect(() => {
+    if (hasStore) {
+      navigate(`/my-store/${store?.vendor_id}`);
+    }
+  }, [hasStore]);
+
+  // automaitcally fill form data when checkbox is toggled
   useEffect(() => {
     if (useProfileDetails && user) {
       setFormData({
         store_name: `${user.first_name} ${user.last_name}`.trim() || '',
         bio: `Welcome to ${user.first_name}'s store!` || '',
-        avatar: user.avatar_url || '',
       });
       setPreviewUrl(user.avatar_url || '');
     } else if (!useProfileDetails) {
       setFormData({
         store_name: '',
         bio: '',
-        avatar: ''
       });
       setPreviewUrl('');
     }
   }, [useProfileDetails, user]);
 
-  const handleInputChange = (field: any, value: any) => {
+  useEffect(() => {
+    if (createError) {
+      resetCreateError();
+    }
+  }, [formData.store_name, formData.bio, createError, resetCreateError]);
+
+  const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({
       ...prev,
       [field]: value
     }));
-
-    console.warn(value);
-    
-    // Clear error when user starts typing
-    if (error) {
-      setError('');
-    }
   };
 
-const handleCloseModal = () => {
-  setIsClosing(true);
-  setTimeout(() => {
-    setShowUploader(false);
-    setIsClosing(false);
-    // DON'T clear avatarFile here - we need it for form submission
-    // setAvatarFile([]);
-    setImageUploadError(null);
-  }, 200);
-};
+  const handleCloseModal = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      setShowUploader(false);
+      setIsClosing(false);
+      setImageUploadError(null);
+    }, 200);
+  };
 
   const handleAvatarChange = (files: File[]) => {
     setAvatarFile(files);
     setImageUploadError(null);
     
-    // Create preview URL
     if (files.length > 0) {
       const file = files[0];
       const url = URL.createObjectURL(file);
@@ -89,80 +88,36 @@ const handleCloseModal = () => {
       return;
     }
     
-    // Close modal and keep the selected file for form submission
     handleCloseModal();
   };
 
-const handleSubmit = async () => {
-  if (!user?.user_id) {
-    setError('Please log in to create a store');
-    return;
-  }
-
-  if (!formData.store_name.trim() || formData.store_name.length < 2) {
-    setError('Store name must be at least 2 characters long');
-    return;
-  }
-
-  setIsSubmitting(true);
-  setError('');
-
-  try {
-    // Create FormData for multipart/form-data request
-    const formDataToSend = new FormData();
-    formDataToSend.append('user_id', user.user_id);
-    formDataToSend.append('store_name', formData.store_name.trim());
-    
-    if (formData.bio.trim()) {
-      formDataToSend.append('bio', formData.bio.trim());
-    }
-    
-    // Add avatar file if selected
-    if (avatarFile.length > 0) {
-      console.log('Adding avatar file:', avatarFile[0]); // DEBUG
-      formDataToSend.append('avatar', avatarFile[0]);
-    } else {
-      console.log('No avatar file to send'); // DEBUG
-    }
-
-    // Debug: Log all FormData entries
-    console.log('FormData entries:');
-    for (let [key, value] of formDataToSend.entries()) {
-      console.log(key, value);
-    }
-
-    const token = localStorage.getItem('token');
-
-    const response = await fetch(`${BASE_URL}/create-store`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`
-        // Don't set Content-Type header - let browser set it for multipart/form-data
-      },
-      body: formDataToSend
-    });
-
-    const data = await response.json();
-
-    if (!data.success) {
-      setError(data.message);
+  const handleSubmit = async () => {
+    if (!user?.user_id) {
       return;
     }
 
-    setSuccess(true);
-    // Redirect to store dashboard or show success message
-    setTimeout(() => {
-      // Navigate to store dashboard
-      // navigate('/store/dashboard');
-    }, 2000);
+    if (!formData.store_name.trim() || formData.store_name.length < 2) {
+      return;
+    }
 
-  } catch (error) {
-    console.error('Error creating store:', error);
-    setError('Failed to create store. Please try again.');
-  } finally {
-    setIsSubmitting(false);
-  }
-};
+    try {
+      const storeData = {
+        store_name: formData.store_name,
+        bio: formData.bio || undefined,
+        avatar: avatarFile.length > 0 ? avatarFile[0] : undefined,
+      };
+
+      await createStore(storeData);
+      setSuccess(true);
+      
+      setTimeout(() => {
+        navigate(`/my-store/${store?.vendor_id}`);
+      }, 2000);
+
+    } catch (error) {
+      console.error('Error creating store:', error);
+    }
+  };
 
   if (success) {
     return (
@@ -193,9 +148,9 @@ const handleSubmit = async () => {
         </div>
 
         {/* Error Display */}
-        {error && (
+        {createError && (
           <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl">
-            <p className="text-red-600 text-sm font-medium">{error}</p>
+            <p className="text-red-600 text-sm font-medium">{createError}</p>
           </div>
         )}
 
@@ -260,9 +215,9 @@ const handleSubmit = async () => {
               <button
                 onClick={() => setShowUploader(true)}
                 className="absolute bottom-1 right-1 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center shadow-lg transition-all duration-200 hover:shadow-xl hover:scale-110 transform hover:bg-blue-700"
-                disabled={isSubmitting}
+                disabled={isCreateLoading}
               >
-                {isSubmitting ? (
+                {isCreateLoading ? (
                   <Loader2 size={18} className="animate-spin" />
                 ) : (
                   <Camera size={18} />
@@ -288,7 +243,7 @@ const handleSubmit = async () => {
               value={formData.store_name}
               placeholder="Enter your store name"
               onChange={(e) => handleInputChange('store_name', e.target.value)}
-              disabled={useProfileDetails || isSubmitting}
+              disabled={useProfileDetails || isCreateLoading}
               className={`w-full px-4 py-3 rounded-xl border border-solid text-sm transition-all duration-200 ${
                 useProfileDetails 
                   ? 'bg-gray-100 text-gray-600 cursor-not-allowed border-gray-200' 
@@ -311,7 +266,7 @@ const handleSubmit = async () => {
               value={formData.bio}
               placeholder="Tell customers about your store..."
               onChange={(e) => handleInputChange('bio', e.target.value)}
-              disabled={useProfileDetails || isSubmitting}
+              disabled={useProfileDetails || isCreateLoading}
               className={`w-full px-4 py-3 border-solid rounded-xl border-2 text-sm transition-all duration-200 resize-none ${
                 useProfileDetails 
                   ? 'bg-gray-100 text-gray-600 cursor-not-allowed border-gray-200' 
@@ -327,17 +282,16 @@ const handleSubmit = async () => {
           <div className="pt-6">
             <button
               onClick={handleSubmit}
-              disabled={isSubmitting || !formData.store_name.trim() || formData.store_name.length < 2}
-              className={`text-[14px] bg-[#131313] rounded-3xl py-2 w-full  ${
-                isSubmitting || !formData.store_name.trim() || formData.store_name.length < 2
+              disabled={isCreateLoading || !formData.store_name.trim() || formData.store_name.length < 2}
+              className={`text-[14px] bg-[#131313] rounded-3xl py-2 w-full flex items-center justify-center space-x-2 ${
+                isCreateLoading || !formData.store_name.trim() || formData.store_name.length < 2
                   ? ' text-primary-light cursor-not-allowed opacity-20 hover:opacity-25'
                   : 'opacity-95 text-white hover:opacity-100'
               }`}
             >
-              {isSubmitting && <Loader2 size={10} className="animate-spin" />}
-              <span className='bg-transparent'>{isSubmitting ? "Creating Store..." : "Create Store"}</span>
+              {isCreateLoading && <Loader2 size={16} className="animate-spin" />}
+              <span className='bg-transparent'>{isCreateLoading ? "Creating Store..." : "Create Store"}</span>
             </button>
-
           </div>
         </div>
 
@@ -356,7 +310,7 @@ const handleSubmit = async () => {
       {showUploader && (
         <div className={`fixed inset-0 z-50 flex items-center justify-center p-4 transition-all duration-300 ease-out ${isClosing ? "opacity-0" : "opacity-100"}`}>
           {/* Backdrop */}
-          <div className={`absolute inset-0 bg-black transition-opacity duration-300 ${isClosing ? "opacity-0" : "opacity-50"}`} onClick={!isSubmitting ? handleCloseModal : undefined}/>
+          <div className={`absolute inset-0 bg-black transition-opacity duration-300 ${isClosing ? "opacity-0" : "opacity-50"}`} onClick={!isCreateLoading ? handleCloseModal : undefined}/>
 
           {/* Modal */}
           <div className={`relative bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden transition-all duration-300 ease-out ${isClosing ? "scale-95 opacity-0" : "scale-100 opacity-100"}`}>
@@ -378,7 +332,7 @@ const handleSubmit = async () => {
                 </div>
                 <button 
                   onClick={handleCloseModal} 
-                  disabled={isSubmitting} 
+                  disabled={isCreateLoading} 
                   className="w-8 h-8 bg-white bg-opacity-20 cursor-pointer rounded-full flex items-center justify-center hover:bg-opacity-30 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <X size={18} />
@@ -411,7 +365,7 @@ const handleSubmit = async () => {
                 <Button
                   text="Cancel"
                   action={handleCloseModal}
-                  disabled={isSubmitting}
+                  disabled={isCreateLoading}
                   className="px-4 py-2 !bg-gray-200 !text-gray-700 hover:!bg-gray-300 rounded-lg font-medium transition-all duration-200 disabled:opacity-50"
                 />
                 <Button

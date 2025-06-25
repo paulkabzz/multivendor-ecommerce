@@ -9,6 +9,7 @@ import {
   FAQ,
   Home,
   Login,
+  MyStore,
   NotFound,
   ProductDetails,
   Products,
@@ -43,6 +44,7 @@ function App(): React.ReactElement {
             <Route path="/profile/:user_id" element={<Profile />} />
             <Route path="/checkout/:user_id" element={<Checkout />} />
             <Route path="/create-store" element={<CreateStore />} />
+            <Route path="/my-store/:store_id" element={<MyStore />} />
           </Route>
 
           {/* Not Found */}
