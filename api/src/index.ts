@@ -13,6 +13,7 @@ import './functions/create-store';
 import './functions/delete-store';
 import './functions/get-me';
 import './functions/my-store';
+import './functions/logout';
 
 app.setup({
     enableHttpStream: true,

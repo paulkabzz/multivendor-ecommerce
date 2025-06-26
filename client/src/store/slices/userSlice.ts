@@ -178,22 +178,53 @@ export const updateUserAvatar = createAsyncThunk(
   },
 );
 
+export const logoutUser = createAsyncThunk(
+  "user/logout",
+  async (_, { rejectWithValue }) => {
+    try {
+      const token = getUserFromStorage().token;
+
+      if (!token) {
+        {
+        return rejectWithValue("No authentication token found");
+      }
+      };
+
+      await fetch(`${BASE_URL}/logout`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+
+    } catch (error) {
+      console.error("Error logging out: ", error);
+      return rejectWithValue("Failed to log out.");
+    }
+  }
+);
+
+
 // Create the user slice
 const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    logout: (state) => {
-      // Clear localStorage
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
+    // logout: (state) => {
+    //   // Clear localStorage
+    //   localStorage.removeItem("token");
+    //   localStorage.removeItem("user");
 
-      // Reset state
-      state.user = null;
-      state.token = null;
-      state.isAuthenticated = false;
-      state.error = null;
-    },
+    //   // Reset state
+    //   state.user = null;
+    //   state.token = null;
+    //   state.isAuthenticated = false;
+    //   state.error = null;
+    // },
     clearError: (state) => {
       state.error = null;
     },
@@ -220,6 +251,15 @@ const userSlice = createSlice({
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
+      })
+      .addCase(logoutUser.fulfilled, (state) => {
+        state.user = null;
+        state.token = null;
+        state.isAuthenticated = false;
+        state.error = null;
+      })
+      .addCase(logoutUser.rejected, (state, action) => {
+      state.error = action.payload as string;
       })
       // Signup cases
       .addCase(signupUser.pending, (state) => {
@@ -262,5 +302,5 @@ const userSlice = createSlice({
   },
 });
 
-export const { logout, clearError, updateUserLocal } = userSlice.actions;
+export const { clearError, updateUserLocal } = userSlice.actions;
 export default userSlice.reducer;

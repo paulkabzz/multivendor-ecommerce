@@ -1,8 +1,8 @@
-import { logout } from "@/src/store/slices/userSlice";
-import { useDispatch } from "react-redux";
+import { logoutUser } from "@/src/store/slices/userSlice";
 import { useNavigate } from "react-router";
 import { User, ShoppingBag, CreditCard, MapPin, LogOut, ChevronRight } from "lucide-react";
 import defaultProfilePic from "@assets/ui/default.png";
+import { useAppDispatch } from "@/src/store/hooks";
 
 interface IProfileSideBar {
   active: number;
@@ -15,8 +15,10 @@ export const ProfileSideBar: React.FC<IProfileSideBar> = ({
   setActive,
   user,
 }): React.ReactElement => {
-  const dispatch = useDispatch();
+
   const navigate = useNavigate();
+
+  const dispatch = useAppDispatch();
 
   const links: { text: string; icon: React.ReactNode; action?: () => void }[] =
     [
@@ -43,8 +45,9 @@ export const ProfileSideBar: React.FC<IProfileSideBar> = ({
       },
     ];
 
+
   function handleLogout(): void {
-    dispatch(logout());
+    dispatch(logoutUser());
     navigate("/");
   }
 

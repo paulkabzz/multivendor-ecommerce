@@ -104,15 +104,20 @@ async function login(request: HttpRequest, context: InvocationContext): Promise<
 
             if (!jwtSecret) throw new Error("JWT_SECRET environment variable not set.");
 
+            const jti = crypto.randomUUID();
+
             const token = jwt.sign(
                 {
                     user_id: user.user_id,
                     email: user.email.trim(),
-                    role: user.role
+                    role: user.role,
+                    jti
                 },
                 jwtSecret,
                 { expiresIn: '24h' }
             );
+
+
 
             // Successful login response
             const response: ILoginResponse = {
@@ -131,6 +136,16 @@ async function login(request: HttpRequest, context: InvocationContext): Promise<
                 },
                 token
             };
+
+            if (vendor) {
+                await prisma.vendor.update({
+                    where: { vendor_id: vendor.vendor_id, user_id: user.user_id },
+                    data: {
+                        last_active: new Date()
+                    }
+                })
+            }
+
 
             return {
                 status: 200,

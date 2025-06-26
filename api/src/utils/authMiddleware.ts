@@ -1,5 +1,6 @@
 import { HttpRequest, HttpResponseInit } from "@azure/functions";
 import jwt from 'jsonwebtoken';
+import { validateToken } from "../functions/logout";
 
 export interface DecodedToken {
   user_id: string;
@@ -36,7 +37,7 @@ export function verifyAuthToken(token: string): DecodedToken | null {
  * @param roles Optional array of roles allowed to access the endpoint
  * @returns An error response or null if authentication is successful
  */
-export function authenticateRequest(request: HttpRequest, roles?: string[]): HttpResponseInit | null {
+export function authenticateRequest(request: HttpRequest, roles?: string[], isValid?: boolean): HttpResponseInit | null {
   const authHeader = request.headers.get('authorization');
   
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -51,6 +52,19 @@ export function authenticateRequest(request: HttpRequest, roles?: string[]): Htt
   }
 
   const token = authHeader.split(' ')[1];
+
+  if (!isValid) {
+    return {
+      status: 401,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        success: false,
+        message: "Blacklisted jwt"
+      })
+    }
+  }
+
+  
   const decoded = verifyAuthToken(token);
 
   if (!decoded) {

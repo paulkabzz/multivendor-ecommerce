@@ -1,5 +1,6 @@
 import { HttpRequest, HttpResponseInit, InvocationContext } from "@azure/functions";
 import { authenticateRequest, DecodedToken, verifyAuthToken } from "./authMiddleware";
+import { validateToken } from "../functions/logout";
 
 /**
  * Type for HTTP handler functions
@@ -14,12 +15,13 @@ type HttpHandler = (request: HttpRequest, context: InvocationContext, decodedTok
  */
 export function withAuth(handler: HttpHandler, roles?: string[]): HttpHandler {
   return async (request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> => {
+      const token = request.headers.get('authorization')!.split(' ')[1];
+      const validToken = await validateToken(token);
     // Authenticate the request
-    const authError = authenticateRequest(request, roles);
+    const authError = authenticateRequest(request, roles, validToken);
     if (authError) return authError;
     
     // Get token from authorization header
-    const token = request.headers.get('authorization')!.split(' ')[1];
     const decodedToken = verifyAuthToken(token) as DecodedToken;
     
     // Call the original handler with the decoded token
