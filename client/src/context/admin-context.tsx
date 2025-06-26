@@ -181,11 +181,27 @@ export const AdminProvider: React.FC<AdminProviderProps> = ({ children }) => {
 
     try {
       // api call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-
       console.log('Creating subcategory:', data);
 
+      const response = await fetch(`${BASE_URL}/create-subcategory`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          user_id: user.user_id,
+          category_id: data.category_id,
+          subcategory_name: data.subcategory_name
+        })
+      });
+
+      const result = await response.json();
+
+      if (!result.success) {
+        throw new Error(result.message || "Failed to create subcategory");
+      }
+      
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'An error occurred';
       setCreateSubcategoryError(errorMessage);
