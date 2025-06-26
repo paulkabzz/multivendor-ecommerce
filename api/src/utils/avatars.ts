@@ -295,12 +295,24 @@ class Avatar {
     });
   }
 
+  static async uploadDepartmentCover(fileBuffer: Buffer, fileName: string, mimeType: string, departmentId: string, departmentBucketId: string): Promise<AvatarUploadResult> {
+    return avatarService.uploadAvatar(fileBuffer, fileName, mimeType, {
+      entityType: 'department',
+      entityId: departmentId,
+      bucketId: departmentBucketId
+    });
+  }
+
   static async getUserAvatarUrl(userId: string): Promise<string> {
     return avatarService.getAvatarUrlForEntity('user', userId, appwriteConfig.userAvatarBucketId);
   }
 
   static async getVendorAvatarUrl(vendorId: string, vendorBucketId: string): Promise<string> {
     return avatarService.getAvatarUrlForEntity('vendor', vendorId, vendorBucketId);
+  }
+
+  static async getDepartmentCover(departmentId: string, departmentBucketId: string): Promise<string> {
+    return avatarService.getAvatarUrlForEntity('departement', departmentId, departmentBucketId);
   }
 
   static async deleteUserAvatar(userId: string): Promise<{ success: boolean; error?: string }> {
@@ -317,6 +329,14 @@ class Avatar {
       entityId: vendorId,
       bucketId: vendorBucketId,
     });
+  }
+
+  static async deleteDepartmentCover(departmentId: string, departmentBucketId: string): Promise<{success: boolean; error?: string}> {
+    return avatarService.deleteAvatar({
+      entityType: 'department',
+      entityId: departmentId,
+      bucketId: departmentBucketId
+    })
   }
 }
 

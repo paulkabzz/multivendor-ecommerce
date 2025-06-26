@@ -65,6 +65,7 @@ export interface IUpdateUserRequest {
 export interface ICreateDepartment {
   department_name: string;
   user_id: string;
+  image: File;
 }
 
 export interface ICreateCategory {

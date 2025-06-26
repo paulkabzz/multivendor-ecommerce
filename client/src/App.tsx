@@ -2,6 +2,7 @@ import { Route, Routes } from "react-router";
 import "@src/app.css";
 import {
   BestSelling,
+  CatalogPanel,
   Checkout,
   Contact,
   CreateStore,
@@ -51,9 +52,10 @@ function App(): React.ReactElement {
             <Route element={<VendorRoute />}>
               <Route path="/my-store/:store_id" element={<MyStore />} />
             </Route>
-            
+
             {/* Admin Routes */}
             <Route element={<AdminRoute />} >
+                <Route path="/admin/catalog-panel" element={<CatalogPanel />} />
             </Route>
           </Route>
 

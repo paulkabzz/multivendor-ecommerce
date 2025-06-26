@@ -82,13 +82,15 @@ model users {
 }
 
 model vendor {
-  vendor_id  String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  user_id    String    @unique(map: "u_user_id") @db.Uuid
-  store_name String    @db.VarChar(100)
-  bio        String?
-  avatar_url String?   @db.VarChar(255)
-  product    product[]
-  users      users     @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+  vendor_id   String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user_id     String    @unique(map: "u_user_id") @db.Uuid
+  store_name  String    @db.VarChar(100)
+  bio         String?
+  avatar_url  String?   @db.VarChar(255)
+  last_active DateTime? @default(now()) @db.Timestamp(6)
+  ig_username String?   @unique @db.VarChar(30)
+  product     product[]
+  users       users     @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
 }
 
 model category {
@@ -110,6 +112,7 @@ model categorysubcategory {
 model department {
   department_id      String               @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   department_name    String               @unique @db.VarChar(255)
+  image_url          String?              @db.VarChar(255)
   departmentcategory departmentcategory[]
 }
 

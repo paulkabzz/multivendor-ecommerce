@@ -1,5 +1,6 @@
 import Verification from "@pages/verification/page";
 import BestSelling from "@pages/best-selling/page";
+import CatalogPanel from "@pages/admin/product-organisation/page";
 import Checkout from "@pages/checkout/page";
 import Contact from "@pages/contact/page";
 import CreateStore from "@pages/create-store/page";
@@ -18,6 +19,7 @@ export {
   Verification,
   BestSelling,
   Checkout,
+  CatalogPanel,
   Contact,
   CreateStore,
   Events,

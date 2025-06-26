@@ -24,6 +24,7 @@ interface AuthContextType {
   loginError: string | undefined;
   updateError: string | undefined;
   avatarError: string | undefined;
+  token: string | null;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -234,6 +235,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     loginError: loginMutation.error?.message,
     updateError: updateUserMutation.error?.message,
     avatarError: updateAvatarMutation.error?.message,
+    token
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
