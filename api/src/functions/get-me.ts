@@ -15,6 +15,7 @@ async function getMe(request: HttpRequest, context: InvocationContext, decodedTo
         try {
 
             if (!decodedToken) {
+                context.error("You are not authorised to access this user's details");
                 return {
                     status: 403,
                     headers,
@@ -25,13 +26,13 @@ async function getMe(request: HttpRequest, context: InvocationContext, decodedTo
                 };
             };
 
+
             const updatedUser = await prisma.users.findFirst({
                 where: {  user_id: decodedToken.user_id },
             });
 
-            const vendor = await prisma.vendor.findUnique({ where: { user_id: updatedUser?.user_id }});
-
             if (!updatedUser) {
+                context.error("User not found.")
                 return {
                     status: 404,
                     headers,
@@ -41,6 +42,18 @@ async function getMe(request: HttpRequest, context: InvocationContext, decodedTo
                     })
                 }
             }
+
+            const vendor = await prisma.vendor.findUnique({ where: { user_id: updatedUser.user_id }});
+
+            if (vendor) {
+                await prisma.vendor.update({
+                    where: { user_id: decodedToken.user_id},
+                    data: {
+                        last_active: new Date()
+                    }
+                })
+            };
+
 
             const data: Partial<IUsefuleUserDetails> = {
                 user_id: updatedUser.user_id,
