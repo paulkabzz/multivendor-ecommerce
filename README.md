@@ -156,11 +156,6 @@ Copy the generated string and use it as your `JWT_SECRET`.
 - Use your Gmail address for `GMAIL_USER`
 - Use the generated App Password for `GMAIL_APP_PASSWORD`
 
-No problem! Here's the completed section:
-
-
-Here's your fully updated and polished **Section 4: Appwrite Cloud Setup**, including how to get the free tier, create buckets, and locate the required environment variables:
-
 
 ### 4.  Appwrite Cloud Setup
 
