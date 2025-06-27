@@ -156,7 +156,79 @@ Copy the generated string and use it as your `JWT_SECRET`.
 - Use your Gmail address for `GMAIL_USER`
 - Use the generated App Password for `GMAIL_APP_PASSWORD`
 
-### 4. Start the Azure App.
+No problem! Here's the completed section:
+
+
+Here's your fully updated and polished **Section 4: Appwrite Cloud Setup**, including how to get the free tier, create buckets, and locate the required environment variables:
+
+
+### 4.  Appwrite Cloud Setup
+
+If you’re a student, you can get the **\$15/month Appwrite Cloud tier for free** using the [GitHub Student Developer Pack](https://education.github.com/pack):
+
+#### Claiming the Free Student Tier
+
+1. Go to [education.github.com/pack](https://education.github.com/pack).
+2. Click **“Get Student Benefits”** and log in or create a GitHub account.
+3. Verify your student status using your university email or student ID.
+4. Once approved:
+
+   * Search for the **Appwrite** offer under the benefits.
+   * Click to redeem the offer (you’ll either receive a promo code or an automatic upgrade).
+   * Alternatively, just sign in to [Appwrite Cloud](https://cloud.appwrite.io/) with your GitHub account that is linked to the student pack.
+
+
+
+### 🗂 Creating Buckets in Appwrite Cloud
+
+After setting up your account and project:
+
+1. **Go to the [Appwrite Console](https://cloud.appwrite.io/console)**.
+2. Select your existing project or create a new one (under GitHub Student Organization if you're using the free tier as a student).
+3. From the left sidebar, go to **Storage → Buckets**.
+4. Click **“Create Bucket”** and create these buckets:
+
+   * `products`
+   * `departments`
+   * `user_avatar`
+   * `store_avatar`
+5. After creating each bucket:
+
+   * Click the bucket name to open its settings.
+   * Under **Permissions**, click **“Add Role”**, select **Any**, and check the **Read** permission (this enables public read access).
+   * Scroll down to **Allowed File Extensions** and add:
+
+     * `jpg`, `png`, `svg`
+     * *(Optional, but recommended)*: `jpeg`, `webp`, `gif`, etc.
+
+
+
+### 🔑 Setting Up Environment Variables
+
+Once your buckets are created, gather the following details from the Appwrite Console and add them to your `.env` file inside the `api` directory:
+
+```env
+APPWRITE_ENDPOINT=
+APPWRITE_PROJECT_ID=
+APPWRITE_API_KEY=
+APPWRITE_USER_AVATAR_BUCKET_ID=
+APPWRITE_VENDOR_AVATAR_BUCKET_ID=
+APPWRITE_PRODUCTS_BUCKET_ID=
+APPWRITE_DEPARTMENT_BUCKET_ID=
+```
+
+#### Where to Find Each Variable:
+
+| Variable               | How to Find It                                                                                       |
+| ---------------------- | ---------------------------------------------------------------------------------------------------- |
+| `APPWRITE_ENDPOINT`    | Go to **Project → Settings → API credentials → API Endpoint**                                                          |
+| `APPWRITE_PROJECT_ID`  | Go to **Project → Settings → API credentials → Project ID**                                                  |
+| `APPWRITE_API_KEY`     | Go to **Project → Overview → API Keys → Create API Key** with required permissions (e.g. Storage: Read + Write) |
+| `APPWRITE_*_BUCKET_ID` | Go to **Storage → Buckets**, click a bucket, and copy the **Bucket ID** from the top of the page     |
+
+
+
+### 5. Start the Azure App.
 ```bash
 npm run start
 ```
@@ -176,7 +248,7 @@ cd client
 npm install
 ```
 
-### 4. Start Development Server
+### 5. Start Development Server
 ```bash
 npm run dev
 ```

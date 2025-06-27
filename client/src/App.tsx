@@ -5,6 +5,7 @@ import {
   CatalogPanel,
   Checkout,
   Contact,
+  CreateItem,
   CreateStore,
   Events,
   FAQ,
@@ -51,6 +52,7 @@ function App(): React.ReactElement {
             {/* Vendor Routes */}
             <Route element={<VendorRoute />}>
               <Route path="/my-store/:store_id" element={<MyStore />} />
+              <Route path="/create-item" element={<CreateItem />} />
             </Route>
 
             {/* Admin Routes */}

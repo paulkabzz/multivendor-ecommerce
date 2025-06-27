@@ -3,6 +3,7 @@ import BestSelling from "@pages/best-selling/page";
 import CatalogPanel from "@pages/admin/product-organisation/page";
 import Checkout from "@pages/checkout/page";
 import Contact from "@pages/contact/page";
+import CreateItem from "@pages/create-item/page";
 import CreateStore from "@pages/create-store/page";
 import Events from "@pages/events/page";
 import FAQ from "@pages/faq/page";
@@ -21,6 +22,7 @@ export {
   Checkout,
   CatalogPanel,
   Contact,
+  CreateItem,
   CreateStore,
   Events,
   FAQ,

@@ -4,6 +4,7 @@ import { useStore } from "@src/context/store-context";
 import noProductsIcon from '@assets/icons/no-products.png'
 import { Button } from "@/src/components/common/buttons/button";
 import { useNavigate } from "react-router";
+
 const MyStore = () => {
   const { store, isLoading } = useStore();
   if (isLoading) {
@@ -26,7 +27,7 @@ const MyStore = () => {
                 <p className="text-[#777] text-[12px]">
                     This shop doesn't have any items for sale yet.
                 </p>
-                <Button text="+ Add Item" className="p-5 !text-[12px] mt-2" action={() => navigate('/create/item')} />
+                <Button text="+ Add Item" className="p-5 !text-[12px] mt-2" action={() => navigate('/create-item')} />
             </div>
           </>
         )
