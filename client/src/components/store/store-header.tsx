@@ -2,6 +2,8 @@
 import { formatTimeAgo } from '@/src/utils/helpers';
 import defalutStore from '@assets/ui/default-store.png';
 import onlineSymbol from '@assets/icons/online.png';
+import instagramIcon from '@assets/icons/instagram.png'
+import { Link } from 'react-router';
 interface StoreHeader {
     store: any;
 }
@@ -15,7 +17,7 @@ const StoreHeader:React.FC<StoreHeader> = ({ store }) => {
             </div>
             <div className='flex flex-col items-start h-full'>
 
-                    <h3 className='font-bold text-[1rem] mb-2'>
+                    <h3 className='font-bold text-[1.25rem] mb-2'>
                         { store.store_name }
                     </h3>
                     <div className='flex gap-5 mb-2'>
@@ -30,7 +32,22 @@ const StoreHeader:React.FC<StoreHeader> = ({ store }) => {
                         <img src={onlineSymbol} alt="Online" className='w-[20px] h-[20px]' />
                         Active{" "}{formatTimeAgo(store.last_active)}
                     </p>
-            </div>
+                    {
+                        store.ig_username && (
+                            <Link to={`https://www.instagram.com/${store.ig_username}`} className='flex gap-2 items-center mt-2' target='_blank'>
+                                <img src={instagramIcon} alt={store.ig_username} className='w-[16px] h-[16px]' />
+                                <p className='text-[14px] text-link'>
+                                    @{ store.ig_username }
+                                </p>
+                            </Link>
+                        )
+                    }
+            </div>  
+        </div>
+        <div className='mt-5'>
+            <p className='text-[14px]'>
+                { store.bio }
+            </p>
         </div>
     </div>
   )

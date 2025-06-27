@@ -4,7 +4,6 @@ import { Upload, Plus, Building2, Grid3X3, Layers3, X, Check, AlertCircle } from
 
 const CatalogPanel: React.FC = () => {
   const {
-    // Department
     isCreateDepartmentLoading,
     createDepartmentError,
     createDepartment,
@@ -13,7 +12,6 @@ const CatalogPanel: React.FC = () => {
     loadingDepartments,
     fetchDepartments,
     
-    // Category
     isCreateCategoryLoading,
     createCategoryError,
     createCategory,
@@ -21,47 +19,38 @@ const CatalogPanel: React.FC = () => {
     categories,
     fetchCategories,
     
-    // Subcategory
     isCreateSubcategoryLoading,
     createSubcategoryError,
     createSubcategory,
     resetCreateSubcategoryError,
   } = useAdmin();
 
-  // Active tab state
   const [activeTab, setActiveTab] = useState<'department' | 'category' | 'subcategory'>('department');
 
-  // Department form state
   const [departmentName, setDepartmentName] = useState('');
   const [departmentCover, setDepartmentCover] = useState<File | null>(null);
   const [coverPreview, setCoverPreview] = useState<string | null>(null);
 
-  // Category form state
   const [selectedDepartmentId, setSelectedDepartmentId] = useState('');
   const [categoryNames, setCategoryNames] = useState<string[]>(['']);
 
-  // Subcategory form state
   const [selectedCategoryId, setSelectedCategoryId] = useState('');
   const [subcategoryNames, setSubcategoryNames] = useState<string[]>(['']);
 
-  // Success states
   const [showDepartmentSuccess, setShowDepartmentSuccess] = useState(false);
   const [showCategorySuccess, setShowCategorySuccess] = useState(false);
   const [showSubcategorySuccess, setShowSubcategorySuccess] = useState(false);
 
-  // Load departments on mount
   useEffect(() => {
     fetchDepartments();
   }, []);
 
-  // Load categories when department is selected
   useEffect(() => {
     if (selectedDepartmentId) {
       fetchCategories(selectedDepartmentId);
     }
   }, [selectedDepartmentId]);
 
-  // Handle file upload
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -72,7 +61,6 @@ const CatalogPanel: React.FC = () => {
     }
   };
 
-  // Handle department submission
   const handleDepartmentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -81,7 +69,6 @@ const CatalogPanel: React.FC = () => {
         cover: departmentCover || undefined,
       });
       
-      // Reset form
       setDepartmentName('');
       setDepartmentCover(null);
       setCoverPreview(null);
@@ -92,7 +79,6 @@ const CatalogPanel: React.FC = () => {
     }
   };
 
-  // Handle category submission
   const handleCategorySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const validNames = categoryNames.filter(name => name.trim() !== '');
@@ -104,7 +90,6 @@ const CatalogPanel: React.FC = () => {
         category_name: validNames,
       });
       
-      // Reset form
       setCategoryNames(['']);
       setShowCategorySuccess(true);
       setTimeout(() => setShowCategorySuccess(false), 3000);
@@ -113,7 +98,7 @@ const CatalogPanel: React.FC = () => {
     }
   };
 
-  // Handle subcategory submission
+
   const handleSubcategorySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const validNames = subcategoryNames.filter(name => name.trim() !== '');
@@ -134,7 +119,6 @@ const CatalogPanel: React.FC = () => {
     }
   };
 
-  // Add/remove category name fields
   const addCategoryField = () => setCategoryNames([...categoryNames, '']);
   const removeCategoryField = (index: number) => {
     if (categoryNames.length > 1) {
@@ -142,7 +126,7 @@ const CatalogPanel: React.FC = () => {
     }
   };
   
-  // Add/remove subcategory name fields
+
   const addSubcategoryField = () => setSubcategoryNames([...subcategoryNames, '']);
   const removeSubcategoryField = (index: number) => {
     if (subcategoryNames.length > 1) {
