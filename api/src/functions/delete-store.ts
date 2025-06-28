@@ -3,22 +3,12 @@ import { DecodedToken } from "../utils/authMiddleware";
 import { headers } from "../utils/helpers";
 import { withAuth } from "../utils/middleware";
 import prisma from "../utils/database";
+import { Avatar } from "../utils/avatars";
 
 async function deleteStore(request: HttpRequest, context: InvocationContext, decodedToken?: DecodedToken): Promise<HttpResponseInit> {
     if (request.method === "DELETE") {
         try {
-            const { user_id, vendor_id } = await request.json() as { user_id: string, vendor_id: string };
-
-            if (!user_id) {
-                return {
-                    status: 400,
-                    headers,
-                    body: JSON.stringify({
-                        success: false,
-                        message: "User ID not provided."
-                    })
-                }
-            }
+            const { vendor_id } = await request.json() as { vendor_id: string };
 
             if (!vendor_id) {
                 return {
@@ -33,7 +23,20 @@ async function deleteStore(request: HttpRequest, context: InvocationContext, dec
 
             const store = await prisma.vendor.findUnique({ where: { vendor_id } });
 
+            if (!store) {
+                context.error("Store not found.");
+                return {
+                    status: 404,
+                    headers,
+                    body: JSON.stringify({
+                        success: false,
+                        message: "Store not found."
+                    })
+                }
+            }
+
             if (decodedToken && decodedToken.user_id !== store?.user_id && decodedToken.role !== "ADMIN") {
+                context.error("You are not authorised to delete this store.");
                 return {
                     status: 403,
                     headers,
@@ -48,13 +51,18 @@ async function deleteStore(request: HttpRequest, context: InvocationContext, dec
 
                 if (decodedToken?.role === "VENDOR") {
                     await tx.users.update({
-                        where: { user_id },
+                        where: { user_id: decodedToken.user_id },
                         data: { role: "CUSTOMER"}
                     });
 
                 }
+                const bucketId = process.env.APPWRITE_VENDOR_AVATAR_BUCKET_ID;
+
+                if (!bucketId) throw new Error("APPWRITE_VENDOR_AVATAR_BUCKET_ID variable not set.");
                   
-                await tx.vendor.delete({ where: { vendor_id, user_id }});
+                await tx.vendor.delete({ where: { vendor_id, user_id: decodedToken?.user_id }});
+                
+                await Avatar.deleteVendorAvatar(vendor_id, bucketId);
             });
 
             return {
@@ -90,7 +98,7 @@ async function deleteStore(request: HttpRequest, context: InvocationContext, dec
     }
 }
 
-const DELETE_STORE = withAuth(deleteStore);
+const DELETE_STORE = withAuth(deleteStore, ['VENDOR', 'ADMIN']);
 
 app.http('delete-store', {
     methods: ['DELETE'],

@@ -54,14 +54,13 @@ async function createDepartment(request: HttpRequest, context: InvocationContext
                 // Extract the processed image and form data
                 imageFile = processingResult.imageFile || null;
                 requestData = { 
-                    user_id: processingResult.formData?.user_id || "",
                     department_name: processingResult.formData?.department_name || "",
                 };
             } else {
                 requestData = await parseJsonRequest(request) as Partial<ICreateDepartment>;
             }            
 
-            const { department_name, user_id } = requestData as ICreateDepartment;
+            const { department_name } = requestData as ICreateDepartment;
 
             if (!department_name) {
                 return {
@@ -73,57 +72,6 @@ async function createDepartment(request: HttpRequest, context: InvocationContext
                     })
                 }
             };
-
-            if (!user_id) {
-                return {
-                    status: 400,
-                    headers,
-                    body: JSON.stringify({
-                        success: false,
-                        message: "No user ID provided"
-                    })
-                }
-            };
-
-
-            if (decodedToken && decodedToken.user_id !== user_id && decodedToken.role !== 'ADMIN') {
-                return {
-                    status: 403,
-                    headers,
-                    body: JSON.stringify({
-                        success: false,
-                        message: "You are not authorised to create new departmenrs"
-                    })
-                };
-            };
-
-
-            const exsistingUser = await prisma.users.findUnique({
-                where: { user_id }
-            });
-
-            if (!exsistingUser) {
-                return {
-                    status: 404,
-                    headers,
-                    body: JSON.stringify({
-                        success: false,
-                        message: "User does not exsist."
-                    })
-                }
-            };
-
-            if (decodedToken && (decodedToken.user_id !== exsistingUser?.user_id || exsistingUser.role !== 'ADMIN')) {
-                return {
-                    status: 403,
-                    headers,
-                    body: JSON.stringify({
-                        success: false,
-                        message: "You are not authorised to create new departmenrs"
-                    })
-                };
-            };
-
 
             const existingDepartment = await prisma.department.findUnique({
                 where: {department_name}

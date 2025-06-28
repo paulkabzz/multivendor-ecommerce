@@ -5,13 +5,12 @@ import { ICreateCategory } from "../utils/types";
 import prisma from "../utils/database";
 import { headers } from "../utils/helpers";
 
-async function createCategory(request: HttpRequest, context: InvocationContext, decodedToken?: DecodedToken): Promise<HttpResponseInit> {
+async function createCategory(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
 
     if (request.method === "POST") {
         try {
-            const { user_id, department_id, category_name } = await request.json() as ICreateCategory;
+            const { department_id, category_name } = await request.json() as ICreateCategory;
 
-            // Validation
             if (!department_id) {
                 return {
                     status: 400,
@@ -22,55 +21,6 @@ async function createCategory(request: HttpRequest, context: InvocationContext, 
                     })
                 };
             }
-
-            if (!user_id) {
-                return {
-                    status: 400,
-                    headers,
-                    body: JSON.stringify({
-                        success: false,
-                        message: "No user ID provided"
-                    })
-                };
-            }
-            
-            if (decodedToken && decodedToken.user_id !== user_id && decodedToken.role !== 'ADMIN') {
-                return {
-                    status: 403,
-                    headers,
-                    body: JSON.stringify({
-                        success: false,
-                        message: "You are not authorised to create new categories"
-                    })
-                };
-            };
-
-            const existingUser = await prisma.users.findUnique({
-                where: { user_id }
-            });
-
-            if (!existingUser) {
-                return {
-                    status: 404,
-                    headers,
-                    body: JSON.stringify({
-                        success: false,
-                        message: "User does not exist."
-                    })
-                }
-            }
-
-            if (decodedToken && (decodedToken.user_id !== existingUser.user_id && existingUser.role !== 'ADMIN')) {
-                return {
-                    status: 403,
-                    headers,
-                    body: JSON.stringify({
-                        success: false,
-                        message: "You are not authorised to create new categories"
-                    })
-                };
-            };
-
 
             if (!category_name || !Array.isArray(category_name) || category_name.length === 0) {
                 return {
@@ -83,7 +33,6 @@ async function createCategory(request: HttpRequest, context: InvocationContext, 
                 };
             }
 
-            // Validate that all category names are strings and not empty
             const invalidCategories = category_name.filter(name => 
                 typeof name !== 'string' || name.trim().length === 0
             );
@@ -99,7 +48,6 @@ async function createCategory(request: HttpRequest, context: InvocationContext, 
                 };
             }
 
-            // Verify department exists
             const department = await prisma.department.findUnique({
                 where: { department_id }
             });
@@ -146,7 +94,6 @@ async function createCategory(request: HttpRequest, context: InvocationContext, 
                 };
             }
 
-            // Check for globally existing category names (since category_name is unique)
             const existingGlobalCategories = await prisma.category.findMany({
                 where: {
                     category_name: {
@@ -159,7 +106,6 @@ async function createCategory(request: HttpRequest, context: InvocationContext, 
                 }
             });
 
-            // transaction to create categories and department-category relationships
             const result = await prisma.$transaction(async (tx) => {
                 const createdCategories = [];
                 const departmentCategoryLinks = [];
@@ -167,7 +113,6 @@ async function createCategory(request: HttpRequest, context: InvocationContext, 
                 for (const name of category_name) {
                     const trimmedName = name.trim();
                     
-                    // Check if category already exists globally
                     let existingCategory = existingGlobalCategories.find(
                         cat => cat.category_name === trimmedName
                     );
@@ -175,10 +120,8 @@ async function createCategory(request: HttpRequest, context: InvocationContext, 
                     let categoryId: string;
 
                     if (existingCategory) {
-                        // Category exists, just link it to the department
                         categoryId = existingCategory.category_id;
                     } else {
-                        // Create new category
                         const newCategory = await tx.category.create({
                             data: {
                                 category_name: trimmedName
@@ -188,7 +131,6 @@ async function createCategory(request: HttpRequest, context: InvocationContext, 
                         categoryId = newCategory.category_id;
                     }
 
-                    // Create department-category relationship
                     const departmentCategoryLink = await tx.departmentcategory.create({
                         data: {
                             department_id,
@@ -198,7 +140,6 @@ async function createCategory(request: HttpRequest, context: InvocationContext, 
                     departmentCategoryLinks.push(departmentCategoryLink);
                 }
 
-                // Fetch all categories now linked to this department
                 const linkedCategories = await tx.departmentcategory.findMany({
                     where: {
                         department_id,
@@ -248,7 +189,6 @@ async function createCategory(request: HttpRequest, context: InvocationContext, 
         } catch (error: unknown) {
             context.error("Error creating categories", error);
             
-            // Handle specific Prisma errors
             if (error instanceof Error) {
                 if (error.message.includes('Unique constraint')) {
                     return {

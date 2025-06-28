@@ -3,6 +3,7 @@ import { useNavigate } from "react-router";
 import { User, ShoppingBag, CreditCard, MapPin, LogOut, ChevronRight } from "lucide-react";
 import defaultProfilePic from "@assets/ui/default.png";
 import { useAppDispatch } from "@/src/store/hooks";
+import { useState } from "react";
 
 interface IProfileSideBar {
   active: number;
@@ -46,9 +47,15 @@ export const ProfileSideBar: React.FC<IProfileSideBar> = ({
     ];
 
 
-  function handleLogout(): void {
-    dispatch(logoutUser());
-    navigate("/");
+  async function handleLogout() {
+    try {
+          await dispatch(logoutUser()).unwrap();
+          navigate("/");
+
+
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   const handleItemClick = (index: number, item: (typeof links)[0]): void => {

@@ -64,14 +64,12 @@ export interface IUpdateUserRequest {
 // Admin interfaces
 export interface ICreateDepartment {
   department_name: string;
-  user_id: string;
   image: File;
 }
 
 export interface ICreateCategory {
   department_id: string;
   category_name: string[];
-  user_id: string;
 }
 
 export interface ICreateSubCategory {

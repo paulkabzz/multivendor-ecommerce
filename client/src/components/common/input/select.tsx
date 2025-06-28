@@ -11,13 +11,14 @@ interface ISearchableSelect {
   options: SelectOption[];
   placeholder?: string;
   disabled?: boolean;
+  bgLight?: boolean;
   className?: string;
   width?: number;
   height?: number;
   icon?: string;
   value?: string;
   defaultValue?: string;
-  onChange?: (value: string) => void;
+  onChange?: (value: any) => any;
   searchPlaceholder?: string;
   noOptionsText?: string;
 }
@@ -33,6 +34,7 @@ export const SearchableSelect: React.FC<ISearchableSelect> = ({
   value,
   defaultValue,
   onChange,
+  bgLight,
   searchPlaceholder = "Search options...",
   noOptionsText = "No options found"
 }) => {
@@ -137,6 +139,7 @@ export const SearchableSelect: React.FC<ISearchableSelect> = ({
           cursor-pointer transition-all duration-200 ease-in-out
           ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#454545]'}
           ${isOpen ? 'ring-2 ring-blue-500/30 bg-[#454545]' : ''}
+          ${bgLight ? '!bg-primary-light !text-primary-dark' : ''}
         `}
       >
         <div className="flex items-center gap-3 flex-1 overflow-hidden">
@@ -144,6 +147,7 @@ export const SearchableSelect: React.FC<ISearchableSelect> = ({
           <div className={`
             text-[12px] 
             ${selectedLabel ? 'text-[#fff]' : 'text-[#8e8e8e] font-[400]'}
+            ${bgLight ? '!text-primary-dark': ''}
           `}>
             {selectedLabel || placeholder}
           </div>
@@ -167,7 +171,7 @@ export const SearchableSelect: React.FC<ISearchableSelect> = ({
           : 'opacity-0 scale-95 -translate-y-2 pointer-events-none'
         }
       `}>
-        <div className="bg-[#3b3b3b] rounded-2xl shadow-2xl border border-[#555] overflow-hidden">
+        <div className={`bg-[#3b3b3b] rounded-2xl shadow-2xl border border-[#555] overflow-hidden ${bgLight ? '!bg-primary-light !text-primary-dark' : ''}`}>
           {/* Search Input */}
           <div className="p-3 border-b border-[#555]">
             <div className="relative">
@@ -181,9 +185,9 @@ export const SearchableSelect: React.FC<ISearchableSelect> = ({
                   setFocusedIndex(-1);
                 }}
                 placeholder={searchPlaceholder}
-                className="w-full bg-[#2a2a2a] text-[#fff] text-[12px] pl-9 pr-3 py-2 rounded-xl
+                className={`w-full bg-[#2a2a2a] text-[#fff] text-[12px] pl-9 pr-3 py-2 rounded-xl
                   placeholder:text-[#8e8e8e] placeholder:font-[400] outline-none
-                  focus:ring-2 focus:ring-blue-500/30 transition-all duration-200"
+                  focus:ring-2 focus:ring-blue-500/30 transition-all duration-200 ${bgLight ? '!bg-[#bbb] !text-primary-dark':''}`}
               />
             </div>
           </div>
@@ -203,10 +207,11 @@ export const SearchableSelect: React.FC<ISearchableSelect> = ({
                     transition-all duration-150 ease-in-out
                     ${option.disabled 
                       ? 'opacity-50 cursor-not-allowed' 
-                      : 'hover:bg-[#454545]'
+                      : `hover:bg-[#454545] ${bgLight ? 'hover:!bg-[#aaa]': ''}`
                     }
-                    ${focusedIndex === index ? 'bg-[#454545]' : ''}
+                    ${focusedIndex === index ? `bg-[#454545] ${bgLight ? 'bg-[#aaa]':''}` : ''}
                     ${selectedValue === option.value ? 'bg-blue-500/10 text-blue-400' : 'text-[#fff]'}
+                    ${bgLight ? '!text-primary-dark': ''}
                   `}
                 >
                   {option.label}
@@ -216,7 +221,7 @@ export const SearchableSelect: React.FC<ISearchableSelect> = ({
                 </div>
               ))
             ) : (
-              <div className="px-4 py-6 text-center text-[#fff] text-[12px]">
+              <div className={`px-4 py-6 text-center text-[#fff] text-[12px] ${bgLight ? '!text-primary-dark': ''}`}>
                 {noOptionsText}
               </div>
             )}

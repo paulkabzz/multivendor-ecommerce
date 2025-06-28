@@ -3,7 +3,7 @@ import { DecodedToken } from "../utils/authMiddleware";
 import prisma from "../utils/database";
 import { headers } from "../utils/helpers";
 
-async function getDepartments(request: HttpRequest, context: InvocationContext, decodedToken?: DecodedToken): Promise<HttpResponseInit> {
+async function getDepartments(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
 
     if (request.method === "GET") {
         try {

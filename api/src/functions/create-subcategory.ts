@@ -1,28 +1,21 @@
 import { app, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/functions";
 import { DecodedToken } from "../utils/authMiddleware";
 import prisma from "../utils/database";
-import { ICreateSubCategory } from "../utils/types";
 import { withAuth } from "../utils/middleware";
 import { headers } from "../utils/helpers";
+
+interface ICreateSubCategory {
+    subcategory_name: string[];
+    category_id: string;
+}
 
 async function createSubcategory(request: HttpRequest, context: InvocationContext, decodedToken?: DecodedToken): Promise<HttpResponseInit> {
 
     if (request.method === "POST") {
         try {
+            const { subcategory_name, category_id } = await request.json() as ICreateSubCategory;
 
-            const { user_id, subcategory_name, category_id } = await request.json() as ICreateSubCategory;
-
-            if (!user_id) {
-                return {
-                    status: 400,
-                    headers,
-                    body: JSON.stringify({
-                        success: false,
-                        message: "No user ID provided"
-                    })
-                }
-            }
-
+            // Validate category_id
             if (!category_id) {
                 return {
                     status: 400,
@@ -34,55 +27,20 @@ async function createSubcategory(request: HttpRequest, context: InvocationContex
                 }
             }
 
-            if (decodedToken && decodedToken.user_id !== user_id && decodedToken.role !== 'ADMIN') {
-                return {
-                    status: 403,
-                    headers,
-                    body: JSON.stringify({
-                        success: false,
-                        message: "You are not authorised to create new subcategories"
-                    })
-                };
-            };
-            
-            const existingUser = await prisma.users.findUnique({
-                where: { user_id }
-            });
-
-            if (!existingUser) {
-                return {
-                    status: 404,
-                    headers,
-                    body: JSON.stringify({
-                        success: false,
-                        message: "User does not exist."
-                    })
-                }
-            }
-
-            if (decodedToken && (decodedToken.user_id !== existingUser.user_id && existingUser.role !== 'ADMIN')) {
-                return {
-                    status: 403,
-                    headers,
-                    body: JSON.stringify({
-                        success: false,
-                        message: "You are not authorised to create new subcategories"
-                    })
-                };
-            };
-            
+            // Validate subcategory_name array
             if (!subcategory_name || !Array.isArray(subcategory_name) || subcategory_name.length === 0) {
                 return {
                     status: 400,
                     headers,
                     body: JSON.stringify({
                         success: false,
-                        message: "Subcategories names must be provided as a non-empty array"
+                        message: "Subcategory names must be provided as a non-empty array"
                     })
                 };
             }
 
-            const invalidSubcategories: string[] = subcategory_name.filter(name => 
+            // Validate each subcategory name
+            const invalidSubcategories = subcategory_name.filter(name => 
                 typeof name !== 'string' || name.trim().length === 0
             );
 
@@ -92,11 +50,15 @@ async function createSubcategory(request: HttpRequest, context: InvocationContex
                     headers,
                     body: JSON.stringify({
                         success: false,
-                        message: "All category names must be non-empty strings"
+                        message: "All subcategory names must be non-empty strings"
                     })
                 };
             }
+
+            // Normalize subcategory names
+            const normalizedNames = subcategory_name.map(name => name.trim());
             
+            // Check if category exists
             const category = await prisma.category.findUnique({
                 where: { category_id }
             });
@@ -112,12 +74,13 @@ async function createSubcategory(request: HttpRequest, context: InvocationContex
                 }
             }
 
-            const exsitingSubcategoriesInCategory = await prisma.categorysubcategory.findMany({
+            // Check for existing subcategories already linked to this category
+            const existingLinksInCategory = await prisma.categorysubcategory.findMany({
                 where: {
                     category_id,
                     subcategory: {
                         subcategory_name: {
-                            in: subcategory_name.map(name => name.trim())
+                            in: normalizedNames
                         }
                     }
                 }, 
@@ -130,8 +93,8 @@ async function createSubcategory(request: HttpRequest, context: InvocationContex
                 }
             });
 
-            if (exsitingSubcategoriesInCategory.length > 0) {
-                const duplicates = exsitingSubcategoriesInCategory.map(duplicate => duplicate.subcategory.subcategory_name);
+            if (existingLinksInCategory.length > 0) {
+                const duplicates = existingLinksInCategory.map(link => link.subcategory.subcategory_name);
                 return {
                     status: 409,
                     headers,
@@ -142,94 +105,81 @@ async function createSubcategory(request: HttpRequest, context: InvocationContex
                 }
             }
 
-            const existingGobalSubcategories = await prisma.subcategory.findMany({
+            // Get existing subcategories globally (to reuse if they exist)
+            const existingGlobalSubcategories = await prisma.subcategory.findMany({
                 where: {
                     subcategory_name: {
-                        in: subcategory_name.map(name => name.trim())
+                        in: normalizedNames
                     }
-                },
-                select: {
-                    subcategory_id: true,
-                    subcategory_name: true
                 }
             });
 
-            const result = await prisma.$transaction(async tx => {
-                const createdSubcategories: any[] = [];
-                const categorySubcategoryLinks: any[] = [];
+            const existingGlobalNames = existingGlobalSubcategories.map(s => s.subcategory_name);
 
-                for (const name of subcategory_name) {
-                    const trimmedName = name.trim();
+            const result = await prisma.$transaction(async tx => {
+                const processedSubcategories = [];
+                let newSubcategoriesCreated = 0;
+
+                for (const name of normalizedNames) {
+                    let subcategoryId: string;
+                    let isNewSubcategory = false;
 
                     // Check if subcategory already exists globally
-                    let existingSubcategory = existingGobalSubcategories.find(
-                        subcat => subcat.subcategory_name === trimmedName
+                    const existingSubcategory = existingGlobalSubcategories.find(
+                        subcat => subcat.subcategory_name === name
                     );
 
-                    let subcategoryId: string;
-                    
                     if (existingSubcategory) {
+                        // Use existing subcategory
                         subcategoryId = existingSubcategory.subcategory_id;
                     } else {
+                        // Create new subcategory
                         const newSubcategory = await tx.subcategory.create({
                             data: {
-                                subcategory_name: trimmedName
+                                subcategory_name: name
                             }
                         });
-                        createdSubcategories.push(newSubcategory);
-                        subcategoryId = newSubcategory.subcategory_id;                        
+                        subcategoryId = newSubcategory.subcategory_id;
+                        isNewSubcategory = true;
+                        newSubcategoriesCreated++;
                     }
 
-
-                    const categorySubcategoryLink = await tx.categorysubcategory.create({
+                    // Create the link between category and subcategory
+                    await tx.categorysubcategory.create({
                         data: {
                             category_id,
                             subcategory_id: subcategoryId
                         }
                     });
 
-                    categorySubcategoryLinks.push(categorySubcategoryLink);
-
+                    processedSubcategories.push({
+                        subcategory_id: subcategoryId,
+                        subcategory_name: name,
+                        was_new_subcategory: isNewSubcategory
+                    });
                 }
-                const linkedSubcategories = await tx.categorysubcategory.findMany({
-                    where: { 
-                        category_id,
-                        subcategory_id: {
-                            in: [...createdSubcategories.map(s => s.subcategory_id), ...existingGobalSubcategories.filter(s => subcategory_name.map(n => n.trim()).includes(s.subcategory_name)).map(s => s.subcategory_id)]
-                        }
-                    },
-                    include: {
-                        subcategory: true
-                    }
-                });
 
                 return {
-                    newSubcategoriesCount: createdSubcategories.length,
-                    linkedSubcategoriesCount: linkedSubcategories.length,
-                    subcategories: linkedSubcategories
-                }
+                    processedSubcategories,
+                    newSubcategoriesCreated,
+                    totalProcessed: processedSubcategories.length
+                };
             });
             
-            context.log(`Successfully processed ${result?.linkedSubcategoriesCount} subcategories for category ${category_id}. Created ${result?.newSubcategoriesCount} new subcategories.`);
+            context.log(`Successfully processed ${result.totalProcessed} subcategories for category ${category_id}. Created ${result.newSubcategoriesCreated} new subcategories.`);
 
             return {
                 status: 201,
                 headers,
                 body: JSON.stringify({
                     success: true,
-                    message: "Subcategory(ies) created successfully.",
+                    message: "Subcategory(ies) created and linked successfully.",
                     data: {
                         category_id,
                         category_name: category.category_name,
-                        subcategories_processed: result?.subcategories.map(cs => ({
-                            subcategory_id: cs.subcategory.subcategory_id,
-                            subcategory_name: cs.subcategory.subcategory_name,
-                            was_new_subcategory: result.subcategories.some(subcat => 
-                                subcat.subcategory.subcategory_id === cs.subcategory.subcategory_id
-                            )
-                        })),
-                        total_linked: result?.linkedSubcategoriesCount,
-                        new_categories_created: result?.newSubcategoriesCount
+                        subcategories_processed: result.processedSubcategories,
+                        total_processed: result.totalProcessed,
+                        new_subcategories_created: result.newSubcategoriesCreated
                     }                    
                 })
             }
@@ -258,7 +208,6 @@ async function createSubcategory(request: HttpRequest, context: InvocationContex
             message: "Method not allowed."
         })
     }
-
 }
 
 const CREATE_SUBCATEGORY = withAuth(createSubcategory, ['ADMIN']);

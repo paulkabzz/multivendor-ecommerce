@@ -50,6 +50,8 @@ async function deleteUser(request: HttpRequest, context: InvocationContext, deco
                 }
             }
 
+            
+
             await prisma.users.delete({
                 where: { user_id }
             });

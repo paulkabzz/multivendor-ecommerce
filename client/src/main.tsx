@@ -9,6 +9,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "./context/auth-context";
 import { StoreProvider } from "./context/store-context";
 import { AdminProvider } from "./context/admin-context";
+import { UIProvider } from "./context/ui-context";
 
 const queryCLient = new QueryClient({
   defaultOptions: {
@@ -26,13 +27,15 @@ createRoot(document.getElementById("root")!).render(
         <Provider store={store}>
           <BrowserRouter>
               <QueryClientProvider client={queryCLient}>
-                <AuthProvider>
-                  <AdminProvider>
-                    <StoreProvider>
-                      <App />
-                    </StoreProvider>
-                  </AdminProvider>
-                </AuthProvider>
+                <UIProvider>
+                  <AuthProvider>
+                    <AdminProvider>
+                      <StoreProvider>
+                        <App />
+                      </StoreProvider>
+                    </AdminProvider>
+                  </AuthProvider>
+                </UIProvider>
               </QueryClientProvider>
           </BrowserRouter>
         </Provider>  

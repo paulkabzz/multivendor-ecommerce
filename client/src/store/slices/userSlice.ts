@@ -190,7 +190,7 @@ export const logoutUser = createAsyncThunk(
       }
       };
 
-      await fetch(`${BASE_URL}/logout`, {
+      const response = await fetch(`${BASE_URL}/logout`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -198,8 +198,16 @@ export const logoutUser = createAsyncThunk(
         },
       });
 
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
+      const data = await response.json();
+
+          if (data.success)
+         { localStorage.removeItem("token");
+          localStorage.removeItem("user");
+          } 
+          else
+          {  
+            throw new Error(data.message || "Failed to logout. Please try again.");
+          }
 
     } catch (error) {
       console.error("Error logging out: ", error);

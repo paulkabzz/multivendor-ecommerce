@@ -24,7 +24,7 @@ const PreviewImage: React.FC<PreviewImageInterface> = ({ index }) => {
             preview ? <img src={preview} alt="Image upload" className='w-full h-full object-cover' /> :  <img src={imageIcom} alt="Image upload" className='w-[25px] h-auto' /> 
         }
         {
-            !preview && <p className='text-[12px]'>+ Add Image{index === 0 && "*"}</p>
+            !preview && <p className='text-[12px]'>+ Add Image{index === 0 && <span className="text-[#ff0000]">*</span>}</p>
         }
     </label>
   )
