@@ -5,6 +5,8 @@ import { withAuth } from "../utils/middleware";
 import { ICreateStore } from "../utils/types";
 import prisma from "../utils/database";
 import { Avatar } from "../utils/avatars";
+import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
 
 async function createStore(request: HttpRequest, context: InvocationContext, decodedToken?: DecodedToken): Promise<HttpResponseInit> {
     if (request.method === "POST") {
@@ -39,7 +41,6 @@ async function createStore(request: HttpRequest, context: InvocationContext, dec
                     };
                 }
 
-                // Extract the processed image and form data
                 imageFile = processingResult.imageFile || null;
                 requestData = { 
                     user_id: processingResult.formData?.user_id || "",
@@ -117,8 +118,9 @@ async function createStore(request: HttpRequest, context: InvocationContext, dec
                     throw new Error("Only customers and admins can create stores");
                 }
 
+                let updatedUser = user;
                 if (user?.role === "CUSTOMER") {
-                    await tx.users.update({
+                    updatedUser = await tx.users.update({
                         where: { user_id },
                         data: { role: "VENDOR" }
                     });
@@ -164,8 +166,34 @@ async function createStore(request: HttpRequest, context: InvocationContext, dec
                     });
                 }
 
-                return { vendor, avatarUrl };
+                return { vendor, avatarUrl, updatedUser };
             });
+
+            // if (result) {
+            //     await prisma.tokenblacklist.create({
+            //         data: {
+            //             token_jti: decodedToken,
+            //             expires_at: new Date(decodedToken.exp * 1000)
+            //         }
+            //     })
+            // }
+
+            const jwtSecret = process.env.JWT_SECRET;
+            if (!jwtSecret) {
+                throw new Error("JWT_SECRET environment variable not set.");
+            }
+
+            const jti = crypto.randomUUID();
+            const newToken = jwt.sign(
+                {
+                    user_id: result.updatedUser.user_id,
+                    email: result.updatedUser.email,
+                    role: result.updatedUser.role,
+                    jti
+                },
+                jwtSecret,
+                { expiresIn: '24h' }
+            );
 
             return {
                 status: 201,
@@ -173,11 +201,21 @@ async function createStore(request: HttpRequest, context: InvocationContext, dec
                 body: JSON.stringify({
                     success: true,
                     message: "Store successfully created",
-                    data: {
-                        vendor_id: result.vendor.vendor_id,
-                        store_name: result.vendor.store_name,
-                        avatar_url: result.avatarUrl,
-                        bio: result.vendor.bio
+                    token: newToken,
+                    user: {
+                        user_id: result.updatedUser.user_id,
+                        first_name: result.updatedUser.first_name,
+                        last_name: result.updatedUser.last_name,
+                        email: result.updatedUser.email,
+                        avatar_url: result.updatedUser.avatar_url,
+                        phone: result.updatedUser.phone,
+                        role: result.updatedUser.role,
+                        vendor: {
+                            vendor_id: result.vendor.vendor_id,
+                            store_name: result.vendor.store_name,
+                            avatar_url: result.avatarUrl,
+                            bio: result.vendor.bio
+                        }
                     }
                 })
             };

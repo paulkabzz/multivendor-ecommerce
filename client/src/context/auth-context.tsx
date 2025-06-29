@@ -17,7 +17,7 @@ interface AuthContextType {
   updateUser: (updateData: Partial<IUpdateUserRequest>) => Promise<any>;
   updateAvatar: (data: { userId: string; avatarFile: File }) => Promise<any>;
   logout: () => void;
-  refetchUser: () => void;
+  refetchUser: () => Promise<any>;
   isLoginLoading: boolean;
   isUpdateLoading: boolean;
   isAvatarLoading: boolean;
@@ -28,7 +28,6 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
 
 export const getStoredToken = (): string | null => {
   if (typeof window !== 'undefined') {
@@ -45,7 +44,6 @@ export const removeStoredToken = () => {
   localStorage.removeItem('token');
   localStorage.removeItem('user');
 };
-
 
 const fetchUser = async (token: string | null) => {
   if (!token) {
@@ -138,7 +136,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [token, setToken] = useState<string | null>(() => getStoredToken());
   const [forceUpdate, setForceUpdate] = useState(0);
 
-  // we must lookout for token changes
   useEffect(() => {
     const interval = setInterval(() => {
       const currentToken = getStoredToken();
@@ -149,7 +146,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     return () => clearInterval(interval);
   }, [token]);
-
 
   const {
     data: userData,
@@ -171,9 +167,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     mutationFn: loginAPI,
     onSuccess: (data) => {
       setStoredToken(data.token);
-      console.warn(data)
       setToken(data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
+
       queryClient.setQueryData(['user', data.token, forceUpdate], data);
       queryClient.invalidateQueries({ queryKey: ['user'] });
     },
@@ -205,9 +200,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     },
   });
 
-
   const logout = () => {
-
     removeStoredToken();
     setToken(null);
     

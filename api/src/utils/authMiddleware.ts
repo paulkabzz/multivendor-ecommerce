@@ -21,7 +21,7 @@ export function verifyAuthToken(token: string): DecodedToken | null {
 
     if (!secret) throw new Error("JWT_SECRET environment variable not set");
 
-    // Verify and decode the token
+
     const decoded = jwt.verify(token, secret) as DecodedToken;
     
     return decoded;
@@ -78,18 +78,18 @@ export function authenticateRequest(request: HttpRequest, roles?: string[], isVa
     };
   }
 
-  // Check role-based access if roles are specified
+
   if (roles && roles.length > 0 && !roles.includes(decoded.role)) {
     return {
       status: 403,
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         success: false,
-        message: 'You do not have permission to access this resource'
+        message: 'You do not have permission to access this resource. Your current role is: ' + decoded.role
       })
     };
   }
 
-  // Authentication successful
+
   return null;
 }

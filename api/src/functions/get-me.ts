@@ -46,6 +46,7 @@ async function getMe(request: HttpRequest, context: InvocationContext, decodedTo
             const vendor = await prisma.vendor.findUnique({ where: { user_id: updatedUser.user_id }});
 
             if (vendor) {
+                context.warn("Found vendor");
                 await prisma.vendor.update({
                     where: { user_id: decodedToken.user_id},
                     data: {
@@ -65,6 +66,9 @@ async function getMe(request: HttpRequest, context: InvocationContext, decodedTo
                 role: updatedUser.role ?? "CUSTOMER",
                 vendor: vendor ?? undefined
             }
+
+            // DEBUG: logging out the updated user data to see if changes are really applied
+            context.warn(data);
 
             return {
                 status: 200,

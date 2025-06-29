@@ -2,6 +2,7 @@ import React, { createContext, useContext } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { BASE_URL } from '@/src/utils/url';
 import { useAuth } from './auth-context';
+import { setStoredToken } from './auth-context'; // Import the token setter
 
 interface Store {
   vendor_id: string;
@@ -41,7 +42,7 @@ const fetchStore = async (token: string | null) => {
 
   const response = await fetch(`${BASE_URL}/my-store`, {
     headers: {
-      Authorization: `Bearer ${token}`,
+      authorization: `Bearer ${token}`,
     },
     method: 'GET',
   });
@@ -75,7 +76,7 @@ const createStoreAPI = async (storeData: CreateStoreData, token: string, userId:
   const response = await fetch(`${BASE_URL}/create-store`, {
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${token}`,
+      authorization: `Bearer ${token}`,
     },
     body: formData,
   });
@@ -95,8 +96,7 @@ interface StoreProviderProps {
 
 export const StoreProvider: React.FC<StoreProviderProps> = ({ children }) => {
   const queryClient = useQueryClient();
-  const { user, isAuthenticated, refetchUser } = useAuth();
-  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+  const { user, isAuthenticated, refetchUser, token } = useAuth();
 
   // Store query.. only fetch if user is authenticated and has VENDOR or ADMIN role
   const {
@@ -115,7 +115,6 @@ export const StoreProvider: React.FC<StoreProviderProps> = ({ children }) => {
   const store = storeData?.store || null;
   const hasStore = !!store;
 
-
   const createStoreMutation = useMutation({
     mutationFn: (storeData: CreateStoreData) => {
       if (!user?.user_id || !token) {
@@ -123,15 +122,25 @@ export const StoreProvider: React.FC<StoreProviderProps> = ({ children }) => {
       }
       return createStoreAPI(storeData, token, user.user_id);
     },
-    onSuccess: (data) => {
-
-      // we now update store cache with new store data
+    onSuccess: async (data) => {
+      // CRITICAL FIX: Store the new JWT token that comes with updated role, was having issue with token based role verification
+      if (data.token) {
+        setStoredToken(data.token);
+        console.log('New token stored after store creation:', data.token);
+      }
+      
       queryClient.setQueryData(['store', user?.user_id], { store: data.data });
       
-      // now invalidate and refetch store data....
+      if (data.user) {
+        queryClient.setQueryData(['user', data.token, 0], { user: data.user });
+      }
+      
+      queryClient.invalidateQueries({ queryKey: ['user'] });
       queryClient.invalidateQueries({ queryKey: ['store'] });
       
-      refetchUser();
+      setTimeout(() => {
+        refetchUser();
+      }, 100);
     },
     onError: (error) => {
       console.error('Create store failed:', error);

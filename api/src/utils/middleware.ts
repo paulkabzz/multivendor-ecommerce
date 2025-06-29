@@ -15,16 +15,30 @@ type HttpHandler = (request: HttpRequest, context: InvocationContext, decodedTok
  */
 export function withAuth(handler: HttpHandler, roles?: string[]): HttpHandler {
   return async (request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> => {
-      const token = request.headers.get('authorization')!.split(' ')[1];
-      const validToken = await validateToken(token);
-    // Authenticate the request
+
+    const authHeader = request.headers.get('authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return {
+        status: 401,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          success: false,
+          message: 'Authentication required'
+        })
+      };
+    }
+
+    const token = authHeader.split(' ')[1];
+    const validToken = await validateToken(token);
+    
+
     const authError = authenticateRequest(request, roles, validToken);
     if (authError) return authError;
     
-    // Get token from authorization header
+
     const decodedToken = verifyAuthToken(token) as DecodedToken;
     
-    // Call the original handler with the decoded token
+
     return handler(request, context, decodedToken);
   };
 }
