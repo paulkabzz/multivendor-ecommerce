@@ -2,7 +2,7 @@ import React, { createContext, useContext } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { BASE_URL } from '@/src/utils/url';
 import { useAuth } from './auth-context';
-import { setStoredToken } from './auth-context'; // Import the token setter
+import { setStoredToken } from './auth-context'; 
 
 interface Store {
   vendor_id: string;

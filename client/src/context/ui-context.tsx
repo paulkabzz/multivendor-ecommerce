@@ -16,6 +16,16 @@ interface Subcategory {
     subcategory_name: string;
 }
 
+interface Brand {
+  brand_id: string;
+  brand_name: string;
+}
+
+interface Size {
+  size_id: string;
+  size_name: string;
+}
+
 interface CreateDepartmentData {
   department_name: string;
   cover?: File;
@@ -49,10 +59,14 @@ interface UIContextType {
   departments: Department[];
   categories: Category[];
   subcategories: Subcategory[];
+  sizes: Size[];
+  brands: Brand[];
   loadingDepartments: boolean;
   fetchDepartments: () => Promise<void>;
   fetchCategories: (departmentId: string) => Promise<void>;
   fetchSubcategories: (departmentId: string, subscategoryId: string) => Promise<void>;
+  fetchSizes: () => Promise<void>;
+  fetchBrands: () => Promise<void>;
 }
 
 const UIContext = createContext<UIContextType | undefined>(undefined);
@@ -79,6 +93,8 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
   const [loadingDepartments, setLoadingDepartments] = useState<boolean>(false);
+  const [brands, setBrands] = useState<Brand[]>([]);
+  const [sizes, setSizes] = useState<Size[]>([]);
 
   // Create Department
   const createDepartment = async (data: CreateDepartmentData) => {
@@ -193,8 +209,7 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
       console.error('Error fetching categories:', error);
     }
   };
-
-
+  
   const fetchSubcategories = async (departmentId: string, categoryId: string) => {
     try {
         const response = await fetch(`${BASE_URL}/get-subcategories?categoryId=${categoryId}&departmentId=${departmentId}`);
@@ -211,7 +226,35 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
     }
   }
 
+  const fetchBrands = async () => {
+    try {
+      const response = await fetch(`${BASE_URL}/get-brands`);
 
+      const data = await response.json();
+
+      if (!data.success) throw new Error(data.message || "Error fetching brands");
+      
+      setBrands(data.brands);
+
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  const fetchSizes = async () => {
+    try {
+      const response = await fetch(`${BASE_URL}/get-sizes`);
+
+      const data = await response.json();
+
+      if (!data.success) throw new Error(data.message || "Error fetching brands");
+
+      setSizes(data.sizes);
+
+    } catch (error) {
+      console.error(error);
+    }
+  }
   // Reset error functions
   const resetCreateDepartmentError = () => setCreateDepartmentError(null);
   const resetCreateCategoryError = () => setCreateCategoryError(null);
@@ -238,10 +281,14 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
     departments,
     categories,
     subcategories,
+    sizes,
+    brands,
     loadingDepartments,
     fetchDepartments,
     fetchCategories,
-    fetchSubcategories
+    fetchSubcategories,
+    fetchBrands,
+    fetchSizes
   };
 
   return (

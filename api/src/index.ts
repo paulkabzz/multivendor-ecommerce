@@ -15,6 +15,7 @@ import './functions/get-me';
 import './functions/my-store';
 import './functions/logout';
 import './functions/get-subcategories';
+import './functions/get-other';
 
 app.setup({
     enableHttpStream: true,

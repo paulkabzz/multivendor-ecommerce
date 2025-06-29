@@ -14,7 +14,6 @@ async function login(request: HttpRequest, context: InvocationContext): Promise<
         try {
             const { email, password } = await request.json() as ILoginRequest;
 
-            // Validate input
             if (!email || !password) {
                 const response: ILoginResponse = {
                     success: false,
@@ -27,7 +26,6 @@ async function login(request: HttpRequest, context: InvocationContext): Promise<
                 };
             }
 
-            // Find user by email
             const user = await prisma.users.findUnique({
                 where: {
                     email: email.toLowerCase().trim()
@@ -54,12 +52,11 @@ async function login(request: HttpRequest, context: InvocationContext): Promise<
             const url: URL = new URL(request.url);
             const baseUrl: string = `${url.protocol}//localhost:5173`;
 
-            // Check if user is verified
+
             if (!user.is_verified) {
-                // Generate a new verification token
+
                 const verificationToken = generateVerificationToken(user.email, user.user_id);
                 
-                // Send verification email
                 const emailSent = await sendVerificationEmail({
                     to: user.email, 
                     firstName: user.first_name, 
@@ -79,7 +76,6 @@ async function login(request: HttpRequest, context: InvocationContext): Promise<
                 };
             }
 
-            // Verify password
             const [salt, key] = user.password.split(":");
             const hashedBuffer = scryptSync(password, salt, 64);
 
@@ -99,7 +95,6 @@ async function login(request: HttpRequest, context: InvocationContext): Promise<
                 };
             }
 
-            // Generate JWT token
             const jwtSecret = process.env.JWT_SECRET;
 
             if (!jwtSecret) throw new Error("JWT_SECRET environment variable not set.");
@@ -117,9 +112,6 @@ async function login(request: HttpRequest, context: InvocationContext): Promise<
                 { expiresIn: '24h' }
             );
 
-
-
-            // Successful login response
             const response: ILoginResponse = {
                 success: true,
                 message: "Login successful",

@@ -42,6 +42,7 @@ export const SearchableSelect: React.FC<ISearchableSelect> = ({
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedValue, setSelectedValue] = useState(value || defaultValue || "");
   const [focusedIndex, setFocusedIndex] = useState(-1);
+  const [dropdownPosition, setDropdownPosition] = useState<'bottom' | 'top'>('bottom');
   
   const containerRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -53,6 +54,23 @@ export const SearchableSelect: React.FC<ISearchableSelect> = ({
 
   const selectedOption = options.find(option => option.value === selectedValue);
   const selectedLabel = selectedOption ? selectedOption.label : "";
+
+  const calculateDropdownPosition = () => {
+    if (!containerRef.current) return;
+
+    const rect = containerRef.current.getBoundingClientRect();
+    const viewportHeight = window.innerHeight;
+    const dropdownHeight = 280;
+    
+    const spaceBelow = viewportHeight - rect.bottom;
+    const spaceAbove = rect.top;
+    
+    if (spaceBelow < dropdownHeight && spaceAbove > dropdownHeight) {
+      setDropdownPosition('top');
+    } else {
+      setDropdownPosition('bottom');
+    }
+  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -70,6 +88,7 @@ export const SearchableSelect: React.FC<ISearchableSelect> = ({
   useEffect(() => {
     if (isOpen && searchInputRef.current) {
       searchInputRef.current.focus();
+      calculateDropdownPosition();
     }
   }, [isOpen]);
 
@@ -164,11 +183,15 @@ export const SearchableSelect: React.FC<ISearchableSelect> = ({
 
       {/* Dropdown */}
       <div className={`
-        absolute top-full left-0 right-0 mt-2 z-50
-        transform transition-all duration-200 ease-in-out origin-top
+        absolute left-0 right-0 z-50
+        ${dropdownPosition === 'bottom' ? 'top-full mt-2' : 'bottom-full mb-2'}
+        transform transition-all duration-200 ease-in-out
+        ${dropdownPosition === 'bottom' ? 'origin-top' : 'origin-bottom'}
         ${isOpen 
           ? 'opacity-100 scale-100 translate-y-0' 
-          : 'opacity-0 scale-95 -translate-y-2 pointer-events-none'
+          : `opacity-0 scale-95 pointer-events-none ${
+              dropdownPosition === 'bottom' ? '-translate-y-2' : 'translate-y-2'
+            }`
         }
       `}>
         <div className={`bg-[#3b3b3b] rounded-2xl shadow-2xl border border-[#555] overflow-hidden ${bgLight ? '!bg-primary-light !text-primary-dark' : ''}`}>
@@ -200,7 +223,7 @@ export const SearchableSelect: React.FC<ISearchableSelect> = ({
             {filteredOptions.length > 0 ? (
               filteredOptions.map((option, index) => (
                 <div
-                  key={option.value}
+                  key={index}
                   onClick={() => !option.disabled && handleSelect(option.value)}
                   className={`
                     flex items-center justify-between px-4 py-3 text-[12px] cursor-pointer

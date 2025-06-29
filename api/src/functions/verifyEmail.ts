@@ -23,7 +23,6 @@ async function verifyEmail(request: HttpRequest, context: InvocationContext): Pr
                 };
             }
 
-            // Verify the token
             const tokenData = verifyVerificationToken(token);
             if (!tokenData) {
                 const response: IVerificationResponse = {
@@ -37,7 +36,6 @@ async function verifyEmail(request: HttpRequest, context: InvocationContext): Pr
                 };
             }
 
-            // Find the user
             const user = await prisma.users.findUnique({
                 where: {
                     user_id: tokenData.userId,
@@ -69,7 +67,6 @@ async function verifyEmail(request: HttpRequest, context: InvocationContext): Pr
                 };
             }
 
-            // Update user verification status
             await prisma.users.update({
                 where: {
                     user_id: user.user_id

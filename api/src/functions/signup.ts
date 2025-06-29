@@ -14,7 +14,6 @@ async function signup(request: HttpRequest, context: InvocationContext): Promise
         try {
             const { first_name, last_name, email, password, phone, role } = await request.json() as IUser;
 
-            // Validate required fields
             if (!first_name || !last_name || !email || !password) {
                 return {
                     status: 400,
@@ -48,7 +47,6 @@ async function signup(request: HttpRequest, context: InvocationContext): Promise
                 }
             }
 
-            // Check if user already exists
             const existingUser = await prisma.users.findUnique({
                 where: {
                     email: email.toLowerCase()
@@ -68,10 +66,8 @@ async function signup(request: HttpRequest, context: InvocationContext): Promise
 
             const salt = randomBytes(16).toString('hex');
 
-            // Hash password
             const hashedPassword = scryptSync(password, salt, 64).toString('hex');
 
-            // Create user in database
             const newUser = await prisma.users.create({
                 data: {
                     first_name,
