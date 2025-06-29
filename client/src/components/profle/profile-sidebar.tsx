@@ -3,7 +3,6 @@ import { useNavigate } from "react-router";
 import { User, ShoppingBag, CreditCard, MapPin, LogOut, ChevronRight } from "lucide-react";
 import defaultProfilePic from "@assets/ui/default.png";
 import { useAppDispatch } from "@/src/store/hooks";
-import { useState } from "react";
 
 interface IProfileSideBar {
   active: number;

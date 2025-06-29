@@ -9,3 +9,5 @@ node_modules/@types/
 node_modules/azure-functions-core-tools/
 node_modules/typescript/
 tsconfig.json
+__blobstorage__
+__queuestorage__

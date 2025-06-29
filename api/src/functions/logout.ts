@@ -1,4 +1,4 @@
-import { app, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/functions";
+import { app, HttpRequest, HttpResponseInit, InvocationContext, Timer } from "@azure/functions";
 import { headers } from "../utils/helpers";
 import prisma from "../utils/database";
 import jwt from 'jsonwebtoken';
@@ -81,18 +81,33 @@ export async function validateToken(token: string): Promise<boolean> {
     }
 }
 
-export async function cleanupExpiredTokens() {
-    await prisma.tokenblacklist.deleteMany({
-        where: {
-            expires_at: {
-                lt: new Date()
+async function cleanupExpiredTokens(myTimer: Timer, context: InvocationContext): Promise<void> {
+    context.log('Starting token cleanup job...');
+    
+    try {
+        const result = await prisma.tokenblacklist.deleteMany({
+            where: {
+                expires_at: {
+                    lt: new Date()
+                }
             }
-        }
-    });
+        });
+        
+        context.log(`Token cleanup completed. Deleted ${result.count} expired tokens.`);
+
+    } catch (error) {
+        context.log('Token cleanup failed:', error);
+        throw error;
+    }
 }
 
 app.http('logout', {
     methods: ['POST'],
     authLevel: 'anonymous',
     handler: logout
+});
+
+app.timer('cleanupExpiredTokens', {
+    schedule: '0 0 * * * *',
+    handler: cleanupExpiredTokens
 });
