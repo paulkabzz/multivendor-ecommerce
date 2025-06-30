@@ -1,7 +1,7 @@
 import sharp from 'sharp';
 import convert  from 'heic-convert';
 import * as multipart from 'parse-multipart-data';
-import { HttpRequest } from '@azure/functions';
+import { HttpRequest, InvocationContext } from '@azure/functions';
 import { ImageProcessingOptions, ImageProcessingResult, ProcessedImageFile } from './types';
 
 
@@ -10,7 +10,8 @@ const DEFAULT_OPTIONS: Required<ImageProcessingOptions> = {
   outputQuality: 85,
   maxWidth: 1024,
   maxHeight: 1024,
-  convertToJpeg: true
+  convertToJpeg: true,
+  maxImages: 6
 };
 
 export async function processImageFromMultipart(
@@ -287,3 +288,87 @@ export const headers = {
     'Content-Type': 'application/json',
     'Access-Control-Allow-Headers': 'Content-Type, Authorization'
 } as const;
+
+
+
+
+
+// Mulltiple images
+export async function processImagesFromMultipart(
+    request: HttpRequest,
+    imageFieldName: string,
+    options: ImageProcessingOptions,
+    context: InvocationContext
+): Promise<ImageProcessingResult> {
+    try {
+        const formData = await request.formData();
+        const imageFiles: { buffer: Buffer; filename: string; mimeType: string }[] = [];
+        const textData: Record<string, string> = {};
+
+        // Process text fields
+        for (const [key, value] of formData.entries()) {
+            if (key === imageFieldName) continue; // Skip image fields for now
+            if (typeof value === 'string') {
+                textData[key] = value;
+            }
+        }
+
+        // Process image fields
+        const imageEntries = formData.getAll(imageFieldName);
+        
+        if (options.maxImages && imageEntries.length > options.maxImages) {
+            return {
+                success: false,
+                error: `Too many images. Maximum allowed: ${options.maxImages}`
+            };
+        }
+
+        for (const entry of imageEntries) {
+            if (entry instanceof File) {
+                // Validate file size
+              if (options.maxSizeBytes)
+                if (entry.size > options.maxSizeBytes) {
+                    return {
+                        success: false,
+                        error: `Image ${entry.name} is too large. Maximum size: ${options.maxSizeBytes / (1024 * 1024)}MB`
+                    };
+                }
+
+                // Validate file type
+                const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+                if (!allowedTypes.includes(entry.type)) {
+                    return {
+                        success: false,
+                        error: `Invalid file type for ${entry.name}. Allowed types: JPEG, PNG, WEBP`
+                    };
+                }
+
+                // Convert to buffer
+                const arrayBuffer = await entry.arrayBuffer();
+                const buffer = Buffer.from(arrayBuffer);
+
+                // TODO: add resuzing logic
+                const processedImage = {
+                    buffer,
+                    filename: entry.name,
+                    mimeType: options.convertToJpeg ? 'image/jpeg' : entry.type
+                };
+
+                imageFiles.push(processedImage);
+            }
+        }
+
+        return {
+            success: true,
+            imageFiles,
+            formData: textData
+        };
+
+    } catch (error) {
+        context.error('Error processing multipart form data:', error);
+        return {
+            success: false,
+            error: 'Failed to process form data'
+        };
+    }
+}

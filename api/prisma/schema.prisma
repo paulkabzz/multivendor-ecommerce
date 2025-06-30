@@ -61,10 +61,12 @@ model product {
   subcategory_id String?      @db.Uuid
   size_id        String?      @db.Uuid
   brand_id       String?      @db.Uuid
+  department_id  String?      @db.Uuid
   image          image[]
   orderitem      orderitem[]
   brands         brands?      @relation(fields: [brand_id], references: [brand_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_brand_id")
   sizes          sizes?       @relation(fields: [size_id], references: [size_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_size_id")
+  department     department?  @relation(fields: [department_id], references: [department_id], onDelete: Cascade, onUpdate: NoAction)
   subcategory    subcategory? @relation(fields: [subcategory_id], references: [subcategory_id], onDelete: Cascade, onUpdate: NoAction, map: "subcategory_fk")
   vendor         vendor       @relation(fields: [vendor_id], references: [vendor_id], onDelete: Cascade, onUpdate: NoAction)
 }
@@ -118,6 +120,7 @@ model department {
   department_name    String               @unique @db.VarChar(255)
   image_url          String?              @db.VarChar(255)
   departmentcategory departmentcategory[]
+  product            product[]
 }
 
 model departmentcategory {
