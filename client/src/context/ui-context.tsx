@@ -30,7 +30,6 @@ interface CreateDepartmentData {
   department_name: string;
   cover?: File;
 }
-
 interface CreateSubcategoryData {
   category_id: string;
   subcategory_name: string[];

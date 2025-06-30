@@ -68,3 +68,5 @@ export interface UserState {
 }
 
 export interface IUpdateUserRequest {}
+
+export type Condition = 'NEW' | 'LIKE_NEW' | 'GOOD' | 'FAIR' | 'BAD';
