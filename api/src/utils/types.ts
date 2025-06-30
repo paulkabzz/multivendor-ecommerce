@@ -81,13 +81,16 @@ export interface ICreateSubCategory {
 export interface ICreateProduct {
   // user_id: string;
   vendor_id: string;
-  image_url: string[];
+  // image_url: string[];
   price: number;
   is_available?: boolean;
-  description?: string;
+  description?: string | null;
   name: string;
-  condition?: string;
+  condition: "NEW" | "LIKE_NEW" | "GOOD" | "FAIR" | "BAD";
   subcategory_id?: string;
+  size_id: string | null;
+  brand_id: string | null;
+  department_id: string | null
 }
 
 export interface ICreateStore {
@@ -104,6 +107,7 @@ export interface IAppwriteConfig {
   projectId: string;
   apiKey: string;
   userAvatarBucketId: string;
+  productImagesBucketId?: string;
 }
 
 export interface IUploadResult {
@@ -125,11 +129,13 @@ export interface ImageProcessingOptions {
   maxWidth?: number;
   maxHeight?: number;
   convertToJpeg?: boolean;
+  maxImages?: number
 }
 
 export interface ImageProcessingResult {
   success: boolean;
   imageFile?: ProcessedImageFile;
   error?: string;
-  formData?: Record<string, string>;
+  formData?: Record<string, any>;
+  imageFiles?: any;
 }
