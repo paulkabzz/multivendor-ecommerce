@@ -125,7 +125,7 @@ const CreateItem: React.FC = (): React.ReactElement => {
 
 
           <label htmlFor="">
-            <p className="text-[12px] mb-2 font-bold font-bold">
+            <p className="text-[12px] mb-2 font-bold">
               Price <span className="text-[#ff0000]">*</span>
             </p>
             <Input type="text" className="!bg-primary-light !text-primary-dark" width={600}/>
