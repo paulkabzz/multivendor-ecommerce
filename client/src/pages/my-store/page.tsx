@@ -24,10 +24,10 @@ const MyStore = () => {
       <StoreHeader store={store}/>
       {
         hadListings ? (
-          <div className="flex gap-5">
+          <div className="flex gap-5 mt-10">
               {
                 store?.product.map((p: any) =>(
-                   <ShoppingCard key={p.product_id} name={p.name} price={p.price} img_url={p.image[0].image_url} />
+                   <ShoppingCard key={p.product_id} name={p.name} price={p.price} images={p.image} />
                 ))
               }
           </div>

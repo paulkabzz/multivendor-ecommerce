@@ -1,6 +1,5 @@
 import { HttpRequest, HttpResponseInit } from "@azure/functions";
 import jwt from 'jsonwebtoken';
-import { validateToken } from "../functions/logout";
 
 export interface DecodedToken {
   user_id: string;
@@ -59,7 +58,7 @@ export function authenticateRequest(request: HttpRequest, roles?: string[], isVa
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         success: false,
-        message: "Blacklisted jwt"
+        message: "Invalid or expired token"
       })
     }
   }
