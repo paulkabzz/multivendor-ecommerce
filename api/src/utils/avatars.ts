@@ -26,7 +26,6 @@ class AppwriteAvatarService {
   }
 
   private generateAvatarFileId(entityType: AvatarEntityType, entityId: string): string {
-
     let hash: number = 0;
     for (let i = 0; i < entityId.length; i++) {
       const char = entityId.charCodeAt(i);
@@ -46,12 +45,20 @@ class AppwriteAvatarService {
     try {
       const files: Models.FileList = await this.storage.listFiles(bucketId);
       
-      // Look for files that match this entity
-      const entityFiles: Models.File[] = files.files.filter(
-        (file) =>
-          file.name?.includes(`${entityType}_${entityId}`) || 
-          file.$id.startsWith(`${entityType}_`) ||
-          file.name?.includes(entityId)
+      let hash: number = 0;
+      for (let i = 0; i < entityId.length; i++) {
+        const char = entityId.charCodeAt(i);
+        hash = (hash << 5) - hash + char;
+        hash &= hash;
+      }
+      const hashStr: string = Math.abs(hash).toString(36);
+      
+      const entityFiles: Models.File[] = files.files.filter((file) => {
+          const expectedPrefix = `${entityType}_${hashStr}`;
+          return file.$id.includes(expectedPrefix) || 
+                 file.name?.includes(`${entityType}_${entityId}`) ||
+                 file.name?.includes(entityId);
+        }
       );
 
       return entityFiles.length > 0 ? entityFiles[0].$id : null;
@@ -110,7 +117,6 @@ class AppwriteAvatarService {
         };
       }
 
-      // Check for existing avatar and delete it
       let oldAvatarDeleted: boolean = false;
       const existingFileId: string | null = await this.getExistingAvatarFileId(
         entityType, 
@@ -312,7 +318,7 @@ class Avatar {
   }
 
   static async getDepartmentCover(departmentId: string, departmentBucketId: string): Promise<string> {
-    return avatarService.getAvatarUrlForEntity('departement', departmentId, departmentBucketId);
+    return avatarService.getAvatarUrlForEntity('department', departmentId, departmentBucketId);
   }
 
   static async deleteUserAvatar(userId: string): Promise<{ success: boolean; error?: string }> {
@@ -339,6 +345,5 @@ class Avatar {
     })
   }
 }
-
 
 export { Avatar };
