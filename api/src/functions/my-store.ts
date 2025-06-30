@@ -23,6 +23,28 @@ async function myStore(request: HttpRequest, context: InvocationContext, decoded
             const vendor = await prisma.vendor.findUnique({
                 where: {
                     user_id: decodedToken.user_id,
+                },
+                include: {
+                    product: {
+                        include: {
+                            image: true,
+                            brands: true,
+                            sizes: true,
+                            department: true,
+                            subcategory: {
+                                include: {
+                                    categorysubcategory: {
+                                        include: {
+                                            category: true
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        orderBy: {
+                            created_at: 'desc'
+                        }
+                    }
                 }
             });
 
@@ -47,7 +69,7 @@ async function myStore(request: HttpRequest, context: InvocationContext, decoded
                 })
             }
         } catch (error) {
-            context.error("Error");
+            context.error("Error retrieving store details:", error);
             return {
                 status: 500,
                 headers,
@@ -76,4 +98,4 @@ app.http('my-store', {
     handler: MY_STORE,
     authLevel: "anonymous",
     methods: ["GET"]
-})
+});

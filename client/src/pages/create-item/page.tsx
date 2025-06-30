@@ -9,6 +9,7 @@ import { useUI } from "@/src/context/ui-context";
 import { formatString } from "@/src/utils/helpers";
 import { BASE_URL } from "@/src/utils/url";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 
 interface FormData {
   name: string;
@@ -35,7 +36,8 @@ interface FormErrors {
 
 const CreateItem: React.FC = (): React.ReactElement => {
   const { token } = useAuth();
-  const { store } = useStore();
+  const { store, refetchStore } = useStore();
+  const navigate = useNavigate();
   const { 
     departments, 
     fetchDepartments, 
@@ -250,6 +252,10 @@ const CreateItem: React.FC = (): React.ReactElement => {
 
       // Show success message for 3 seconds
       setTimeout(() => setIsSuccess(false), 3000);
+
+      refetchStore();
+      
+      navigate(`/my-store/${store?.vendor_id}`);
 
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'An error occurred';

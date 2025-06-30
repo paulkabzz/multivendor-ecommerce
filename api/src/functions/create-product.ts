@@ -10,6 +10,8 @@ interface CreateProductRequest extends ICreateProduct {
     images?: string[];
 }
 
+// TODO: FIx product creation logic
+
 async function createProduct(request: HttpRequest, context: InvocationContext, decodedToken?: DecodedToken): Promise<HttpResponseInit> {
     if (request.method === "POST") {
         try {
