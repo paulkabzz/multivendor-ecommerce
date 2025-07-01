@@ -1,5 +1,5 @@
 [environments.local]
-url = "jdbc:postgresql://localhost:5433/ecommerce"
+url = YOUR_DATABASE_URL
 user = "ecommerce_user"
 schemas = ["ecommerce"]
 
