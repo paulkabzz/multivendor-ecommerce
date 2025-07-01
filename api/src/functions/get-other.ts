@@ -62,7 +62,7 @@ async function getSizes(request: HttpRequest, context: InvocationContext): Promi
         }
 
         return {
-            status: 201,
+            status: 200,
             headers,
             body: JSON.stringify({
                 success: true, 

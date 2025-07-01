@@ -32,7 +32,7 @@ async function logout(request: HttpRequest, context: InvocationContext): Promise
             });
 
             return {
-                status: 200,
+                status: 204,
                 headers,
                 body: JSON.stringify({ 
                     success: true, 

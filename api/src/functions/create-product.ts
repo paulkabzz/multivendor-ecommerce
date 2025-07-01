@@ -11,7 +11,7 @@ interface CreateProductRequest extends ICreateProduct {
 }
 
 // TODO: FIx product creation logic
-
+/// make some fields optional
 async function createProduct(request: HttpRequest, context: InvocationContext, decodedToken?: DecodedToken): Promise<HttpResponseInit> {
     if (request.method === "POST") {
         try {

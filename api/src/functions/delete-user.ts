@@ -57,7 +57,7 @@ async function deleteUser(request: HttpRequest, context: InvocationContext, deco
             });
 
             return {
-                status: 201,
+                status: 204,
                 headers,
                 body: JSON.stringify({
                     success: true,

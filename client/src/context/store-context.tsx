@@ -54,8 +54,8 @@ const fetchStore = async (token: string | null) => {
     return { store: null };
   }
 
-  if (!response.ok) {
-    throw new Error(`Failed to fetch store data: ${response.status}`);
+  if (!data.success) {
+    throw new Error( data.message || `Failed to fetch store data: ${response.status}`);
   }
 
   return { store: data.data };
