@@ -20,11 +20,14 @@ const MyStore = () => {
   
   return (
 
-    <div className="min-h-[50vh] w-full">
+    <div className="min-h-[50vh] w-full px-[200px]">
       <StoreHeader store={store}/>
       {
         hadListings ? (
-          <div className="flex gap-5 mt-10">
+          <div className="grid grid-cols-4 gap-4 items-center mt-10">
+              <>
+                  <Button text="+ Add Item" className="p-5 !text-[12px] mt-2" action={() => navigate('/create-item')} />
+              </>
               {
                 store?.product.map((p: any) =>(
                    <ShoppingCard key={p.product_id} name={p.name} price={p.price} images={p.image} />

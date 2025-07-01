@@ -82,7 +82,7 @@ async function verifyEmail(request: HttpRequest, context: InvocationContext): Pr
             };
 
             return {
-                status: 200,
+                status: 204,
                 headers,
                 body: JSON.stringify(response)
             };

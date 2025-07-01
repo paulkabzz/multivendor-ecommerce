@@ -130,7 +130,7 @@ async function createDepartment(request: HttpRequest, context: InvocationContext
             });
 
             return {
-                status: 200,
+                status: 201,
                 headers,
                 body: JSON.stringify({
                     success: true,

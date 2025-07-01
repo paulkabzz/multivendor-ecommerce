@@ -66,7 +66,7 @@ async function deleteStore(request: HttpRequest, context: InvocationContext, dec
             });
 
             return {
-                status: 201,
+                status: 204,
                 headers,
                 body: JSON.stringify({
                     success: true,
