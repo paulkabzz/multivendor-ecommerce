@@ -1,3 +1,6 @@
+import React, { useEffect, useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router";
 import { Button } from "@/src/components/common/buttons/button";
 import { Input } from "@/src/components/common/input/input";
 import { SearchableSelect } from "@/src/components/common/input/select";
@@ -5,12 +8,18 @@ import { TextArea } from "@/src/components/common/input/text-area";
 import PreviewImage from "@/src/components/store/preview-image";
 import { useAuth } from "@/src/context/auth-context";
 import { useStore } from "@/src/context/store-context";
-import { useUI } from "@/src/context/ui-context";
+import { 
+  useDepartments, 
+  useCategories, 
+  useSubcategories, 
+  useBrands, 
+  useSizes 
+} from "@/src/context/ui-context";
 import { formatString } from "@/src/utils/helpers";
 import { BASE_URL } from "@/src/utils/url";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router";
+import Loader from "@/src/components/common/loader/loader";
 
+// Types
 interface FormData {
   name: string;
   price: string;
@@ -20,7 +29,7 @@ interface FormData {
   subcategory_id: string;
   brand_id: string;
   size_id: string;
-  vendor_id: string; // You'll need to get this from your auth context
+  vendor_id: string;
 }
 
 interface FormErrors {
@@ -34,22 +43,56 @@ interface FormErrors {
   general?: string;
 }
 
+interface CreateProductData extends FormData {
+  images: File[];
+  is_available: boolean;
+}
+
+interface ApiResponse {
+  success: boolean;
+  message?: string;
+}
+
+const createProduct = async (data: CreateProductData, token: string): Promise<ApiResponse> => {
+  const formData = new FormData();
+  
+  formData.append('name', data.name.trim());
+  formData.append('vendor_id', data.vendor_id);
+  formData.append('price', data.price);
+  formData.append('description', data.description.trim());
+  formData.append('condition', data.condition);
+  formData.append('is_available', data.is_available.toString());
+  formData.append('subcategory_id', data.subcategory_id);
+  formData.append('size_id', data.size_id);
+  formData.append('brand_id', data.brand_id);
+  formData.append('department_id', data.department_id);
+
+  data.images.forEach((image) => {
+    formData.append('images', image);
+  });
+
+  const response = await fetch(`${BASE_URL}/create-product`, {
+    method: 'POST',
+    headers: {
+      authorization: `Bearer ${token}`
+    },
+    body: formData,
+  });
+
+  const result = await response.json();
+
+  if (!result.success) {
+    throw new Error(result.message || 'Failed to create product');
+  }
+
+  return result;
+};
+
 const CreateItem: React.FC = (): React.ReactElement => {
   const { token } = useAuth();
   const { store, refetchStore } = useStore();
   const navigate = useNavigate();
-  const { 
-    departments, 
-    fetchDepartments, 
-    categories, 
-    fetchCategories, 
-    subcategories, 
-    fetchSubcategories, 
-    fetchBrands, 
-    fetchSizes, 
-    sizes, 
-    brands 
-  } = useUI();
+  const queryClient = useQueryClient();
 
   const [formData, setFormData] = useState<FormData>({
     name: '',
@@ -60,67 +103,135 @@ const CreateItem: React.FC = (): React.ReactElement => {
     subcategory_id: '',
     brand_id: '',
     size_id: '',
-    vendor_id: store?.vendor_id ?? "" 
+    vendor_id: store?.vendor_id ?? ""
   });
 
-  // UI state
   const [selectedDepartmentId, setSelectedDepartmentId] = useState<string>('');
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>('');
   const [images, setImages] = useState<File[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
 
+  const { 
+    data: departments = [], 
+    isLoading: departmentsLoading, 
+    error: departmentsError 
+  } = useDepartments();
+
+  const { 
+    data: categories = [], 
+    isLoading: categoriesLoading,
+    error: categoriesError 
+  } = useCategories(selectedDepartmentId);
+
+  const { 
+    data: subcategories = [], 
+    isLoading: subcategoriesLoading,
+    error: subcategoriesError 
+  } = useSubcategories(selectedDepartmentId, selectedCategoryId);
+
+  const { 
+    data: brands = [], 
+    isLoading: brandsLoading,
+    error: brandsError 
+  } = useBrands();
+
+  const { 
+    data: sizes = [], 
+    isLoading: sizesLoading,
+    error: sizesError 
+  } = useSizes();
+
+  const createProductMutation = useMutation({
+    mutationFn: (data: CreateProductData) => createProduct(data, token!),
+    onSuccess: () => {
+
+      setIsSuccess(true);
+      
+      setFormData({
+        name: '',
+        price: '',
+        description: '',
+        condition: 'GOOD',
+        department_id: '',
+        subcategory_id: '',
+        brand_id: '',
+        size_id: '',
+        vendor_id: store?.vendor_id ?? ""
+      });
+      setImages([]);
+      setSelectedDepartmentId('');
+      setSelectedCategoryId('');
+      setErrors({});
+
+      // setTimeout(() => setIsSuccess(false), 3000);
+
+      refetchStore();
+      
+      navigate(`/my-store/${store?.vendor_id}`);
+
+      // Invalidate any relevant queries
+      queryClient.invalidateQueries({ queryKey: ['products'] });
+    },
+    onError: (error: Error) => {
+      setErrors({ general: error.message });
+    }
+  });
+
+  // Set vendor_id when store data is available
   useEffect(() => {
-    fetchDepartments();
-    fetchBrands();
-    fetchSizes();
-    // TODO: Get vendor_id from auth context
-    // setFormData(prev => ({ ...prev, vendor_id: user.vendor_id }));
-  }, []);
+    if (store?.vendor_id) {
+      setFormData(prev => ({ ...prev, vendor_id: store.vendor_id }));
+    }
+  }, [store?.vendor_id]);
 
-  const options = departments.map((i) => ({
-    value: i.department_id,
-    label: i.department_name,
-  }));
-
+  // Update form data when department changes
   useEffect(() => {
     if (selectedDepartmentId) {
-      fetchCategories(selectedDepartmentId);
       setFormData(prev => ({ ...prev, department_id: selectedDepartmentId }));
+      // Reset category and subcategory when department changes
+      setSelectedCategoryId('');
+      setFormData(prev => ({ ...prev, subcategory_id: '' }));
     }
   }, [selectedDepartmentId]);
 
-  const categoryOptions = categories.map(c => ({
-    label: c.category_name,
-    value: c.category_id
-  }));
-
+  // Reset subcategory when category changes
   useEffect(() => {
-    if (selectedCategoryId && selectedDepartmentId) {
-      fetchSubcategories(selectedDepartmentId, selectedCategoryId);
+    if (selectedCategoryId) {
+      setFormData(prev => ({ ...prev, subcategory_id: '' }));
     }
   }, [selectedCategoryId]);
 
-  const subcategoryOptions = subcategories.map(sc => ({
-    label: sc.subcategory_name,
-    value: sc.subcategory_id
+  // Prepare options for selectors
+  const departmentOptions = departments.map((dept) => ({
+    value: dept.department_id,
+    label: dept.department_name,
   }));
 
-  const brandOptions = brands.map(b => ({
-    label: b.brand_name,
-    value: b.brand_id
+  const categoryOptions = categories.map(cat => ({
+    label: cat.category_name,
+    value: cat.category_id
   }));
 
-  const sizeOptions = sizes.map(s => ({
-    label: formatString(s.size_name),
-    value: s.size_id
+  const subcategoryOptions = subcategories.map(sub => ({
+    label: sub.subcategory_name,
+    value: sub.subcategory_id
   }));
 
-  const conditions = ['NEW', 'LIKE_NEW', 'GOOD', 'FAIR', 'BAD'];
-  const conditionOptions = conditions.map(c => ({
-    label: formatString(c),
-    value: c
+  const brandOptions = brands.map(brand => ({
+    label: brand.brand_name,
+    value: brand.brand_id
+  }));
+
+  const sizeOptions = sizes.map(size => ({
+    label: formatString(size.size_name),
+    value: size.size_id
+  }));
+
+  const conditions = ['NEW', 'LIKE_NEW', 'GOOD', 'FAIR', 'BAD'] as const;
+  const conditionOptions = conditions.map(condition => ({
+    label: formatString(condition),
+    value: condition
   }));
 
   // Handle input changes
@@ -150,6 +261,7 @@ const CreateItem: React.FC = (): React.ReactElement => {
     }
   };
 
+  // Form validation
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
 
@@ -193,77 +305,34 @@ const CreateItem: React.FC = (): React.ReactElement => {
       return;
     }
 
-    setIsLoading(true);
-    setErrors({});
-
-    try {
-      const formDataToSend = new FormData();
-      
-      // Append form fields
-      formDataToSend.append('name', formData.name.trim());
-      formDataToSend.append('vendor_id', formData.vendor_id);
-      formDataToSend.append('price', formData.price);
-      formDataToSend.append('description', formData.description.trim());
-      formDataToSend.append('condition', formData.condition);
-      formDataToSend.append('is_available', 'true');
-      formDataToSend.append('subcategory_id', formData.subcategory_id);
-      formDataToSend.append('size_id', formData.size_id);
-      formDataToSend.append('brand_id', formData.brand_id);
-      formDataToSend.append('department_id', formData.department_id);
-
-      // Append images
-      images.forEach((image) => {
-        formDataToSend.append('images', image);
-      });
-
-      const response = await fetch(`${BASE_URL}/create-product`, {
-        method: 'POST',
-        headers: {
-          authorization: `Bearer ${token}`
-        },
-        body: formDataToSend,
-        // Note: Don't set Content-Type header when using FormData - browser will set it automatically
-      });
-
-      const result = await response.json();
-
-      if (!result.success) {
-        throw new Error(result.message || 'Failed to create product');
-      }
-
-      // Success
-      setIsSuccess(true);
-      
-      // Reset form
-      setFormData({
-        name: '',
-        price: '',
-        description: '',
-        condition: 'GOOD',
-        department_id: '',
-        subcategory_id: '',
-        brand_id: '',
-        size_id: '',
-        vendor_id: formData.vendor_id
-      });
-      setImages([]);
-      setSelectedDepartmentId('');
-      setSelectedCategoryId('');
-
-      // Show success message for 3 seconds
-      setTimeout(() => setIsSuccess(false), 3000);
-
-      refetchStore();
-      
-      navigate(`/my-store/${store?.vendor_id}`);
-
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'An error occurred';
-      setErrors({ general: errorMessage });
-    } finally {
-      setIsLoading(false);
-    }
+    createProductMutation.mutate({
+      ...formData,
+      images,
+      is_available: true
+    });
   };
+
+  const isLoading = createProductMutation.isPending;
+
+  const hasDataError = departmentsError || categoriesError || subcategoriesError || brandsError || sizesError;
+  
+  if (hasDataError) {
+    return (
+      <div className="w-full 800px:px-[200px] mt-10">
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+          Error loading data. Please refresh the page and try again.
+        </div>
+      </div>
+    );
+  }
+
+  if (isLoading) {
+    return (
+         <div className="w-full bg-white min-h-[100vh] fixed top-0 right-0 z-[100000] flex items-center justify-center">
+                <Loader />
+          </div>
+    )
+  }
 
   return (
     <form className="w-full 800px:px-[200px] mt-10" onSubmit={handleSubmit}>
@@ -315,7 +384,9 @@ const CreateItem: React.FC = (): React.ReactElement => {
               className="!bg-primary-light !text-primary-dark w-[600px]"
               placeholder="Product name..."
               value={formData.name}
-              action={(e:any) => handleInputChange('name', e.target.value)}
+              action={(e: React.ChangeEvent<HTMLInputElement>) => 
+                handleInputChange('name', e.target.value)
+              }
             />
             {errors.name && (
               <p className="text-red-500 text-[12px] mt-1">{errors.name}</p>
@@ -330,9 +401,11 @@ const CreateItem: React.FC = (): React.ReactElement => {
             <SearchableSelect 
               width={600} 
               bgLight={true} 
-              options={options}
+              options={departmentOptions}
               value={selectedDepartmentId} 
-              onChange={(value) => setSelectedDepartmentId(value)} 
+              onChange={(value) => setSelectedDepartmentId(value)}
+              disabled={departmentsLoading}
+              placeholder={departmentsLoading ? "Loading departments..." : "Select department"}
             />
             {errors.department_id && (
               <p className="text-red-500 text-[12px] mt-1">{errors.department_id}</p>
@@ -350,6 +423,12 @@ const CreateItem: React.FC = (): React.ReactElement => {
               onChange={(value) => setSelectedCategoryId(value)} 
               options={categoryOptions} 
               disabled={!selectedDepartmentId}
+              isLoading={categoriesLoading}
+              placeholder={
+                !selectedDepartmentId 
+                  ? "Select department first" 
+                  : "Select category"
+              }
             />
           </label>
 
@@ -364,6 +443,12 @@ const CreateItem: React.FC = (): React.ReactElement => {
               bgLight={true} 
               options={subcategoryOptions} 
               disabled={!selectedCategoryId}
+              isLoading={subcategoriesLoading}
+              placeholder={
+                !selectedCategoryId 
+                  ? "Select category first" 
+                  : "Select subcategory"
+              }
             />
             {errors.subcategory_id && (
               <p className="text-red-500 text-[12px] mt-1">{errors.subcategory_id}</p>
@@ -398,7 +483,9 @@ const CreateItem: React.FC = (): React.ReactElement => {
               width={600}
               placeholder="0.00"
               value={formData.price}
-              action={(e:any) => handleInputChange('price', e.target.value)}
+              action={(e: React.ChangeEvent<HTMLInputElement>) => 
+                handleInputChange('price', e.target.value)
+              }
             />
             {errors.price && (
               <p className="text-red-500 text-[12px] mt-1">{errors.price}</p>
@@ -414,9 +501,10 @@ const CreateItem: React.FC = (): React.ReactElement => {
               options={brandOptions} 
               bgLight={true} 
               width={600} 
-              placeholder="Select a brand"
+              placeholder={brandsLoading ? "Loading brands..." : "Select a brand"}
               value={formData.brand_id}
               onChange={(value) => handleInputChange('brand_id', value)}
+              isLoading={brandsLoading}
             />
           </label>
 
@@ -427,9 +515,10 @@ const CreateItem: React.FC = (): React.ReactElement => {
               options={sizeOptions} 
               bgLight={true} 
               width={600} 
-              placeholder="Select a size"
+              placeholder={sizesLoading ? "Loading sizes..." : "Select a size"}
               value={formData.size_id}
               onChange={(value) => handleInputChange('size_id', value)}
+              isLoading={sizesLoading}
             />
           </label>
 
@@ -442,7 +531,9 @@ const CreateItem: React.FC = (): React.ReactElement => {
               className="w-[600px]" 
               placeholder="Share your product's story..."
               value={formData.description}
-              onChange={(e: any) => handleInputChange('description', e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => 
+                handleInputChange('description', e.target.value)
+              }
             />
             {errors.description && (
               <p className="text-red-500 text-[12px] mt-1">{errors.description}</p>
