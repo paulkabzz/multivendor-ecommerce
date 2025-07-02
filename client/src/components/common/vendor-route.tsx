@@ -11,7 +11,7 @@ const VendorRoute: React.FC<VendorRouteProps> = ({ children, redirectPath=`/crea
   const { hasStore, isLoading } = useStore();
 
 
-  if (isLoading) return <div className="w-full h-[70vh] flex items-center justify-center"><Loader /></div>;
+  if (isLoading) return <div className="w-full bg-white min-h-[100vh] fixed top-0 right-0 z-[100000] flex items-center justify-center"><Loader /></div>;
 
   if (!isLoading && !hasStore) {
      return <Navigate to={redirectPath} replace/>

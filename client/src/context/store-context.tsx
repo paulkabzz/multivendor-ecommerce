@@ -10,9 +10,16 @@ interface Store {
   store_name: string;
   bio?: string | null;
   avatar_url?: string | null;
-  created_at?: string;
-  updated_at?: string;
-  // product: any[];
+  product: {
+    product_id: string;
+    name: string;
+    price: number;
+    created_at: string;
+    image: {
+      image_id: string;
+      image_url: string;
+    }[];
+  }[] |[];
   [key: string]: any;
 }
 
@@ -99,7 +106,6 @@ export const StoreProvider: React.FC<StoreProviderProps> = ({ children }) => {
   const queryClient = useQueryClient();
   const { user, isAuthenticated, refetchUser, token } = useAuth();
 
-  // Store query.. only fetch if user is authenticated and has VENDOR or ADMIN role
   const {
     data: storeData,
     isLoading,
@@ -110,7 +116,17 @@ export const StoreProvider: React.FC<StoreProviderProps> = ({ children }) => {
     queryFn: () => fetchStore(token),
     enabled: isAuthenticated && (user?.role === 'VENDOR' || user?.role === 'ADMIN'),
     staleTime: 5 * 60 * 1000,
-    retry: false,
+    gcTime: 10 * 60 * 1000,
+    retry: (failureCount, error: any) => {
+      // Don't retry on 404 (store not found) or 403 (unauthorized)
+      if (error?.message?.includes('404') || error?.message?.includes('403')) {
+        return false;
+      }
+      return failureCount < 2;
+    },
+    refetchOnWindowFocus: false, // Prevent unnecessary refetches
+    refetchOnMount: true,
+    networkMode: 'online', // Only fetch when online
   });
 
   const store = storeData?.store || null;
@@ -124,7 +140,7 @@ export const StoreProvider: React.FC<StoreProviderProps> = ({ children }) => {
       return createStoreAPI(storeData, token, user.user_id);
     },
     onSuccess: async (data) => {
-      // CRITICAL FIX: Store the new JWT token that comes with updated role, was having issue with token based role verification
+      // Store the new JWT token
       if (data.token) {
         setStoredToken(data.token);
         console.log('New token stored after store creation:', data.token);
@@ -136,16 +152,27 @@ export const StoreProvider: React.FC<StoreProviderProps> = ({ children }) => {
         queryClient.setQueryData(['user', data.token, 0], { user: data.user });
       }
       
-      queryClient.invalidateQueries({ queryKey: ['user'] });
-      queryClient.invalidateQueries({ queryKey: ['store'] });
+      // More targeted cache invalidation
+      await queryClient.invalidateQueries({ 
+        queryKey: ['user'], 
+        exact: false,
+        refetchType: 'active' // Only refetch active queries
+      });
+      
+      await queryClient.invalidateQueries({ 
+        queryKey: ['store'], 
+        exact: false,
+        refetchType: 'active'
+      });
       
       setTimeout(() => {
         refetchUser();
-      }, 100);
+      }, 10);
     },
     onError: (error) => {
       console.error('Create store failed:', error);
     },
+    retry: 1, // Only retry once on failure
   });
 
   const resetCreateError = () => {

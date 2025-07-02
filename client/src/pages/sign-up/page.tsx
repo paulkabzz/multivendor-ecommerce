@@ -45,19 +45,19 @@ const SignUp: React.FC = (): React.ReactElement => {
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length === 0) {
-      // Remove confirm_password as it's not needed in the API
-      const { confirm_password, ...userData } = user;
+
+      const { ...userData } = user;
       dispatch(signupUser(userData));
 
       // Reset form fields
-      // setUser({
-      //   first_name: '',
-      //   last_name: '',
-      //   email: '',
-      //   password: '',
-      //   confirm_password: ''
-      // });
-      // setErrors({});
+      setUser({
+        first_name: '',
+        last_name: '',
+        email: '',
+        password: '',
+        confirm_password: ''
+      });
+      setErrors({});
     }
   };
 
