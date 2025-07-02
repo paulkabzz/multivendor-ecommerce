@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ChevronDown, Search, Check } from 'lucide-react';
+import { ChevronDown, Search, Check, Loader2 } from 'lucide-react';
 
 interface SelectOption {
   value: string;
@@ -19,6 +19,7 @@ interface ISearchableSelect {
   value?: string;
   defaultValue?: string;
   onChange?: (value: any) => any;
+  isLoading?:boolean;
   searchPlaceholder?: string;
   noOptionsText?: string;
 }
@@ -34,6 +35,7 @@ export const SearchableSelect: React.FC<ISearchableSelect> = ({
   value,
   defaultValue,
   onChange,
+  isLoading,
   bgLight,
   searchPlaceholder = "Search options...",
   noOptionsText = "No options found"
@@ -220,7 +222,8 @@ export const SearchableSelect: React.FC<ISearchableSelect> = ({
             ref={dropdownRef}
             className="max-h-60 overflow-y-auto custom-scrollbar"
           >
-            {filteredOptions.length > 0 ? (
+            
+            {isLoading ? <div className='w-full flex items-center justify-center py-2'><Loader2 size={18} className="animate-spin"  /></div>: filteredOptions.length > 0 ? (
               filteredOptions.map((option, index) => (
                 <div
                   key={index}
