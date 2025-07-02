@@ -6,7 +6,6 @@ import prisma from "../utils/database";
 
 async function myStore(request: HttpRequest, context: InvocationContext, decodedToken?: DecodedToken): Promise<HttpResponseInit> {
     if (request.method === "GET") {
-
         try {
             if (!decodedToken) {
                 context.error("No token provided");
@@ -24,27 +23,13 @@ async function myStore(request: HttpRequest, context: InvocationContext, decoded
                 where: {
                     user_id: decodedToken.user_id,
                 },
-                include: {
-                    product: {
-                        include: {
-                            image: true,
-                            brands: true,
-                            sizes: true,
-                            department: true,
-                            subcategory: {
-                                include: {
-                                    categorysubcategory: {
-                                        include: {
-                                            category: true
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        orderBy: {
-                            created_at: 'desc'
-                        }
-                    }
+                select: {
+                    vendor_id: true,
+                    user_id: true,
+                    store_name: true,
+                    bio: true,
+                    avatar_url: true,
+                    last_active: true
                 }
             });
 
@@ -59,13 +44,41 @@ async function myStore(request: HttpRequest, context: InvocationContext, decoded
                 }
             }
 
+            
+            const products = await prisma.product.findMany({
+                where: {
+                    vendor_id: vendor.vendor_id,
+                },
+                select: {
+                    product_id: true,
+                    name: true,
+                    price: true,
+                    created_at: true,
+                    image: {
+                        select: {
+                            image_id: true,
+                            image_url: true,
+                        },
+                    },
+                },
+                orderBy: {
+                    created_at: 'desc'
+                },
+                take: 50, // Limit to 50 products initially
+            });
+
+            const result = {
+                ...vendor,
+                product: products
+            };
+
             return {
                 status: 200,
                 headers,
                 body: JSON.stringify({
                     success: true,
                     message: "Vendor details retrieved successfully",
-                    data: vendor
+                    data: result
                 })
             }
         } catch (error) {
@@ -79,7 +92,6 @@ async function myStore(request: HttpRequest, context: InvocationContext, decoded
                 })
             }
         }
-
     }
 
     return {
@@ -91,6 +103,7 @@ async function myStore(request: HttpRequest, context: InvocationContext, decoded
         })
     }
 }
+
 
 const MY_STORE = withAuth(myStore, ["VENDOR", "ADMIN"]);
 

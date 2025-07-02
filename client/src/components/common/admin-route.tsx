@@ -11,7 +11,7 @@ const AdminRoute: React.FC<AdminRouteProps> = ({ children, redirectPath="/not-ad
     const { user, isLoading } = useAuth();
     if (isLoading) {
         return (
-            <div className="w-full min-h-[70vh] flex items-center justify-center">
+            <div className="w-full bg-white min-h-[100vh] fixed top-0 right-0 z-[100000] flex items-center justify-center">
                 <Loader />
             </div>
         )

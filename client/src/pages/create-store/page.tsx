@@ -6,6 +6,7 @@ import defaultStore from '@assets/ui/default-store.png'
 import { useAuth } from '@src/context/auth-context';
 import { useStore } from '@src/context/store-context';
 import { useNavigate } from 'react-router';
+import Loader from '@/src/components/common/loader/loader';
 
 const CreateStore = () => {
   const { user } = useAuth();
@@ -32,7 +33,6 @@ const CreateStore = () => {
     }
   }, [hasStore]);
 
-  // automaitcally fill form data when checkbox is toggled
   useEffect(() => {
     if (useProfileDetails && user) {
       setFormData({
@@ -118,6 +118,14 @@ const CreateStore = () => {
       console.error('Error creating store:', error);
     }
   };
+
+  if (isCreateLoading) {
+    return (
+         <div className="w-full bg-white min-h-[100vh] fixed top-0 right-0 z-[100000] flex items-center justify-center">
+                <Loader />
+          </div>
+    )
+  }
 
   if (success) {
     return (
