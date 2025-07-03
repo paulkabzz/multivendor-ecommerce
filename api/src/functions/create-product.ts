@@ -15,7 +15,7 @@ interface CreateProductRequest extends ICreateProduct {
 async function createProduct(request: HttpRequest, context: InvocationContext, decodedToken?: DecodedToken): Promise<HttpResponseInit> {
     if (request.method === "POST") {
         try {
-            let requestData: CreateProductRequest;
+            let requestData: Partial<CreateProductRequest>;
             let imageFiles: { buffer: Buffer; filename: string; mimeType: string }[] = [];
 
             const contentType = request.headers.get("content-type") || "";
@@ -55,7 +55,7 @@ async function createProduct(request: HttpRequest, context: InvocationContext, d
                     condition: processingResult.formData?.condition || "GOOD",
                     is_available: processingResult.formData?.is_available === "true",
                     subcategory_id: processingResult.formData?.subcategory_id || "",
-                    size_id: processingResult.formData?.size_id || "",
+                    size_id: processingResult.formData?.size_id || null,
                     brand_id: processingResult.formData?.brand_id || null,
                     department_id: processingResult.formData?.department_id || null
                 };
@@ -162,7 +162,8 @@ async function createProduct(request: HttpRequest, context: InvocationContext, d
                 }
             }
 
-            if (size_id) {
+            // Only validate size if it's provided and not empty
+            if (size_id && size_id.trim() !== "") {
                 const sizeExists = await prisma.sizes.findUnique({
                     where: { size_id }
                 });
@@ -178,7 +179,8 @@ async function createProduct(request: HttpRequest, context: InvocationContext, d
                 }
             }
 
-            if (brand_id) {
+            // Only validate brand if it's provided and not empty
+            if (brand_id && brand_id.trim() !== "") {
                 const brandExists = await prisma.brands.findUnique({
                     where: { brand_id }
                 });
@@ -212,20 +214,31 @@ async function createProduct(request: HttpRequest, context: InvocationContext, d
 
             // Execute transaction
             const result = await prisma.$transaction(async (tx) => {
+                // Create product data object dynamically
+                const productData: any = {
+                    name: name.trim(),
+                    vendor_id,
+                    price,
+                    decsription: description, // TODO: I need to fix the typo in the schema
+                    condition,
+                    is_available,
+                    subcategory_id,
+                    department_id
+                };
+
+                // Only add size_id if it's provided and not empty
+                if (size_id && size_id.trim() !== "") {
+                    productData.size_id = size_id;
+                }
+
+                // Only add brand_id if it's provided and not empty
+                if (brand_id && brand_id.trim() !== "") {
+                    productData.brand_id = brand_id;
+                }
+
                 // Create product
                 const product = await tx.product.create({
-                    data: {
-                        name: name.trim(),
-                        vendor_id,
-                        price,
-                        decsription: description, // TODO: I need to fix the typo in the schema
-                        condition,
-                        is_available,
-                        subcategory_id,
-                        size_id,
-                        brand_id,
-                        department_id
-                    },
+                    data: productData,
                     include: {
                         vendor: {
                             select: {

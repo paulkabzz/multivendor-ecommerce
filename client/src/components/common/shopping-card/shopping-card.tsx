@@ -117,7 +117,7 @@ export const ShoppingCard: React.FC<Partial<IShoppingCard & {images: any[]}>> = 
       {/* Product Info */}
       <div className="px-4 mt-2 flex justify-between items-center">
         {/* Product Name */}
-        <h3 className="font-semibold text-gray-900 text-sm line-clamp-2 leading-tight hover:text-blue-600 transition-colors cursor-pointer">
+        <h3 className="font-semibold text-gray-900 text-sm truncate w-[12rem] leading-tight hover:text-blue-600 transition-colors cursor-pointer">
           {name}
         </h3>
 

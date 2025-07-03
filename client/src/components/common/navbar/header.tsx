@@ -5,8 +5,10 @@ import Loader from "../loader/loader";
 export const Header: React.FC = (): React.ReactElement => {
   const { 
       data: departments = [], 
-      isLoading: departmentsLoading, 
+      isLoading: departmentsLoading,
     } = useDepartments();
+
+    const department_id: string | null = new URLSearchParams(window.location.search).get('departmentId');
 
     if (departmentsLoading) {
       return (
@@ -25,8 +27,8 @@ export const Header: React.FC = (): React.ReactElement => {
             text={department.department_name}
             href={department.department_id ? `/department?departmentId=${department.department_id}` : '/'}
             className={
-              `font-[600] text-[12px] py-2 px-4 rounded-[100px] hover:text-[#fff] hover:bg-[#131313] ` +
-              (key === 0 ? "text-[#fff] bg-[#131313]" : "text-[#131313] ")
+              `font-[600] text-[12px] py-2 px-4 rounded-[100px] hover:text-[#fff] hover:bg-primary-dark ` +
+              (department_id === department.department_id ? "text-[#fff] bg-primary-dark" : "text-primary-dbg-primary-dark")
             }
           />
         ))}
