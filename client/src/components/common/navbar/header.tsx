@@ -28,7 +28,7 @@ export const Header: React.FC = (): React.ReactElement => {
             href={department.department_id ? `/department?departmentId=${department.department_id}` : '/'}
             className={
               `font-[600] text-[12px] py-2 px-4 rounded-[100px] hover:text-[#fff] hover:bg-primary-dark ` +
-              (department_id === department.department_id ? "text-[#fff] bg-primary-dark" : "text-primary-dbg-primary-dark")
+              (department_id === department.department_id ? "text-[#fff] bg-primary-dark" : "bg-transparent text-primary-dark")
             }
           />
         ))}
