@@ -5,7 +5,13 @@ commit:
 	fi
 	git add .
 	git commit -am "$(m)"
-	git push
+	@if ! git rev-parse --abbrev-ref --symbolic-full-name @{u} >/dev/null 2>&1; then \
+		echo "No upstream branch found. Setting upstream and pushing..."; \
+		git push --set-upstream origin $$(git rev-parse --abbrev-ref HEAD); \
+	else \
+		echo "Pushing to existing upstream..."; \
+		git push; \
+	fi
 
 migrate:
 	cd database && \

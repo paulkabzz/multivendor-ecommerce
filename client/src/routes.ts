@@ -5,6 +5,7 @@ import Checkout from "@pages/checkout/page";
 import Contact from "@pages/contact/page";
 import CreateItem from "@pages/create-item/page";
 import CreateStore from "@pages/create-store/page";
+import Department from "@pages/department/page";
 import Events from "@pages/events/page";
 import FAQ from "@pages/faq/page";
 import Home from "@pages/home/page";
@@ -24,6 +25,7 @@ export {
   Contact,
   CreateItem,
   CreateStore,
+  Department,
   Events,
   FAQ,
   Home,

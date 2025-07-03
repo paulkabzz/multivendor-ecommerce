@@ -7,6 +7,7 @@ import {
   Contact,
   CreateItem,
   CreateStore,
+  Department,
   Events,
   FAQ,
   Home,
@@ -42,6 +43,7 @@ function App(): React.ReactElement {
           <Route path="/contact" element={<Contact />} />
           <Route path="/event" element={<Events />} />
           <Route path="/best-selling" element={<BestSelling />} />
+          <Route path="/department" element={<Department />} />
 
           {/* Protected Routes */}
           <Route element={<ProtectedRoute />}>

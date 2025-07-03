@@ -153,7 +153,7 @@ export const SearchableSelect: React.FC<ISearchableSelect> = ({
       {/* Main Select Button */}
       <div
         onClick={toggleDropdown}
-        className={`
+        className={`text-[12px]
           ${width ? `w-[${width}px]` : "w-[450px]"} 
           ${height ? `h-[${height}px]` : "h-[40px]"} 
           bg-[#3b3b3b] text-[#fff] flex items-center justify-between gap-3 py-2 px-4 rounded-3xl
