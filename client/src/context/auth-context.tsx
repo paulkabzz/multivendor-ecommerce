@@ -45,6 +45,13 @@ export const removeStoredToken = () => {
   localStorage.removeItem('user');
 };
 
+// Helper function to check if error indicates expired token
+const isTokenExpiredError = (error: any): boolean => {
+  return error?.message?.includes('Invalid or expired token') || 
+         error?.message?.includes('expired token') ||
+         error?.message?.includes('invalid token');
+};
+
 const fetchUser = async (token: string | null) => {
   if (!token) {
     throw new Error('No authentication token provided');
@@ -57,11 +64,19 @@ const fetchUser = async (token: string | null) => {
     method: 'GET',
   });
 
+  const data = await response.json();
+
   if (!response.ok) {
+    // Check if the error indicates token expiration
+    if (data.message && (data.message.includes('Invalid or expired token') || 
+                        data.message.includes('expired token') ||
+                        data.message.includes('invalid token'))) {
+      throw new Error('TOKEN_EXPIRED');
+    }
     throw new Error(`Failed to fetch user data: ${response.status}`);
   }
 
-  const data = await response.json();
+  // Return the data directly since it should contain the user property
   return data;
 };
 
@@ -98,6 +113,12 @@ const updateUserAPI = async (updateData: Partial<IUpdateUserRequest>, token: str
   const data = await response.json();
 
   if (!data.success) {
+    // Check if the error indicates token expiration
+    if (data.message && (data.message.includes('Invalid or expired token') || 
+                        data.message.includes('expired token') ||
+                        data.message.includes('invalid token'))) {
+      throw new Error('TOKEN_EXPIRED');
+    }
     throw new Error(data.message);
   }
 
@@ -121,6 +142,12 @@ const updateUserAvatarAPI = async ({ userId, avatarFile, token }: { userId: stri
   const data = await response.json();
 
   if (!data.success) {
+    // Check if the error indicates token expiration
+    if (data.message && (data.message.includes('Invalid or expired token') || 
+                        data.message.includes('expired token') ||
+                        data.message.includes('invalid token'))) {
+      throw new Error('TOKEN_EXPIRED');
+    }
     throw new Error(data.message);
   }
 
@@ -135,6 +162,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const queryClient = useQueryClient();
   const [token, setToken] = useState<string | null>(() => getStoredToken());
   const [forceUpdate, setForceUpdate] = useState(0);
+
+  // Function to handle token expiration
+  const handleTokenExpiration = () => {
+    removeStoredToken();
+    setToken(null);
+    queryClient.clear();
+    setForceUpdate(prev => prev + 1);
+    queryClient.removeQueries({ queryKey: ['user'] });
+  };
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -160,6 +196,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     retry: false,
   });
 
+  useEffect(() => {
+    if (error?.message === 'TOKEN_EXPIRED' || isTokenExpiredError(error)) {
+      handleTokenExpiration();
+    }
+  }, [error]);
+
   const user = userData?.user || null;
   const isAuthenticated = !!token && !!user;
 
@@ -183,8 +225,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       queryClient.setQueryData(['user', token, forceUpdate], data);
       queryClient.invalidateQueries({ queryKey: ['user'] });
     },
-    onError: (error) => {
+    onError: (error: any) => {
       console.error('Update user failed:', error);
+
+      if (error?.message === 'TOKEN_EXPIRED' || isTokenExpiredError(error)) {
+        handleTokenExpiration();
+      }
     },
   });
 
@@ -195,8 +241,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       queryClient.setQueryData(['user', token, forceUpdate], data);
       queryClient.invalidateQueries({ queryKey: ['user'] });
     },
-    onError: (error) => {
+    onError: (error: any) => {
       console.error('Update avatar failed:', error);
+
+      if (error?.message === 'TOKEN_EXPIRED' || isTokenExpiredError(error)) {
+        handleTokenExpiration();
+      }
     },
   });
 

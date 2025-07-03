@@ -46,6 +46,7 @@ async function getDepartments(request: HttpRequest, context: InvocationContext):
                 const formattedDepartment = {
                     department_id: department.department_id,
                     department_name: department.department_name,
+                    department_cover: department.image_url,
                     categories: department.departmentcategory.map(dc => ({
                         category_id: dc.category.category_id,
                         category_name: dc.category.category_name,
@@ -90,6 +91,7 @@ async function getDepartments(request: HttpRequest, context: InvocationContext):
                 const formattedDepartments = departments.map((dept: any) => ({
                     department_id: dept.department_id,
                     department_name: dept.department_name,
+                    department_cover: dept.image_url,
                     ...(includeCategories && {
                         categories: dept.departmentcategory?.map((dc: any) => ({
                             category_id: dc.category.category_id,

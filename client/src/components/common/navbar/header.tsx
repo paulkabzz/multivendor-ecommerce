@@ -23,7 +23,7 @@ export const Header: React.FC = (): React.ReactElement => {
           <CategoryButton
             key={key}
             text={department.department_name}
-            href={department.department_id ? `/departments?departmentId=${department.department_id}` : '/'}
+            href={department.department_id ? `/department?departmentId=${department.department_id}` : '/'}
             className={
               `font-[600] text-[12px] py-2 px-4 rounded-[100px] hover:text-[#fff] hover:bg-[#131313] ` +
               (key === 0 ? "text-[#fff] bg-[#131313]" : "text-[#131313] ")

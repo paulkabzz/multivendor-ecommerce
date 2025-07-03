@@ -5,6 +5,7 @@ import { BASE_URL } from '@/src/utils/url';
 interface Department {
   department_id: string;
   department_name: string;
+  department_cover: string;
 }
 
 interface Category {

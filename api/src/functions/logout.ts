@@ -107,7 +107,7 @@ app.http('logout', {
     handler: logout
 });
 
-app.timer('cleanupExpiredTokens', {
-    schedule: '0 0 * * * *',
-    handler: cleanupExpiredTokens
-});
+// app.timer('cleanupExpiredTokens', {
+//     schedule: '0 0 * * * *',
+//     handler: cleanupExpiredTokens
+// });
