@@ -2,11 +2,13 @@ import type { IShoppingCard } from "@utils/types";
 
 import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight, Heart, Eye } from 'lucide-react';
+import { useNavigate } from "react-router";
 
 export const ShoppingCard: React.FC<Partial<IShoppingCard & {images: any[]}>> = ({ 
   name, 
   price, 
-  img_url, 
+  img_url,
+  product_id,
   images = [],
 }) => {
   // Prepare images array - handle both single img_url and images array
@@ -19,26 +21,40 @@ export const ShoppingCard: React.FC<Partial<IShoppingCard & {images: any[]}>> = 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
 
-  const nextImage = () => {
+  const nextImage = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent navigation
     if (allImages.length > 1) {
       setCurrentImageIndex((prev) => (prev + 1) % allImages.length);
     }
   };
 
-  const prevImage = () => {
+  const prevImage = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent navigation
     if (allImages.length > 1) {
       setCurrentImageIndex((prev) => (prev - 1 + allImages.length) % allImages.length);
     }
   };
 
-  const goToImage = (index: any) => {
+  const goToImage = (index: any, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent navigation
     setCurrentImageIndex(index);
   };
+
+  const handleLike = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent navigation
+    setIsLiked(!isLiked);
+  };
+
+  const handleView = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent navigation
+  };
+
+  const navigate = useNavigate();
 
   return (
     <div className="group rounded-2xl transition-all duration-300 overflow-hidden w-full max-w-sm">
       {/* Image Container */}
-      <div className="relative aspect-square overflow-hidden bg-gray-50">
+      <div onClick={() => navigate(`/product/${product_id}`)} className="relative aspect-square overflow-hidden bg-gray-50 cursor-pointer">
         {/* Main Image */}
         {allImages.length > 0 ? (
           <img
@@ -77,7 +93,7 @@ export const ShoppingCard: React.FC<Partial<IShoppingCard & {images: any[]}>> = 
               {allImages.map((_, index) => (
                 <button
                   key={index}
-                  onClick={() => goToImage(index)}
+                  onClick={(e) => goToImage(index, e)}
                   className={`w-2 h-2 rounded-full transition-all duration-200 ${
                     index === currentImageIndex 
                       ? 'bg-white scale-110 shadow-lg' 
@@ -92,7 +108,7 @@ export const ShoppingCard: React.FC<Partial<IShoppingCard & {images: any[]}>> = 
         {/* Action Buttons */}
         <div className="absolute top-3 right-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
           <button
-            onClick={() => setIsLiked(!isLiked)}
+            onClick={handleLike}
             className={`p-2 rounded-full shadow-lg transition-all duration-200 ${
               isLiked 
                 ? 'bg-red-500 text-white scale-110' 
@@ -101,7 +117,10 @@ export const ShoppingCard: React.FC<Partial<IShoppingCard & {images: any[]}>> = 
           >
             <Heart size={16} fill={isLiked ? 'currentColor' : 'none'} />
           </button>
-          <button className="p-2 bg-white/80 hover:bg-white text-gray-700 rounded-full shadow-lg transition-all duration-200 hover:scale-105">
+          <button 
+            onClick={handleView}
+            className="p-2 bg-white/80 hover:bg-white text-gray-700 rounded-full shadow-lg transition-all duration-200 hover:scale-105"
+          >
             <Eye size={16} />
           </button>
         </div>
@@ -117,7 +136,10 @@ export const ShoppingCard: React.FC<Partial<IShoppingCard & {images: any[]}>> = 
       {/* Product Info */}
       <div className="px-4 mt-2 flex justify-between items-center">
         {/* Product Name */}
-        <h3 className="font-semibold text-gray-900 text-sm truncate w-[12rem] leading-tight hover:text-blue-600 transition-colors cursor-pointer">
+        <h3 
+          onClick={() => navigate(`/product/${product_id}`)}
+          className="font-semibold text-gray-900 text-sm truncate w-[12rem] leading-tight hover:text-blue-600 transition-colors cursor-pointer"
+        >
           {name}
         </h3>
 

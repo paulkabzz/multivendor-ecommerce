@@ -36,7 +36,7 @@ function App(): React.ReactElement {
           <Route path="/sign-up" element={<SignUp />} />
           <Route path="/faq" element={<FAQ />} />
           <Route
-            path="/product-details/:product_id"
+            path="/product/:product_id"
             element={<ProductDetails />}
           />
           <Route path="/products" element={<Products />} />

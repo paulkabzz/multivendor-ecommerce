@@ -438,6 +438,7 @@ const Department: React.FC = () => {
                       price={product.price}
                       img_url={product.img_url}
                       images={product.image || []}
+                      product_id={product.product_id}
                     />
                   ))}
                 </div>
