@@ -385,7 +385,7 @@ const Department: React.FC = () => {
                       { value: 'LIKE_NEW', label: 'Like New' },
                       { value: 'GOOD', label: 'Good' },
                       { value: 'FAIR', label: 'Fair' },
-                      { value: 'POOR', label: 'Poor' }
+                      { value: 'BAD', label: 'Bad' }
                     ]}
                     value={selectedCondition}
                     onChange={setSelectedCondition}
