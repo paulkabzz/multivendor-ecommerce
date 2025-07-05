@@ -203,7 +203,7 @@ const CreateItem: React.FC = (): React.ReactElement => {
   }, [selectedCategoryId]);
 
   // Prepare options for selectors
-  const departmentOptions = departments.map((dept) => ({
+  const departmentOptions = departments.map((dept: any) => ({
     value: dept.department_id,
     label: dept.department_name,
   }));
