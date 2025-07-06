@@ -22,26 +22,42 @@ async function logout(request: HttpRequest, context: InvocationContext): Promise
             
             if (!jwtSecret) throw new Error("JWT_SECRET environment variable not set.");
 
-            const decoded = jwt.verify(token, jwtSecret) as any;
-            
-            await prisma.tokenblacklist.create({
-                data: {
-                    token_jti: decoded.jti,
-                    expires_at: new Date(decoded.exp * 1000)
-                }
-            });
+            try {
+                const decoded = jwt.verify(token, jwtSecret) as any;
+                
+                const tokenIdentifier = decoded.jti || token;
+                
+                await prisma.tokenblacklist.create({
+                    data: {
+                        token_jti: tokenIdentifier,
+                        expires_at: new Date(decoded.exp * 1000)
+                    }
+                });
 
-            return {
-                status: 204,
-                headers,
-                body: JSON.stringify({ 
-                    success: true, 
-                    message: "Logged out successfully" 
-                })
-            };
+                return {
+                    status: 200,
+                    headers,
+                    body: JSON.stringify({ 
+                        success: true, 
+                        message: "Logged out successfully" 
+                    })
+                };
+
+            } catch (jwtError) {
+                // Token is invalid or expired, but we can still consider logout successful
+                context.error('JWT verification failed during logout:', jwtError);
+                return {
+                    status: 200,
+                    headers,
+                    body: JSON.stringify({ 
+                        success: true, 
+                        message: "Logged out successfully" 
+                    })
+                };
+            }
 
         } catch (error) {
-            context.log('Logout error:', error);
+            context.error('Logout error:', error);
             return {
                 status: 500,
                 headers,
@@ -107,7 +123,7 @@ app.http('logout', {
     handler: logout
 });
 
-// app.timer('cleanupExpiredTokens', {
-//     schedule: '0 0 * * * *',
-//     handler: cleanupExpiredTokens
-// });
+app.timer('cleanupExpiredTokens', {
+    schedule: '0 0 * * * *',
+    handler: cleanupExpiredTokens
+});
