@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Filter, Grid, List, Loader2 } from 'lucide-react';
 import { ShoppingCard } from '@components/common/shopping-card/shopping-card';
-import { SearchableSelect } from '@components/common/input/select';
+import { ComboBox } from '@/src/components/common/input/combo-box';
 import searchIcon from '@assets/icons/search-d.png';
 import { 
   useDepartments, 
@@ -287,7 +287,7 @@ const Department: React.FC = () => {
                   <label className="block text-[12px] font-medium text-gray-700 mb-2">
                     Category
                   </label>
-                  <SearchableSelect
+                  <ComboBox
                     options={[
                       { value: '', label: 'All Categories' },
                       ...(categories?.map(cat => ({
@@ -311,7 +311,7 @@ const Department: React.FC = () => {
                     <label className="block text-[12px] font-medium text-gray-700 mb-2">
                       Subcategory
                     </label>
-                    <SearchableSelect
+                    <ComboBox
                       options={[
                         { value: '', label: 'All Subcategories' },
                         ...subcategories.map(sub => ({
@@ -334,7 +334,7 @@ const Department: React.FC = () => {
                   <label className="block text-[12px] font-medium text-gray-700 mb-2">
                     Brand
                   </label>
-                  <SearchableSelect
+                  <ComboBox
                     options={[
                       { value: '', label: 'All Brands' },
                       ...(brands?.map(brand => ({
@@ -356,7 +356,7 @@ const Department: React.FC = () => {
                   <label className="block text-[12px] font-medium text-gray-700 mb-2">
                     Size
                   </label>
-                  <SearchableSelect
+                  <ComboBox
                     options={[
                       { value: '', label: 'All Sizes' },
                       ...(sizes?.map(size => ({
@@ -378,7 +378,7 @@ const Department: React.FC = () => {
                   <label className="block text-[12px] font-medium text-gray-700 mb-2">
                     Condition
                   </label>
-                  <SearchableSelect
+                  <ComboBox
                     options={[
                       { value: '', label: 'All Conditions' },
                       { value: 'NEW', label: 'New' },

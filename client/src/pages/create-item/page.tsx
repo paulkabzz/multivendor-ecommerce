@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
 import { Button } from "@/src/components/common/buttons/button";
 import { Input } from "@/src/components/common/input/input";
-import { SearchableSelect } from "@/src/components/common/input/select";
+import { ComboBox } from "@/src/components/common/input/combo-box";
 import { TextArea } from "@/src/components/common/input/text-area";
 import PreviewImage from "@/src/components/store/preview-image";
 import { useAuth } from "@/src/context/auth-context";
@@ -398,7 +398,7 @@ const CreateItem: React.FC = (): React.ReactElement => {
             <p className="text-[12px] mb-2 font-bold">
               Select Department <span className="text-[#ff0000]">*</span>
             </p>
-            <SearchableSelect 
+            <ComboBox 
               width={600} 
               bgLight={true} 
               options={departmentOptions}
@@ -417,7 +417,7 @@ const CreateItem: React.FC = (): React.ReactElement => {
             <p className="text-[12px] mb-2 font-bold">
               Select Category <span className="text-[#ff0000]">*</span>
             </p>
-            <SearchableSelect 
+            <ComboBox 
               width={600} 
               bgLight={true} 
               onChange={(value) => setSelectedCategoryId(value)} 
@@ -437,7 +437,7 @@ const CreateItem: React.FC = (): React.ReactElement => {
             <p className="text-[12px] mb-2 font-bold">
               Select Subcategory <span className="text-[#ff0000]">*</span>
             </p>
-            <SearchableSelect 
+            <ComboBox 
               width={600} 
               onChange={(value) => handleInputChange('subcategory_id', value)} 
               bgLight={true} 
@@ -460,7 +460,7 @@ const CreateItem: React.FC = (): React.ReactElement => {
             <p className="text-[12px] mb-2 font-bold">
               Condition <span className="text-[#ff0000]">*</span>
             </p>
-            <SearchableSelect 
+            <ComboBox 
               width={600} 
               bgLight={true} 
               options={conditionOptions}
@@ -497,7 +497,7 @@ const CreateItem: React.FC = (): React.ReactElement => {
           {/* Brand */}
           <label>
             <p className="text-[12px] mb-2 font-bold">Brand</p>
-            <SearchableSelect 
+            <ComboBox 
               options={brandOptions} 
               bgLight={true} 
               width={600} 
@@ -511,7 +511,7 @@ const CreateItem: React.FC = (): React.ReactElement => {
           {/* Size */}
           <label>
             <p className="text-[12px] mb-2 font-bold">Size</p>
-            <SearchableSelect 
+            <ComboBox 
               options={sizeOptions} 
               bgLight={true} 
               width={600} 

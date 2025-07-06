@@ -7,7 +7,7 @@ interface SelectOption {
   disabled?: boolean;
 }
 
-interface ISearchableSelect {
+interface IComboBox {
   options: SelectOption[];
   placeholder?: string;
   disabled?: boolean;
@@ -24,7 +24,7 @@ interface ISearchableSelect {
   noOptionsText?: string;
 }
 
-export const SearchableSelect: React.FC<ISearchableSelect> = ({
+export const ComboBox: React.FC<IComboBox> = ({
   options = [],
   placeholder = "Select an option",
   disabled = false,

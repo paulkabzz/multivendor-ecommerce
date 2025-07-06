@@ -1,8 +1,7 @@
-import { logoutUser } from "@/src/store/slices/userSlice";
 import { useNavigate } from "react-router";
 import { User, ShoppingBag, CreditCard, MapPin, LogOut, ChevronRight } from "lucide-react";
 import defaultProfilePic from "@assets/ui/default.png";
-import { useAppDispatch } from "@/src/store/hooks";
+import { useAuth } from "@/src/context/auth-context";
 
 interface IProfileSideBar {
   active: number;
@@ -16,9 +15,7 @@ export const ProfileSideBar: React.FC<IProfileSideBar> = ({
   user,
 }): React.ReactElement => {
 
-  const navigate = useNavigate();
-
-  const dispatch = useAppDispatch();
+  const { logout } = useAuth();
 
   const links: { text: string; icon: React.ReactNode; action?: () => void }[] =
     [
@@ -45,13 +42,17 @@ export const ProfileSideBar: React.FC<IProfileSideBar> = ({
       },
     ];
 
+    const navigate = useNavigate();
 
   async function handleLogout() {
     try {
-          await dispatch(logoutUser()).unwrap();
-          navigate("/");
+        const response = await logout();
 
-
+        if (response.success)
+        {
+          navigate('/');
+          console.log("Logged out successfully.");
+        }
     } catch (error) {
       console.error(error);
     }

@@ -16,7 +16,7 @@ interface AuthContextType {
   login: (credentials: { email: string; password: string }) => Promise<any>;
   updateUser: (updateData: Partial<IUpdateUserRequest>) => Promise<any>;
   updateAvatar: (data: { userId: string; avatarFile: File }) => Promise<any>;
-  logout: () => void;
+  logout: () => any | void;
   refetchUser: () => Promise<any>;
   isLoginLoading: boolean;
   isUpdateLoading: boolean;
@@ -250,17 +250,38 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     },
   });
 
-  const logout = () => {
-    removeStoredToken();
-    setToken(null);
-    
-    queryClient.clear();
-    
-    setForceUpdate(prev => prev + 1);
-    
-    queryClient.removeQueries({ queryKey: ['user'] });
-    queryClient.setQueryData(['user', null, forceUpdate + 1], null);
-  };
+  const logoutMutation = useMutation({
+    mutationFn: async () => {
+        const response = await fetch(`${BASE_URL}/logout`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        const data = await response.json();
+
+        if (!data.success) {
+          throw new Error(data.message || "Falied to logout.")
+        } else {
+          return data;
+        }
+    },
+    onSuccess: () => {
+      removeStoredToken();
+      setToken(null);
+      
+      queryClient.clear();
+      
+      setForceUpdate(prev => prev + 1);
+      
+      queryClient.removeQueries({ queryKey: ['user'] });
+      queryClient.setQueryData(['user', null, forceUpdate + 1], null);
+    },
+    onError: (error: any) => {
+      console.error(error);
+    }
+  });
 
   const value: AuthContextType = {
     user,
@@ -270,7 +291,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     login: loginMutation.mutateAsync,
     updateUser: updateUserMutation.mutateAsync,
     updateAvatar: updateAvatarMutation.mutateAsync,
-    logout,
+    logout: logoutMutation.mutateAsync,
     refetchUser,
     isLoginLoading: loginMutation.isPending,
     isUpdateLoading: updateUserMutation.isPending,
