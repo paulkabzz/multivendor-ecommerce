@@ -18,6 +18,7 @@ import './functions/get-subcategories';
 import './functions/get-other';
 import './functions/create-product';
 import './functions/get-products';
+import './functions/get-product';
 
 app.setup({
     enableHttpStream: true,
