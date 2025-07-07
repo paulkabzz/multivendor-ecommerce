@@ -405,7 +405,7 @@ const ProductDetails: React.FC = (): React.ReactElement => {
             </div>
 
             {/* Product Meta Information */}
-            <div className="mt-6 text-[12px] text-[#777] border-t pt-4">
+            <div className="text-[12px] text-[#777] border-t pt-4">
                 <p>Listed {formatTimeAgo(product.created_at)}</p>
                 <p className="mt-1">Product ID: {product.product_id}</p>
             </div>
