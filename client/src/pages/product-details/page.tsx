@@ -3,7 +3,7 @@ import { formatString, formatTimeAgo } from "@/src/utils/helpers";
 import { BASE_URL } from "@/src/utils/url";
 import { Heart, Share2, ArrowLeft } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 
 interface Image {
   image_url: string;
