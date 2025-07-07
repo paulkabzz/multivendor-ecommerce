@@ -4,6 +4,7 @@ import { BASE_URL } from "@/src/utils/url";
 import { Heart, Share2, ArrowLeft } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
+import { useQuery } from "@tanstack/react-query";
 
 interface Image {
   image_url: string;
@@ -61,6 +62,21 @@ interface Product {
   brands: Brand;
   sizes: Size;
 }
+
+// Fetch function for React Query
+const fetchProduct = async (productId: string): Promise<Product> => {
+  const response = await fetch(`${BASE_URL}/get-product?product_id=${productId}`, {
+    method: "GET",
+  });
+
+  const data = await response.json();
+  
+  if (!data.success) {
+    throw new Error(data.message || "Failed to get product");
+  }
+
+  return data.product;
+};
 
 // Loading Skeleton Component
 const ProductDetailsSkeleton: React.FC = (): React.ReactElement => {
@@ -149,45 +165,32 @@ const ProductDetailsSkeleton: React.FC = (): React.ReactElement => {
 
 const ProductDetails: React.FC = (): React.ReactElement => {
   const { product_id } = useParams();
-  const [product, setProduct] = useState<Product>();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
   const [selectedImage, setSelectedImage] = useState<string>("");
   const [copied, setCopied] = useState<boolean>(false);
   const navigate = useNavigate();
 
+  // React Query for product data with 1-hour cache
+  const {
+    data: product,
+    isLoading,
+    error,
+    isError
+  } = useQuery({
+    queryKey: ['product', product_id],
+    queryFn: () => fetchProduct(product_id!),
+    enabled: !!product_id,
+    staleTime: 60 * 60 * 1000,
+    retry: 3,
+    refetchOnWindowFocus: false, 
+    refetchOnMount: false, 
+  });
+
+  // Set selected image when product data is loaded
   useEffect(() => {
-    const getProduct = async () => {
-      try {
-        setIsLoading(true);
-        const response = await fetch(`${BASE_URL}/get-product?product_id=${product_id}`, {
-          method: "GET",
-        });
-
-        const data = await response.json();
-        console.log(data)
-        if (!data.success) {
-          setError(data.message)
-          throw new Error(data.message || "Failed to get product")
-        }
-
-        setProduct(data.product);
-        if (data.product.image && data.product.image.length > 0) {
-          setSelectedImage(data.product.image[0].image_url);
-        }
-        setIsLoading(false);
-
-      } catch (error: unknown) {
-        console.error(error);
-        setError("Failed to load product");
-        setIsLoading(false);
-      }
+    if (product?.image && product.image.length > 0 && !selectedImage) {
+      setSelectedImage(product.image[0].image_url);
     }
-
-    if (product_id) {
-      getProduct().catch(error => console.error(error));
-    }
-  }, [product_id]);
+  }, [product, selectedImage]);
 
   const formatPrice = (price: string): string => {
     return new Intl.NumberFormat('en-ZA', {
@@ -208,12 +211,16 @@ const ProductDetails: React.FC = (): React.ReactElement => {
     return <ProductDetailsSkeleton />;
   }
 
-  if (error) {
+  if (isError) {
+    const errorMessage = error instanceof Error ? error.message : "Failed to load product";
     return (
       <div className="min-h-screen bg-[#ddd] flex items-center justify-center">
         <div className="text-center bg-white p-8 rounded-2xl shadow-lg">
-          <div className="text-[#131313] text-xl mb-4 font-semibold">{error}</div>
-          <button className="px-8 py-3 bg-[#131313] text-[#ddd] rounded-lg hover:bg-gray-800 transition-colors font-medium">
+          <div className="text-[#131313] text-xl mb-4 font-semibold">{errorMessage}</div>
+          <button 
+            onClick={() => window.location.reload()}
+            className="px-8 py-3 bg-[#131313] text-[#ddd] rounded-lg hover:bg-gray-800 transition-colors font-medium"
+          >
             Try Again
           </button>
         </div>
@@ -336,7 +343,7 @@ const ProductDetails: React.FC = (): React.ReactElement => {
                       <div className="flex flex-col gap-2">
                           <label className="text-sm font-medium text-[#777]">Size</label>
                           <div className="bg-gray-100 max-w-[200px] min-w-[60px] text-center text-[12px] py-2 px-3 rounded-full border border-gray-300 font-medium">
-                              {product.sizes.size_name }
+                              {formatString(product.sizes.size_name)}
                           </div>
                       </div>
                       )
@@ -417,8 +424,6 @@ const ProductDetails: React.FC = (): React.ReactElement => {
 };
 
 export default ProductDetails;
-
-
 
 const Condition = ({condition}: {condition: TCondition}): React.ReactElement => {
  switch(condition) {

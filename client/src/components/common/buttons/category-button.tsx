@@ -1,4 +1,5 @@
 import type { INavLink } from "@utils/types";
+import { Link } from "react-router";
 
 export const CategoryButton: React.FC<INavLink & { className?: string }> = ({
   text,
@@ -6,9 +7,9 @@ export const CategoryButton: React.FC<INavLink & { className?: string }> = ({
   className,
 }): React.ReactElement => {
   return (
-    <a href={href} className={className}>
+    <Link to={href} className={className}>
       {" "}
       {text}{" "}
-    </a>
+    </Link>
   );
 };
