@@ -331,12 +331,16 @@ const ProductDetails: React.FC = (): React.ReactElement => {
                     </div>
 
                     {/* Size */}
-                    <div className="flex flex-col gap-2">
-                        <label className="text-sm font-medium text-[#777]">Size</label>
-                        <div className="bg-gray-100 max-w-[200px] min-w-[60px] text-center text-[12px] py-2 px-3 rounded-full border border-gray-300 font-medium">
-                            {product.sizes.size_name || "N/A"}
-                        </div>
-                    </div>
+                    {
+                      product.sizes && (
+                      <div className="flex flex-col gap-2">
+                          <label className="text-sm font-medium text-[#777]">Size</label>
+                          <div className="bg-gray-100 max-w-[200px] min-w-[60px] text-center text-[12px] py-2 px-3 rounded-full border border-gray-300 font-medium">
+                              {product.sizes.size_name }
+                          </div>
+                      </div>
+                      )
+                    }
 
                     {/* Department */}
                     <div className="flex flex-col gap-2">
