@@ -7,7 +7,6 @@ async function getProduct(request: HttpRequest, context: InvocationContext): Pro
         try {
 
             const product_id = request.query.get("product_id")?.trim();
-            context.warn(product_id);
 
             if (!product_id) {
                 context.error("Product ID not provided");
@@ -20,22 +19,87 @@ async function getProduct(request: HttpRequest, context: InvocationContext): Pro
                     })
                 }
             }
-
-            const product = await prisma.product.findUnique({
+            
+            const product = await prisma.product.findFirst({
                 where: { product_id: product_id },
-                include: {
-                    image: true,
-                    vendor: true,
+                select: {
+                    // Basic product info
+                    product_id: true,
+                    name: true,
+                    decsription: true,
+                    price: true,
+                    condition: true,
+                    is_available: true,
+                    created_at: true,
+                    
+                    // Images
+                    image: {
+                        select: {
+                            image_url: true
+                        }
+                    },
+                    
+                    // Vendor info
+                    vendor: {
+                        select: {
+                            vendor_id: true,
+                            avatar_url: true,
+                            store_name: true,
+                            last_active: true
+                        }
+                    },
+                    
+                    // Department (direct relationship)
+                    department: {
+                        select: {
+                            department_id: true,
+                            department_name: true
+                        }
+                    },
+                    
+                    // Subcategory (direct relationship)
+                    subcategory: {
+                        select: {
+                            subcategory_id: true,
+                            subcategory_name: true,
+                            // Get categories through the subcategory
+                            categorysubcategory: {
+                                select: {
+                                    category: {
+                                        select: {
+                                            category_id: true,
+                                            category_name: true
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    
+                    // Brand info
+                    brands: {
+                        select: { 
+                            brand_name: true 
+                        }
+                    },
+                    
+                    // Size info
+                    sizes: {
+                        select: {
+                            size_name: true,
+                        }
+                    }
                 }
             });
 
             if (!product) {
+                context.error("Product not found.")
                 return {
                     status: 404,
                     headers,
                     body: JSON.stringify({
                         success: false,
-                        messsage: "Product not found."
+                        message: "Product not found."
                     })
                 }
             }
