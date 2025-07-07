@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { Filter, Grid, List, Loader2 } from 'lucide-react';
+import { Filter, Grid, List } from 'lucide-react';
 import { ShoppingCard } from '@components/common/shopping-card/shopping-card';
 import { ComboBox } from '@/src/components/common/input/combo-box';
 import searchIcon from '@assets/icons/search-d.png';
@@ -14,6 +14,30 @@ import {
 } from '@src/context/ui-context';
 import { BASE_URL } from '@utils/url';
 import { Input } from '@/src/components/common/input/input';
+
+// Skeleton Components
+const ProductSkeleton = () => (
+  <div className="bg-white border border-gray-200 rounded-lg p-4 animate-pulse">
+    <div className="aspect-square bg-gray-200 rounded-lg mb-4"></div>
+    <div className="space-y-2">
+      <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+      <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+      <div className="h-6 bg-gray-200 rounded w-1/3"></div>
+    </div>
+  </div>
+);
+
+const ProductsGridSkeleton = ({ viewMode }: { viewMode: 'grid' | 'list' }) => (
+  <div className={`${
+    viewMode === 'grid' 
+      ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6' 
+      : 'space-y-4'
+  }`}>
+    {Array.from({ length: 6 }, (_, i) => (
+      <ProductSkeleton key={i} />
+    ))}
+  </div>
+);
 
 interface Product {
   product_id: string;
@@ -256,32 +280,6 @@ const Department: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Sort */}
-                {/* <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Sort By
-                  </label>
-                  <div className="grid grid-cols-2 gap-2">
-                    <select
-                      value={sortBy}
-                      onChange={(e) => setSortBy(e.target.value)}
-                      className="px-3 py-2 border border-gray-300 rounded-lg  text-sm"
-                    >
-                      <option value="created_at">Date Added</option>
-                      <option value="name">Name</option>
-                      <option value="price">Price</option>
-                    </select>
-                    <select
-                      value={sortOrder}
-                      onChange={(e) => setSortOrder(e.target.value)}
-                      className="px-3 py-2 border border-gray-300 rounded-lg  text-sm"
-                    >
-                      <option value="desc">Descending</option>
-                      <option value="asc">Ascending</option>
-                    </select>
-                  </div>
-                </div> */}
-
                 {/* Category */}
                 <div>
                   <label className="block text-[12px] font-medium text-gray-700 mb-2">
@@ -300,7 +298,6 @@ const Department: React.FC = () => {
                     placeholder="Select Category"
                     bgLight={true}
                     width={350}
-                    // height={40}
                     className='w-full'
                   />
                 </div>
@@ -324,7 +321,6 @@ const Department: React.FC = () => {
                       placeholder="Select Subcategory"
                       bgLight={true}
                       width={350}
-                    //   height={40}
                     />
                   </div>
                 )}
@@ -347,7 +343,6 @@ const Department: React.FC = () => {
                     placeholder="Select Brand"
                     bgLight={true}
                     width={350}
-                    // height={40}
                   />
                 </div>
 
@@ -369,7 +364,6 @@ const Department: React.FC = () => {
                     placeholder="Select Size"
                     bgLight={true}
                     width={350}
-                    // height={40}
                   />
                 </div>
 
@@ -392,7 +386,6 @@ const Department: React.FC = () => {
                     placeholder="Select Condition"
                     bgLight={true}
                     width={350}
-                    // height={40}
                   />
                 </div>
               </div>
@@ -402,9 +395,7 @@ const Department: React.FC = () => {
           {/* Main Content */}
           <div className="flex-1">
             {isLoading ? (
-              <div className="flex items-center justify-center py-12 min-h-[30vh]">
-                <Loader2 size={36} className="animate-spin" />
-              </div>
+              <ProductsGridSkeleton viewMode={viewMode} />
             ) : error ? (
               <div className="text-center py-12">
                 <div className="text-red-600 mb-2">Error loading products</div>
