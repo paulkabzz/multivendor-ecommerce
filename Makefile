@@ -12,6 +12,9 @@ commit:
 		echo "Pushing to existing upstream..."; \
 		git push; \
 	fi
+	
+count:
+	find . -type f \( -name "*.tsx" -or -name "*.ts" -or -name "*.css" -or -name "*.html" -or -name "*.sql" -or -name "*.yml" -or -name "*.yaml" \) ! -path "*/node_modules/*" ! -name "*.md" ! -path "*/dist/*"  | xargs wc -l
 
 migrate:
 	cd database && \
@@ -30,4 +33,4 @@ psql:
 psql-stop:
 	cd docker && docker compose down
 
-.PHONY: psql-stop commit migrate prisma psql
+.PHONY: psql-stop commit migrate prisma psql count

@@ -46,7 +46,8 @@ const MyStore = memo(() => {
                 key={product.product_id} 
                 name={product.name} 
                 price={product.price} 
-                images={product.image} 
+                images={product.image}
+                product_id={product.product_id}
               />
             ))}
           </Suspense>
