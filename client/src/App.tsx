@@ -1,6 +1,7 @@
 import { Route, Routes } from "react-router";
 import "@src/app.css";
 import {
+  AdminHome,
   BestSelling,
   CatalogPanel,
   Checkout,
@@ -18,6 +19,7 @@ import {
   Products,
   Profile,
   SignUp,
+  Store,
   Verification,
 } from "@src/routes";
 import RootLayout from "@src/root-layout";
@@ -44,6 +46,7 @@ function App(): React.ReactElement {
           <Route path="/event" element={<Events />} />
           <Route path="/best-selling" element={<BestSelling />} />
           <Route path="/department" element={<Department />} />
+          <Route path="/store/:store_id" element={<Store />} />
 
           {/* Protected Routes */}
           <Route element={<ProtectedRoute />}>
@@ -59,6 +62,7 @@ function App(): React.ReactElement {
 
             {/* Admin Routes */}
             <Route element={<AdminRoute />} >
+                <Route path="/admin" element={<AdminHome />} />
                 <Route path="/admin/catalog-panel" element={<CatalogPanel />} />
             </Route>
           </Route>
