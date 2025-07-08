@@ -19,6 +19,7 @@ import './functions/get-other';
 import './functions/create-product';
 import './functions/get-products';
 import './functions/get-product';
+import './functions/get-store';
 
 app.setup({
     enableHttpStream: true,
