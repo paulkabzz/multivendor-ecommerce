@@ -391,7 +391,7 @@ const ProductDetails: React.FC = (): React.ReactElement => {
             <div className="mt-6 mb-8 py-4 px-8 bg-gray-50 rounded-lg border border-gray-200">
                 <h3 className="text-[14px] font-semibold mb-3 text-primary-dark">Seller Information</h3>
                 <div className="flex items-center gap-3 mb-3">
-                    <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-200">
+                    <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-200 cursor-pointer" onClick={() => navigate(`/store/${product.vendor.vendor_id}`)}>
                         <img 
                             src={product.vendor.avatar_url} 
                             alt={product.vendor.store_name}
@@ -403,7 +403,7 @@ const ProductDetails: React.FC = (): React.ReactElement => {
                         />
                     </div>
                     <div>
-                        <p className="font-bold text-[#131313]">{product.vendor.store_name}</p>
+                        <p className="font-bold text-[#131313] cursor-pointer hover:text-link" onClick={() => navigate(`/store/${product.vendor.vendor_id}`)}>{product.vendor.store_name}</p>
                         <p className="text-[12px] text-[#777]">
                             Last active: {formatTimeAgo(product.vendor.last_active)}
                         </p>

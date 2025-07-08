@@ -1,4 +1,5 @@
 import Verification from "@pages/verification/page";
+import AdminHome from "@pages/admin/admin-home/page";
 import BestSelling from "@pages/best-selling/page";
 import CatalogPanel from "@pages/admin/product-organisation/page";
 import Checkout from "@pages/checkout/page";
@@ -16,9 +17,11 @@ import ProductDetails from "@pages/product-details/page";
 import Products from "@pages/products/page";
 import Profile from "@pages/profile/page";
 import SignUp from "@pages/sign-up/page";
+import Store from "@pages/store/page";
 
 export {
   Verification,
+  AdminHome,
   BestSelling,
   Checkout,
   CatalogPanel,
@@ -36,4 +39,5 @@ export {
   Products,
   Profile,
   SignUp,
+  Store
 };
