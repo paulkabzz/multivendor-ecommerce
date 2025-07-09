@@ -270,7 +270,7 @@ const ProductDetails: React.FC = (): React.ReactElement => {
           <div className="space-y-6">
             <div className="aspect-square bg-white  overflow-hidden ">
               <img
-                src={selectedImage}
+                src={selectedImage || undefined}
                 alt={product.name}
                 className="w-full h-full object-cover"
               />

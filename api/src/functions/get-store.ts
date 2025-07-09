@@ -57,12 +57,9 @@ async function getStore(request: HttpRequest, context: InvocationContext): Promi
                         product_id: true,
                         name: true,
                         price: true,
-                        condition: true,
-                        created_at: true,
                         is_available: true,
                         image: {
                             select: {
-                                image_id: true,
                                 image_url: true
                             }
                         }
