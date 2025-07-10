@@ -111,7 +111,7 @@ async function createStore(request: HttpRequest, context: InvocationContext, dec
             }
 
             // Execute the transaction
-            const result = await prisma.$transaction(async tx => {
+            const result = await prisma.$transaction(async (tx:any) => {
                 const user = await tx.users.findFirst({ where: { user_id }});
 
                 if (user?.role !== "CUSTOMER" && user?.role !== "ADMIN") {

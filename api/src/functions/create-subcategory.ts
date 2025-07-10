@@ -94,7 +94,7 @@ async function createSubcategory(request: HttpRequest, context: InvocationContex
             });
 
             if (existingLinksInCategory.length > 0) {
-                const duplicates = existingLinksInCategory.map(link => link.subcategory.subcategory_name);
+                const duplicates = existingLinksInCategory.map((link:any) => link.subcategory.subcategory_name);
                 return {
                     status: 409,
                     headers,
@@ -114,9 +114,9 @@ async function createSubcategory(request: HttpRequest, context: InvocationContex
                 }
             });
 
-            const existingGlobalNames = existingGlobalSubcategories.map(s => s.subcategory_name);
+            const existingGlobalNames = existingGlobalSubcategories.map((s:any) => s.subcategory_name);
 
-            const result = await prisma.$transaction(async tx => {
+            const result = await prisma.$transaction(async (tx:any) => {
                 const processedSubcategories = [];
                 let newSubcategoriesCreated = 0;
 
@@ -126,7 +126,7 @@ async function createSubcategory(request: HttpRequest, context: InvocationContex
 
                     // Check if subcategory already exists globally
                     const existingSubcategory = existingGlobalSubcategories.find(
-                        subcat => subcat.subcategory_name === name
+                        (subcat:any) => subcat.subcategory_name === name
                     );
 
                     if (existingSubcategory) {

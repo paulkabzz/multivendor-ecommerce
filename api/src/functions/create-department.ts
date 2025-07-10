@@ -88,7 +88,7 @@ async function createDepartment(request: HttpRequest, context: InvocationContext
                 };
             };
 
-            await prisma.$transaction(async tx => {
+            await prisma.$transaction(async (tx:any) => {
                 const department = await tx.department.create({
                     data: { department_name }
                 })
