@@ -47,10 +47,10 @@ async function getDepartments(request: HttpRequest, context: InvocationContext):
                     department_id: department.department_id,
                     department_name: department.department_name,
                     department_cover: department.image_url,
-                    categories: department.departmentcategory.map(dc => ({
+                    categories: department.departmentcategory.map((dc:any) => ({
                         category_id: dc.category.category_id,
                         category_name: dc.category.category_name,
-                        subcategories: dc.category.categorysubcategory.map(cs => ({
+                        subcategories: dc.category.categorysubcategory.map((cs:any) => ({
                             subcategory_id: cs.subcategory.subcategory_id,
                             subcategory_name: cs.subcategory.subcategory_name
                         }))

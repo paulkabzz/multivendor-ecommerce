@@ -213,7 +213,7 @@ async function createProduct(request: HttpRequest, context: InvocationContext, d
             }
 
             // Execute transaction
-            const result = await prisma.$transaction(async (tx) => {
+            const result = await prisma.$transaction(async (tx:any) => {
                 // Create product data object dynamically
                 const productData: any = {
                     name: name.trim(),
