@@ -16,14 +16,18 @@ interface AuthContextType {
   login: (credentials: { email: string; password: string }) => Promise<any>;
   updateUser: (updateData: Partial<IUpdateUserRequest>) => Promise<any>;
   updateAvatar: (data: { userId: string; avatarFile: File }) => Promise<any>;
+  verifyOTP: (otp: string) => Promise<boolean>;
+  resendOTP: () => Promise<boolean>;
   logout: () => any | void;
   refetchUser: () => Promise<any>;
   isLoginLoading: boolean;
   isUpdateLoading: boolean;
   isAvatarLoading: boolean;
+  isOTPLoading: boolean;
   loginError: string | undefined;
   updateError: string | undefined;
   avatarError: string | undefined;
+  otpError: string | undefined;
   token: string | null;
 }
 
@@ -154,6 +158,55 @@ const updateUserAvatarAPI = async ({ userId, avatarFile, token }: { userId: stri
   return data;
 };
 
+const verifyOTPAPI = async (otp: string, token: string) => {
+  const response = await fetch(`${BASE_URL}/verify-otp`, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ otp }),
+  });
+
+  const data = await response.json();
+
+  if (!data.success) {
+    if (data.message && (data.message.includes('Invalid or expired token') || 
+                        data.message.includes('expired token') ||
+                        data.message.includes('invalid token'))) {
+      throw new Error('TOKEN_EXPIRED');
+    }
+    throw new Error(data.message);
+  }
+
+  return data;
+};
+
+const resendOTPAPI = async (token: string) => {
+  const response = await fetch(`${BASE_URL}/resend-otp`, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const data = await response.json();
+
+  if (!data.success) {
+    if (data.message && (data.message.includes('Invalid or expired token') || 
+                        data.message.includes('expired token') ||
+                        data.message.includes('invalid token'))) {
+      throw new Error('TOKEN_EXPIRED');
+    }
+    throw new Error(data.message);
+  }
+
+  return data;
+};
+
 interface AuthProviderProps {
   children: React.ReactNode;
 }
@@ -250,6 +303,32 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     },
   });
 
+  const verifyOTPMutation = useMutation({
+    mutationFn: (otp: string) => verifyOTPAPI(otp, token!),
+    onSuccess: (data) => {
+      queryClient.setQueryData(['user', token, forceUpdate], data);
+      queryClient.invalidateQueries({ queryKey: ['user'] });
+    },
+    onError: (error: any) => {
+      console.error('OTP verification failed:', error);
+
+      if (error?.message === 'TOKEN_EXPIRED' || isTokenExpiredError(error)) {
+        handleTokenExpiration();
+      }
+    },
+  });
+
+  const resendOTPMutation = useMutation({
+    mutationFn: () => resendOTPAPI(token!),
+    onError: (error: any) => {
+      console.error('Resend OTP failed:', error);
+
+      if (error?.message === 'TOKEN_EXPIRED' || isTokenExpiredError(error)) {
+        handleTokenExpiration();
+      }
+    },
+  });
+
   const logoutMutation = useMutation({
     mutationFn: async () => {
         const response = await fetch(`${BASE_URL}/logout`, {
@@ -262,7 +341,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         const data = await response.json();
 
         if (!data.success) {
-          throw new Error(data.message || "Falied to logout.")
+          throw new Error(data.message || "Failed to logout.")
         } else {
           return data;
         }
@@ -291,14 +370,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     login: loginMutation.mutateAsync,
     updateUser: updateUserMutation.mutateAsync,
     updateAvatar: updateAvatarMutation.mutateAsync,
+    verifyOTP: verifyOTPMutation.mutateAsync,
+    resendOTP: resendOTPMutation.mutateAsync,
     logout: logoutMutation.mutateAsync,
     refetchUser,
     isLoginLoading: loginMutation.isPending,
     isUpdateLoading: updateUserMutation.isPending,
     isAvatarLoading: updateAvatarMutation.isPending,
+    isOTPLoading: verifyOTPMutation.isPending,
     loginError: loginMutation.error?.message,
     updateError: updateUserMutation.error?.message,
     avatarError: updateAvatarMutation.error?.message,
+    otpError: verifyOTPMutation.error?.message,
     token
   };
 

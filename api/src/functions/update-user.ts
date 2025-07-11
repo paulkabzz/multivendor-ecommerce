@@ -3,9 +3,8 @@ import prisma from "../utils/database";
 import { IUpdateUserRequest } from "../utils/types";
 import { DecodedToken } from "../utils/authMiddleware";
 import { withAuth } from "../utils/middleware";
-import { generateVerificationToken } from "../utils/tokenUtils";
-import { sendVerificationEmail } from "../utils/gmailService";
-import { headers, isValidUCTEmail, parseJsonRequest, processImageFromMultipart } from "../utils/helpers";
+import { sendOTPEmail } from "../utils/gmailService";
+import { generateOTP, getOTPExpirationTime, headers, isValidUCTEmail, parseJsonRequest, processImageFromMultipart } from "../utils/helpers";
 import { Avatar } from "../utils/avatars";
 
 interface IUpdateUserWithAvatarRequest extends IUpdateUserRequest {
@@ -18,7 +17,7 @@ if (request.method === "PATCH") {
     try {
 
         context.warn(request)
-        let requestData: IUpdateUserWithAvatarRequest;
+        let requestData: Partial<IUpdateUserWithAvatarRequest>;
         let imageFile: { buffer: Buffer; filename: string; mimeType: string } | null = null;
 
         const contentType = request.headers.get("content-type") || "";
@@ -117,22 +116,28 @@ if (request.method === "PATCH") {
             };
         }
 
-        const url: URL = new URL(request.url);
-        const baseUrl: string = `${url.protocol}//localhost:5173`;
-
         // If user is not verified, resend verification email (skip for profile image updates)
         if (!existingUser?.is_verified && !imageFile) {
-            // Generate a new verification token
-            const verificationToken = generateVerificationToken(existingUser.email, existingUser.user_id);
+            
+            const otpCode = generateOTP();
+            const otpExpiresAt = getOTPExpirationTime();
             
             // Send verification email
-            const emailSent = await sendVerificationEmail({
+            const emailSent = await sendOTPEmail({
                 to: existingUser.email,
                 firstName: existingUser.first_name,
-                verificationToken,
-                baseUrl
+                otpCode,
+                // baseUrl
             });
-            
+
+            await prisma.users.update({
+                where: { user_id },
+                data: {
+                    otp_code: otpCode,
+                    otp_expires_at: otpExpiresAt
+                }
+            })
+
             return {
                 status: 403,
                 headers,
@@ -144,7 +149,7 @@ if (request.method === "PATCH") {
             };
         }
 
-        // Build update data object with only changed fields
+        // Build update data object with only changed fields (excluding email for now)
         const updateData: Partial<IUpdateUserWithAvatarRequest> = {};
         
         if (first_name && first_name !== existingUser.first_name) updateData.first_name = first_name;
@@ -186,9 +191,9 @@ if (request.method === "PATCH") {
             }
         }
         
-        // Check if email is being updated
-        let emailUpdated = false;
-        let verificationToken = null;
+        // Handle email update with verification - VALIDATE AND SEND EMAIL FIRST
+        let emailVerificationData = null;
+        let emailUpdateSuccess = false;
         
         if (email && email !== existingUser.email) {
             if (!isValidUCTEmail(email)) {
@@ -202,14 +207,62 @@ if (request.method === "PATCH") {
                 };
             }
 
-            updateData.email = email;
-            updateData.is_verified = false;
-            emailUpdated = true;
+            // Generate OTP for email verification
+            const otpCode = generateOTP();
+            const otpExpiresAt = getOTPExpirationTime();
             
-            // Generate a new verification token for the new email
-            verificationToken = generateVerificationToken(email, existingUser.user_id);
+            // Try to send verification email BEFORE updating anything
+            try {
+                const emailSent = await sendOTPEmail({
+                    to: email, // Send to the NEW email address
+                    firstName: first_name || existingUser.first_name,
+                    otpCode,
+                    // baseUrl
+                });
+
+                if (!emailSent) {
+                    // EMAIL FAILED - ABORT THE ENTIRE UPDATE
+                    return {
+                        status: 400,
+                        headers,
+                        body: JSON.stringify({
+                            success: false,
+                            message: "Failed to send verification email to the new email address. No changes were made."
+                        })
+                    };
+                }
+
+                // Email sent successfully, prepare verification data
+                emailVerificationData = {
+                    email: email,
+                    is_verified: false,
+                    otp_code: otpCode,
+                    otp_expires_at: otpExpiresAt
+                };
+
+                context.warn(emailVerificationData.otp_code);
+                emailUpdateSuccess = true;
+
+            } catch (error) {
+                context.error("Failed to send verification email:", error);
+                // EMAIL FAILED - ABORT THE ENTIRE UPDATE
+                return {
+                    status: 400,
+                    headers,
+                    body: JSON.stringify({
+                        success: false,
+                        message: "Failed to send verification email to the new email address. No changes were made."
+                    })
+                };
+            }
         }
 
+        // Add email verification data to update data ONLY if email verification was successful
+        if (emailVerificationData && emailUpdateSuccess) {
+            Object.assign(updateData, emailVerificationData);
+        }
+
+        // Check if there are any changes to make
         if (Object.keys(updateData).length === 0) {
             return {
                 status: 200,
@@ -221,6 +274,8 @@ if (request.method === "PATCH") {
                 })
             };
         }
+
+        // Update user with new data (only if email verification succeeded or no email change)
 
         await prisma.users.update({
             where: {
@@ -244,31 +299,21 @@ if (request.method === "PATCH") {
             }
         });
 
-        if (!updateData) {
+        if (!updatedUser) {
             return {
                 status: 404,
                 headers,
                 body: JSON.stringify({
                     success: false,
-                    message: "User not found"
+                    message: "User not found after update"
                 })
             }
         }
         
-        // If email was updated, send verification email to the new email address
-        let emailSent = false;
-
-        if (emailUpdated && verificationToken && updatedUser) {
-            emailSent = await sendVerificationEmail({
-                to: email!,
-                firstName: updatedUser.first_name,
-                verificationToken,
-                baseUrl
-            });
-        }
-
         // Prepare response message based on what was updated
         let message = "User updated successfully";
+        const emailUpdated = emailUpdateSuccess;
+        
         if (emailUpdated) {
             message = "User updated successfully. A verification email has been sent to your new email address. Please verify your email to complete the update.";
         } else if (imageFile) {
@@ -276,13 +321,14 @@ if (request.method === "PATCH") {
         }
         
         return {
-            status: 201,
+            status: 200,
             headers: headers,
             body: JSON.stringify({
                 success: true,
                 message: message,
                 user: updatedUser,
-                emailSent: emailUpdated ? emailSent : undefined,
+                emailSent: emailUpdated,
+                requiresVerification: emailUpdated,
                 imageUpload: imageUploadResult ? {
                     success: imageUploadResult.success,
                     fileId: imageUploadResult.fileId,

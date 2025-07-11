@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { BASE_URL } from "@/src/utils/url";
-import type { IUser, UserState, IUpdateUserRequest } from "@/src/utils/types";
+import type { IUser, IUpdateUserRequest } from "@/src/utils/types";
 
 // Initialise state from localStorage if available
 const getUserFromStorage = () => {
@@ -27,7 +27,16 @@ const getUserFromStorage = () => {
   };
 };
 
-const initialState: UserState = getUserFromStorage();
+interface UserState {
+  user: IUser | null;
+  loading: boolean;
+  error: string | null;
+  isAuthenticated: boolean;
+  signupSuccess: boolean;
+  token: string | null;
+}
+
+const initialState: Partial<UserState> = getUserFromStorage();
 
 // Async thunk for login
 export const loginUser = createAsyncThunk(
@@ -64,32 +73,82 @@ export const loginUser = createAsyncThunk(
   },
 );
 
-// Async thunk for signup
+// Async thunk for user signup
 export const signupUser = createAsyncThunk(
-  "user/signup",
-  async (userData: IUser, { rejectWithValue }) => {
+  'user/signup',
+  async (userData: Omit<IUser, 'user_id'>, { rejectWithValue }) => {
     try {
       const response = await fetch(`${BASE_URL}/sign-up`, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(userData),
       });
 
       const data = await response.json();
 
-      if (!data.success) {
-        return rejectWithValue(data.message);
+      if (!response.ok) {
+        return rejectWithValue(data.message || 'Signup failed');
       }
 
       return data;
     } catch (error) {
-      console.error("Error signing up: " + error);
-      return rejectWithValue("Failed to sign up. Please try again.");
+      return rejectWithValue('Network error. Please try again.');
     }
-  },
+  }
+);
+
+// Async thunk for OTP verification
+export const verifyOTP = createAsyncThunk(
+  'user/verifyOTP',
+  async ({ email, otpCode }: { email: string; otpCode: string }, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`${BASE_URL}/verify-otp`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, otpCode }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        return rejectWithValue(data.message || 'OTP verification failed');
+      }
+
+      return data;
+    } catch (error) {
+      return rejectWithValue('Network error. Please try again.');
+    }
+  }
+);
+
+// Async thunk for resending OTP
+export const resendOTP = createAsyncThunk(
+  'user/resendOTP',
+  async ({ email }: { email: string }, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`${BASE_URL}/resend-otp`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        return rejectWithValue(data.message || 'Failed to resend OTP');
+      }
+
+      return data;
+    } catch (error) {
+      return rejectWithValue('Network error. Please try again.');
+    }
+  }
 );
 
 // Async thunk for updating user
@@ -134,7 +193,7 @@ export const updateUser = createAsyncThunk(
   },
 );
 
-// Async thunk for updating usr avatar
+// Async thunk for updating user avatar
 export const updateUserAvatar = createAsyncThunk(
   "user/updateAvatar",
   async (
@@ -185,10 +244,8 @@ export const logoutUser = createAsyncThunk(
       const token = getUserFromStorage().token;
 
       if (!token) {
-        {
         return rejectWithValue("No authentication token found");
       }
-      };
 
       const response = await fetch(`${BASE_URL}/logout`, {
         method: "POST",
@@ -200,15 +257,12 @@ export const logoutUser = createAsyncThunk(
 
       const data = await response.json();
 
-          if (data.success)
-         { localStorage.removeItem("token");
-          localStorage.removeItem("user");
-          } 
-          else
-          {  
-            throw new Error(data.message || "Failed to logout. Please try again.");
-          }
-
+      if (data.success) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+      } else {
+        throw new Error(data.message || "Failed to logout. Please try again.");
+      }
     } catch (error) {
       console.error("Error logging out: ", error);
       return rejectWithValue("Failed to log out.");
@@ -216,23 +270,11 @@ export const logoutUser = createAsyncThunk(
   }
 );
 
-
 // Create the user slice
 const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    // logout: (state) => {
-    //   // Clear localStorage
-    //   localStorage.removeItem("token");
-    //   localStorage.removeItem("user");
-
-    //   // Reset state
-    //   state.user = null;
-    //   state.token = null;
-    //   state.isAuthenticated = false;
-    //   state.error = null;
-    // },
     clearError: (state) => {
       state.error = null;
     },
@@ -241,6 +283,9 @@ const userSlice = createSlice({
         state.user = { ...state.user, ...action.payload };
         localStorage.setItem("user", JSON.stringify(state.user));
       }
+    },
+    clearSignupSuccess: (state) => {
+      state.signupSuccess = false;
     },
   },
   extraReducers: (builder) => {
@@ -260,6 +305,51 @@ const userSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
+      // Signup cases
+      .addCase(signupUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.signupSuccess = false;
+      })
+      .addCase(signupUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = null;
+        state.signupSuccess = true;
+        // Don't set user as authenticated yet - wait for OTP verification
+      })
+      .addCase(signupUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+        state.signupSuccess = false;
+      })
+      // OTP verification cases
+      .addCase(verifyOTP.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(verifyOTP.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = null;
+        state.isAuthenticated = true;
+        state.signupSuccess = false;
+        // You might want to redirect to login page instead of auto-login
+        // depending on your UX requirements
+      })
+      .addCase(verifyOTP.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      // Resend OTP cases
+      .addCase(resendOTP.pending, (state) => {
+        state.error = null;
+      })
+      .addCase(resendOTP.fulfilled, (state) => {
+        state.error = null;
+      })
+      .addCase(resendOTP.rejected, (state, action) => {
+        state.error = action.payload as string;
+      })
+      // Logout cases
       .addCase(logoutUser.fulfilled, (state) => {
         state.user = null;
         state.token = null;
@@ -267,18 +357,6 @@ const userSlice = createSlice({
         state.error = null;
       })
       .addCase(logoutUser.rejected, (state, action) => {
-      state.error = action.payload as string;
-      })
-      // Signup cases
-      .addCase(signupUser.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(signupUser.fulfilled, (state) => {
-        state.loading = false;
-      })
-      .addCase(signupUser.rejected, (state, action) => {
-        state.loading = false;
         state.error = action.payload as string;
       })
       // Update user cases
@@ -310,5 +388,5 @@ const userSlice = createSlice({
   },
 });
 
-export const { clearError, updateUserLocal } = userSlice.actions;
+export const { clearError, updateUserLocal, clearSignupSuccess } = userSlice.actions;
 export default userSlice.reducer;

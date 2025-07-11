@@ -59,6 +59,8 @@ export interface IUpdateUserRequest {
   email?: string;
   phone?: string;
   is_verified?: boolean;
+  otp_code: string;
+  otp_expires_at: Date;
 }
 
 // Admin interfaces

@@ -5,8 +5,9 @@ import defaultProfilePic from "@assets/ui/default.png";
 import { ProfileSideBar } from "./profile-sidebar";
 import { Camera, CreditCard, MapPin, ShoppingBag, X, Upload, Loader2 } from "lucide-react";
 import FileUploader from "../common/file-uploader/file-uploader";
-import { useAuth } from "@/src/context/auth-context"; // Updated import path
+import { useAuth } from "@/src/context/auth-context";
 import Loader from "../common/loader/loader";
+import OTPModal from "../modals/opt-modal"; // Import the OTP modal
 
 const ProfileContent: React.FC = () => {
   const {
@@ -16,11 +17,16 @@ const ProfileContent: React.FC = () => {
     error,
     updateUser,
     updateAvatar,
+    verifyOTP,
+    resendOTP,
     logout,
     isUpdateLoading,
     isAvatarLoading,
+    isOTPLoading,
     updateError,
     avatarError,
+    otpError,
+    refetchUser,
   } = useAuth();
 
   const [activeTab, setActiveTab] = useState(1);
@@ -36,6 +42,11 @@ const ProfileContent: React.FC = () => {
   const [showUploader, setShowUploader] = useState(false);
   const [profileImage, setProfileImage] = useState<File[]>([]);
   const [isClosing, setIsClosing] = useState(false);
+  
+  // OTP Modal state
+  const [showOTPModal, setShowOTPModal] = useState(false);
+  const [pendingEmailUpdate, setPendingEmailUpdate] = useState<string | null>(null);
+  const [updateResponse, setUpdateResponse] = useState<any>(null);
 
   // Memoize the original data to prevent unnecessary re-calculations
   const originalData = useMemo(() => {
@@ -111,20 +122,89 @@ const ProfileContent: React.FC = () => {
       const changedFields = getChangedFields();
       console.log("Sending only changed fields:", changedFields);
 
-      await updateUser(changedFields);
+      const response = await updateUser(changedFields);
       
-      // Success feedback
-      setSaveSuccess(true);
-      setHasChanges(false);
-
-      setTimeout(() => {
+      // Check if email verification is required
+      if (response.requiresVerification && response.emailSent) {
+        // Email change requires verification
+        setPendingEmailUpdate(changedFields.email);
+        setUpdateResponse(response);
+        setShowOTPModal(true);
+        
+        // Show info message about email verification
         setSaveSuccess(false);
-      }, 3000);
-    } catch (error) {
+        // Don't mark as success yet since email isn't verified
+      } else {
+        // Regular update without email change or email verification not required
+        setSaveSuccess(true);
+        setHasChanges(false);
+        
+        setTimeout(() => {
+          setSaveSuccess(false);
+        }, 3000);
+      }
+    } catch (error: any) {
       console.error("Error updating user:", error);
-      // Error is already handled by the mutation
+      // Reset form to original values if update failed
+      if (originalData) {
+        setFormData(originalData);
+      }
     }
-  }, [hasChanges, user, getChangedFields, updateUser]);
+  }, [hasChanges, user, getChangedFields, updateUser, originalData]);
+
+  const handleOTPVerify = useCallback(async (otp: string): Promise<boolean> => {
+    try {
+      const response = await verifyOTP(otp);
+
+      
+      if (response) {
+        // OTP verified successfully
+        setShowOTPModal(false);
+        setPendingEmailUpdate(null);
+        setUpdateResponse(null);
+        
+        // Refresh user data to get the updated email
+        await refetchUser();
+        
+        // Show success message
+        setSaveSuccess(true);
+        setHasChanges(false);
+        
+        setTimeout(() => {
+          setSaveSuccess(false);
+        }, 3000);
+        
+        return true;
+      }
+      
+      return false;
+    } catch (error: any) {
+      console.error("OTP verification failed:", error);
+      return false;
+    }
+  }, [verifyOTP, refetchUser]);
+
+  const handleOTPResend = useCallback(async (): Promise<boolean> => {
+    try {
+      const response = await resendOTP();
+      return response;
+    } catch (error: any) {
+      console.error("Failed to resend OTP:", error);
+      return false;
+    }
+  }, [resendOTP]);
+
+  const handleOTPModalClose = useCallback(() => {
+    setShowOTPModal(false);
+    setPendingEmailUpdate(null);
+    setUpdateResponse(null);
+    
+    // Reset form to original values since email verification was cancelled
+    if (originalData) {
+      setFormData(originalData);
+      setHasChanges(false);
+    }
+  }, [originalData]);
 
   const handleCloseModal = useCallback(() => {
     setIsClosing(true);
@@ -260,6 +340,15 @@ const ProfileContent: React.FC = () => {
         </div>
       )}
 
+      {/* Email Verification Pending Display */}
+      {pendingEmailUpdate && showOTPModal && (
+        <div className="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+          <p className="text-yellow-600 text-sm">
+            Please verify your new email address ({pendingEmailUpdate}) to complete the update.
+          </p>
+        </div>
+      )}
+
       {/* Profile Picture Section */}
       <div className="flex flex-col items-center mb-8">
         <div className="relative group">
@@ -289,6 +378,11 @@ const ProfileContent: React.FC = () => {
             {user.first_name} {user.last_name}
           </h3>
           <p className="text-gray-500 text-sm">{user.email}</p>
+          {!user.is_verified && (
+            <p className="text-orange-600 text-xs mt-1">
+              Email not verified
+            </p>
+          )}
         </div>
       </div>
 
@@ -335,6 +429,11 @@ const ProfileContent: React.FC = () => {
             className="w-full"
             disabled={isUpdateLoading}
           />
+          {formData.email !== originalData?.email && (
+            <p className="text-sm text-blue-600 mt-1">
+              Changing your email will require verification
+            </p>
+          )}
         </div>
         <div>
           <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -490,6 +589,19 @@ const ProfileContent: React.FC = () => {
             </div>
           </div>
         </div>
+      )}
+
+      {/* OTP Modal */}
+      {showOTPModal && pendingEmailUpdate && (
+        <OTPModal
+          isOpen={showOTPModal}
+          onClose={handleOTPModalClose}
+          onVerify={handleOTPVerify}
+          onResendOTP={handleOTPResend}
+          email={pendingEmailUpdate}
+          isLoading={isOTPLoading}
+          error={otpError}
+        />
       )}
     </div>
   );

@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import prisma from '../utils/database';
 import { scryptSync, timingSafeEqual } from "crypto";
 import { generateVerificationToken } from "../utils/tokenUtils";
-import { sendVerificationEmail } from "../utils/gmailService";
+import { sendOTPEmail } from "../utils/gmailService";
 import { headers } from "../utils/helpers";
 
 async function login(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
@@ -57,23 +57,23 @@ async function login(request: HttpRequest, context: InvocationContext): Promise<
 
                 const verificationToken = generateVerificationToken(user.email, user.user_id);
                 
-                const emailSent = await sendVerificationEmail({
-                    to: user.email, 
-                    firstName: user.first_name, 
-                    verificationToken,
-                    baseUrl
-                });
+                // const emailSent = await sendOTPEmail({
+                //     to: user.email, 
+                //     firstName: user.first_name, 
+                //     verificationToken,
+                //     baseUrl
+                // });
                 
-                const response: ILoginResponse = {
-                    success: false,
-                    message: "Please verify your account before logging in",
-                    emailSent
-                };
-                return {
-                    status: 401,
-                    headers,
-                    body: JSON.stringify(response)
-                };
+                // const response: ILoginResponse = {
+                //     success: false,
+                //     message: "Please verify your account before logging in",
+                //     emailSent
+                // // };
+                // return {
+                //     status: 401,
+                //     headers,
+                //     body: JSON.stringify(response)
+                // };
             }
 
             const [salt, key] = user.password.split(":");

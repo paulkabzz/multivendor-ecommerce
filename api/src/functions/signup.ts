@@ -1,11 +1,10 @@
-
 import { app, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/functions";
 import { IUser } from "../utils/types";
 import { scryptSync, randomBytes } from "crypto";
 
 import prisma from '../utils/database';
-import { sendVerificationEmail } from '../utils/gmailService';
-import { generateVerificationToken } from '../utils/tokenUtils';
+import { sendOTPEmail } from '../utils/gmailService';
+import { generateOTP, getOTPExpirationTime } from '../utils/helpers' ;
 import { headers, isStrongPassword, isValidUCTEmail } from "../utils/helpers";
 
 async function signup(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
@@ -65,8 +64,11 @@ async function signup(request: HttpRequest, context: InvocationContext): Promise
             }
 
             const salt = randomBytes(16).toString('hex');
-
             const hashedPassword = scryptSync(password, salt, 64).toString('hex');
+            
+            // Generate OTP
+            const otpCode = generateOTP();
+            const otpExpiresAt = getOTPExpirationTime();
 
             const newUser = await prisma.users.create({
                 data: {
@@ -76,27 +78,31 @@ async function signup(request: HttpRequest, context: InvocationContext): Promise
                     password: `${salt}:${hashedPassword}`,
                     phone: phone || null,
                     role: role || 'CUSTOMER',
-                    is_verified: false
+                    is_verified: false,
+                    otp_code: otpCode,
+                    otp_expires_at: otpExpiresAt
                 }
             });
 
-            const verificationToken = generateVerificationToken(newUser.email, newUser.user_id);
-            
-            const url: URL = new URL(request.url);
-            const baseUrl: string = `${url.protocol}//localhost:5173`;
-
-            const emailSent = await sendVerificationEmail({
+            const emailSent = await sendOTPEmail({
                 to: newUser.email,
                 firstName: newUser.first_name,
-                verificationToken,
-                baseUrl
+                otpCode: otpCode
             });
 
             if (!emailSent) {
-                context.error('Failed to send verification email');
+                context.error('Failed to send OTP email');
                 await prisma.users.delete({
-                    where: { email: newUser.email}
+                    where: { email: newUser.email }
                 });
+                return {
+                    status: 500,
+                    headers,
+                    body: JSON.stringify({
+                        success: false,
+                        message: "Failed to send verification email. Please try again."
+                    })
+                };
             }
 
             return {
@@ -104,7 +110,7 @@ async function signup(request: HttpRequest, context: InvocationContext): Promise
                 headers,
                 body: JSON.stringify({
                     success: true,
-                    message: "User created successfully. Please check your email to verify your account.",
+                    message: "User created successfully. Please check your email for the verification code.",
                     user: {
                         user_id: newUser.user_id,
                         first_name: newUser.first_name,

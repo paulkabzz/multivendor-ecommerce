@@ -1,0 +1,1 @@
+url = "jdbc:postgresql://ep-green-truth-a9eg02kh-pooler.gwc.azure.neon.tech/uct_market_place?user=uct_market_place_owner&password=npg_KRAmQpqj3y2V&sslmode=require&channelBinding=require"

@@ -372,3 +372,21 @@ export async function processImagesFromMultipart(
         };
     }
 }
+
+
+export function generateOTP(): string {
+    // Generate a random 6-digit number
+    const otp = Math.floor(100000 + Math.random() * 900000);
+    return otp.toString();
+}
+
+export function isOTPExpired(expiresAt: Date): boolean {
+    return new Date() > expiresAt;
+}
+
+export function getOTPExpirationTime(): Date {
+    // OTP expires in 15 minutes
+    const expirationTime = new Date();
+    expirationTime.setMinutes(expirationTime.getMinutes() + 15);
+    return expirationTime;
+}

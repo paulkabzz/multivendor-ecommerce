@@ -20,7 +20,7 @@ import './functions/create-product';
 import './functions/get-products';
 import './functions/get-product';
 import './functions/get-store';
-
+import './functions/verify-opt';
 app.setup({
     enableHttpStream: true,
 });
