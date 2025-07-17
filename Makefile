@@ -19,9 +19,9 @@ prisma:
 	npx prisma generate
 
 psql:
-	cd docker && docker-compose up -d
+	cd docker && docker compose up -d
 
 psql-stop:
-	cd docker && docker-compose down
+	cd docker && docker compose down
 
 .PHONY: psql-stop commit migrate prisma psql
