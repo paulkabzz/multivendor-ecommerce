@@ -96,7 +96,7 @@ async function createCategory(request: HttpRequest, context: InvocationContext):
 
             // If duplicates found, tell the user which ones already exist
             if (existingCategoriesInDepartment.length > 0) {
-                const duplicateNames = existingCategoriesInDepartment.map(dc => dc.category.category_name);
+                const duplicateNames = existingCategoriesInDepartment.map((dc:any) => dc.category.category_name);
                 return {
                     status: 409,
                     headers,
@@ -122,7 +122,7 @@ async function createCategory(request: HttpRequest, context: InvocationContext):
             });
 
             // Use a database transaction to ensure all operations succeed or fail together
-            const result = await prisma.$transaction(async (tx) => {
+            const result = await prisma.$transaction(async (tx: any) => {
                 const createdCategories = [];
                 const departmentCategoryLinks = [];
 
@@ -132,7 +132,7 @@ async function createCategory(request: HttpRequest, context: InvocationContext):
                     
                     // Check if this category already exists globally
                     let existingCategory = existingGlobalCategories.find(
-                        cat => cat.category_name === trimmedName
+                        (cat:any) => cat.category_name === trimmedName
                     );
 
                     let categoryId: string;
@@ -167,9 +167,9 @@ async function createCategory(request: HttpRequest, context: InvocationContext):
                         department_id,
                         category_id: {
                             in: [...createdCategories.map(c => c.category_id), 
-                                ...existingGlobalCategories.filter(c => 
+                                ...existingGlobalCategories.filter((c:any) => 
                                     category_name.map(n => n.trim()).includes(c.category_name)
-                                ).map(c => c.category_id)]
+                                ).map((c:any) => c.category_id)]
                         }
                     },
                     include: {
@@ -195,10 +195,10 @@ async function createCategory(request: HttpRequest, context: InvocationContext):
                     data: {
                         department_id,
                         department_name: department.department_name,
-                        categories_processed: result.categories.map(dc => ({
+                        categories_processed: result.categories.map((dc:any) => ({
                             category_id: dc.category.category_id,
                             category_name: dc.category.category_name,
-                            was_new_category: result.categories.some(cat => 
+                            was_new_category: result.categories.some((cat:any) => 
                                 cat.category.category_id === dc.category.category_id
                             )
                         })),

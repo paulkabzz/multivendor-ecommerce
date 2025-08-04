@@ -242,7 +242,7 @@ async function createProduct(request: HttpRequest, context: InvocationContext, d
 
             // DATABASE TRANSACTION - Create product and handle images
             // Use transaction so everything succeeds or fails together
-            const result = await prisma.$transaction(async (tx) => {
+            const result = await prisma.$transaction(async (tx: any) => {
                 // Build product data object dynamically (only include fields that have values)
                 const productData: any = {
                     name: name.trim(),

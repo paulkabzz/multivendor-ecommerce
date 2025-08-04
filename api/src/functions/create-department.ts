@@ -98,7 +98,7 @@ async function createDepartment(request: HttpRequest, context: InvocationContext
             };
 
             // Use database transaction to ensure all operations succeed or fail together
-            await prisma.$transaction(async tx => {
+            await prisma.$transaction(async (tx: any) => {
                 // First, create the department in the database
                 const department = await tx.department.create({
                     data: { department_name }

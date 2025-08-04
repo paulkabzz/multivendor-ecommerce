@@ -47,7 +47,7 @@ async function deleteStore(request: HttpRequest, context: InvocationContext, dec
                 };
             };
 
-            await prisma.$transaction(async tx => {
+            await prisma.$transaction(async (tx:any) => {
 
                 if (decodedToken?.role === "VENDOR") {
                     await tx.users.update({

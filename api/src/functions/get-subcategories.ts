@@ -66,7 +66,7 @@ async function getSubcategories(request: HttpRequest, context: InvocationContext
             }
 
             // Transform the data to return clean subcategory objects
-            const formattedSubcategories = subcategories.map(item => item.subcategory);
+            const formattedSubcategories = subcategories.map((item:any) => item.subcategory);
 
             return {
                 status: 200,
