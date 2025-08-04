@@ -6,40 +6,47 @@ import prisma from "../utils/database";
 import { headers, parseJsonRequest, processImageFromMultipart } from "../utils/helpers";
 import { Avatar } from "../utils/avatars";
 
+/**
+ * Creates a new department in the system
+ * 
+ * HIERARCHY EXPLANATION:
+ * Department -> Categories -> Subcategories
+ * Example: "Male" department -> "Clothes" category -> "Hoodies" subcategory
+ * 
+ * This function handles both:
+ * 1. Text-only requests (JSON)
+ * 2. Requests with image uploads (multipart/form-data)
+ * 
+ * Expects: { department_name: string } + optional cover image
+ * Returns: Success message or error
+ */
 async function createDepartment(request: HttpRequest, context: InvocationContext, decodedToken?: DecodedToken): Promise<HttpResponseInit> {
-    // Department -> Male, female, kids, sports
-    // Categories -> Clothes, Shoes, Accessories, etc
-    // Subcategories -> Sneakers, flipflops, dresses, hoodies
 
-    /**
-     * A category belongs to a department, example - clothes, belong to the male, female, kids, etc departments
-     * A category has subcategories, examples - a subcategory dress belongs to the clothes categories
-     * 
-     * SO the department comes first, then the category, then the subcat
-     */
 
     if (request.method === 'POST') {
         try {
             let requestData: Partial<ICreateDepartment>;
-
             let imageFile: { buffer: Buffer; filename: string; mimeType: string } | null = null;
 
+            // Check what type of request this is - JSON or file upload
             const contentType = request.headers.get("content-type") || "";
             
             if (contentType.includes("multipart/form-data")) {
+                // Handle file upload request (form data with image)
                 const processingResult = await processImageFromMultipart(
                     request,
-                    'cover',
+                    'cover', // name of the file field
                     {
-                        maxSizeBytes: 20 * 1024 * 1024, // 20MB
-                        outputQuality: 85,
-                        maxWidth: 1024,
+                        maxSizeBytes: 20 * 1024 * 1024, // 20MB max file size
+                        outputQuality: 85, // compress to 85% quality
+                        maxWidth: 1024,    // resize if larger than 1024px
                         maxHeight: 1024,
-                        convertToJpeg: true
+                        convertToJpeg: true // convert all images to JPEG format
                     },
                     context
                 );
 
+                // If image processing failed, return error
                 if (!processingResult.success) {
                     return {
                         status: 400,
@@ -57,6 +64,7 @@ async function createDepartment(request: HttpRequest, context: InvocationContext
                     department_name: processingResult.formData?.department_name || "",
                 };
             } else {
+                // Handle regular JSON request (no image)
                 requestData = await parseJsonRequest(request) as Partial<ICreateDepartment>;
             }            
 
@@ -73,6 +81,7 @@ async function createDepartment(request: HttpRequest, context: InvocationContext
                 }
             };
 
+            // Check if a department with this name already exists
             const existingDepartment = await prisma.department.findUnique({
                 where: {department_name}
             });
@@ -88,15 +97,19 @@ async function createDepartment(request: HttpRequest, context: InvocationContext
                 };
             };
 
+            // Use database transaction to ensure all operations succeed or fail together
             await prisma.$transaction(async tx => {
+                // First, create the department in the database
                 const department = await tx.department.create({
                     data: { department_name }
                 })
 
                 let coverUrl: string | null = null;
                 
+                // If user uploaded an image, process and upload it
                 if (imageFile) {
                     try {
+                        // Upload the processed image to cloud storage
                         const imageUploadResult = await Avatar.uploadDepartmentCover(
                             imageFile.buffer,
                             imageFile.filename,
@@ -116,6 +129,7 @@ async function createDepartment(request: HttpRequest, context: InvocationContext
                     }
                 }
 
+                // If we successfully uploaded an image, update the department record with the image URL
                 if (coverUrl) {
                     await tx.department.update({
                         where: {
@@ -159,6 +173,7 @@ async function createDepartment(request: HttpRequest, context: InvocationContext
     }
 }
 
+// Wrap function with authentication - only ADMINs can create departments
 const CREATE_DEPARTMENT = withAuth(createDepartment, ['ADMIN']);
 
 app.http('create-department', {

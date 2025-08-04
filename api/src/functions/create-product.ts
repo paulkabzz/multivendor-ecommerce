@@ -10,7 +10,19 @@ interface CreateProductRequest extends ICreateProduct {
     images?: string[];
 }
 
-// TODO: FIx product creation logic
+/**
+ * Creates a new product in the system
+ * 
+ * This is the most complex function - it handles:
+ * 1. Product data validation (name, price, vendor, etc.)
+ * 2. Multiple image uploads (up to 6 images per product - min 1)
+ * 3. Linking to various optional data (size, brand, department, subcategory)
+ * 4. Vendor permission checking (vendors can only create products for their own store)
+ * 
+ * Expects: Product data + 1 image + 5 optional images
+ * Returns: Created product details with uploaded image URLs
+ */
+// TODO: Fix product creation logic
 /// make some fields optional
 async function createProduct(request: HttpRequest, context: InvocationContext, decodedToken?: DecodedToken): Promise<HttpResponseInit> {
     if (request.method === "POST") {
@@ -18,23 +30,26 @@ async function createProduct(request: HttpRequest, context: InvocationContext, d
             let requestData: Partial<CreateProductRequest>;
             let imageFiles: { buffer: Buffer; filename: string; mimeType: string }[] = [];
 
+            // Check what type of request this is - JSON or file upload
             const contentType = request.headers.get("content-type") || "";
             
             if (contentType.includes("multipart/form-data")) {
+                // Handle file upload request (form data with multiple images)
                 const processingResult = await processImagesFromMultipart(
                     request,
-                    'images', // Field name for images
+                    'images', // Field name for images (can upload multiple)
                     {
                         maxSizeBytes: 20 * 1024 * 1024, // 20MB per image
-                        outputQuality: 85,
-                        maxWidth: 1920,
+                        outputQuality: 85, // compress to 85% quality
+                        maxWidth: 1920,    // resize if larger than 1920px
                         maxHeight: 1920,
-                        convertToJpeg: true,
-                        maxImages: 6
+                        convertToJpeg: true, // convert all images to JPEG
+                        maxImages: 6       // allow up to 6 images per product
                     },
                     context
                 );
 
+                // If image processing failed, return error
                 if (!processingResult.success) {
                     return {
                         status: 400,
@@ -46,6 +61,7 @@ async function createProduct(request: HttpRequest, context: InvocationContext, d
                     };
                 }
 
+                // Extract processed images and form data
                 imageFiles = processingResult.imageFiles || [];
                 requestData = {
                     name: processingResult.formData?.name || "",
@@ -60,22 +76,27 @@ async function createProduct(request: HttpRequest, context: InvocationContext, d
                     department_id: processingResult.formData?.department_id || null
                 };
             } else {
+                // Handle regular JSON request (no images)
                 requestData = await parseJsonRequest(request) as CreateProductRequest;
             }
 
+            // Extract all the product data from the request
             const { 
                 name, 
                 vendor_id, 
                 price, 
                 description, 
                 condition, 
-                is_available = true,
+                is_available = true, // default to available if not specified
                 subcategory_id,
                 size_id,
                 brand_id,
                 department_id
             } = requestData;
 
+            // VALIDATION SECTION - Check all required fields and formats
+
+            // Product name must be at least 2 characters
             if (!name || name.trim().length < 2) {
                 return {
                     status: 400,
@@ -87,6 +108,7 @@ async function createProduct(request: HttpRequest, context: InvocationContext, d
                 };
             }
 
+            // Must specify which vendor/store this product belongs to
             if (!vendor_id) {
                 return {
                     status: 400,
@@ -98,6 +120,7 @@ async function createProduct(request: HttpRequest, context: InvocationContext, d
                 };
             }
 
+            // Price must be a positive number
             if (!price || price <= 0) {
                 return {
                     status: 400,
@@ -109,15 +132,16 @@ async function createProduct(request: HttpRequest, context: InvocationContext, d
                 };
             }
 
-            // Verify vendor ownership (vendors can only create products for their own store)
+            // PERMISSION CHECK - Vendors can only create products for their own store
             if (decodedToken?.role === "VENDOR") {
                 const vendor = await prisma.vendor.findFirst({
                     where: { 
-                        user_id: decodedToken.user_id,
-                        vendor_id: vendor_id 
+                        user_id: decodedToken.user_id, // user's ID from login token
+                        vendor_id: vendor_id           // the store they're trying to add to
                     }
                 });
 
+                // If no matching vendor found, they're trying to add to someone else's store
                 if (!vendor) {
                     return {
                         status: 403,
@@ -130,7 +154,9 @@ async function createProduct(request: HttpRequest, context: InvocationContext, d
                 }
             }
 
-            // Verify vendor exists
+            // EXISTENCE CHECKS - Make sure all referenced items actually exist in database
+
+            // Check that the vendor/store exists
             const vendorExists = await prisma.vendor.findUnique({
                 where: { vendor_id }
             });
@@ -146,6 +172,7 @@ async function createProduct(request: HttpRequest, context: InvocationContext, d
                 };
             }
 
+            // Check subcategory exists (if provided)
             if (subcategory_id) {
                 const subcategoryExists = await prisma.subcategory.findUnique({
                     where: { subcategory_id }
@@ -162,7 +189,7 @@ async function createProduct(request: HttpRequest, context: InvocationContext, d
                 }
             }
 
-            // Only validate size if it's provided and not empty
+            // Check size exists (if provided and not empty)
             if (size_id && size_id.trim() !== "") {
                 const sizeExists = await prisma.sizes.findUnique({
                     where: { size_id }
@@ -179,7 +206,7 @@ async function createProduct(request: HttpRequest, context: InvocationContext, d
                 }
             }
 
-            // Only validate brand if it's provided and not empty
+            // Check brand exists (if provided and not empty)
             if (brand_id && brand_id.trim() !== "") {
                 const brandExists = await prisma.brands.findUnique({
                     where: { brand_id }
@@ -196,6 +223,7 @@ async function createProduct(request: HttpRequest, context: InvocationContext, d
                 }
             }
 
+            // Check department exists (if provided)
             if (department_id) {
                 const departmentExists = await prisma.department.findUnique({
                     where: { department_id }
@@ -212,9 +240,10 @@ async function createProduct(request: HttpRequest, context: InvocationContext, d
                 }
             }
 
-            // Execute transaction
+            // DATABASE TRANSACTION - Create product and handle images
+            // Use transaction so everything succeeds or fails together
             const result = await prisma.$transaction(async (tx) => {
-                // Create product data object dynamically
+                // Build product data object dynamically (only include fields that have values)
                 const productData: any = {
                     name: name.trim(),
                     vendor_id,
@@ -226,17 +255,16 @@ async function createProduct(request: HttpRequest, context: InvocationContext, d
                     department_id
                 };
 
-                // Only add size_id if it's provided and not empty
+                // Only add optional fields if they have actual values
                 if (size_id && size_id.trim() !== "") {
                     productData.size_id = size_id;
                 }
 
-                // Only add brand_id if it's provided and not empty
                 if (brand_id && brand_id.trim() !== "") {
                     productData.brand_id = brand_id;
                 }
 
-                // Create product
+                // Create the product in the database and get related info back
                 const product = await tx.product.create({
                     data: productData,
                     include: {
@@ -270,26 +298,28 @@ async function createProduct(request: HttpRequest, context: InvocationContext, d
                     }
                 });
 
-                // Handle image uploads]
+                // HANDLE IMAGE UPLOADS (if any images were provided)
                 let uploadedImages: string[] = [];
                 if (imageFiles.length > 0) {
                     try {
+                        // Prepare image data for upload service
                         const imageUploadFiles = imageFiles.map(file => ({
                             fileBuffer: file.buffer,
                             fileName: file.filename,
                             mimeType: file.mimeType
                         }));
 
+                        // Upload images to cloud storage
                         const imageUploadResult = await ProductImages.uploadProductImages(
                             imageUploadFiles,
                             product.product_id,
                             process.env.APPWRITE_PRODUCT_IMAGES_BUCKET_ID,
-                            6,
-                            false // don't replace existing (since this is a new product)
+                            6,     // max 6 images
+                            false  // don't replace existing (since this is a new product)
                         );
 
                         if (imageUploadResult.success && imageUploadResult.uploadedImages.length > 0) {
-                            // Store image URLs in database
+                            // Save image URLs to database
                             const imageRecords = imageUploadResult.uploadedImages.map(img => ({
                                 image_url: img.imageUrl!,
                                 product_id: product.product_id
@@ -307,12 +337,13 @@ async function createProduct(request: HttpRequest, context: InvocationContext, d
                     } catch (error: unknown) {
                         context.error("Error uploading product images:", error);
                         // Continue without failing the product creation
+                        // Product will be created but without images
                     }
                 }
 
                 return { product, uploadedImages };
             }, {
-                timeout: 30000
+                timeout: 30000 // 30 second timeout for the entire transaction
             });
 
             return {
@@ -372,6 +403,7 @@ async function createProduct(request: HttpRequest, context: InvocationContext, d
                     };
                 }
                 
+                // Handle invalid foreign key references (shouldn't happen due to our checks above)
                 if (error.message.includes("Foreign key constraint")) {
                     context.error(error);
                     return {
@@ -408,6 +440,7 @@ async function createProduct(request: HttpRequest, context: InvocationContext, d
     };
 }
 
+// Wrap function with authentication - both VENDORs and ADMINs can create products
 const CREATE_PRODUCT = withAuth(createProduct, ["VENDOR", "ADMIN"]);
 
 app.http('create-product', {
