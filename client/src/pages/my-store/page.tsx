@@ -29,16 +29,11 @@ const MyStore = memo(() => {
   }
 
   return (
-    <div className="min-h-[50vh] w-full px-[200px]">
+    <div className="min-h-[50vh] w-full px-[200px] relative">
       <StoreHeader store={store} />
       
       {hasListings ? (
         <div className="grid grid-cols-4 gap-4 items-center mt-10">
-          <Button 
-            text="+ Add Item" 
-            className="p-5 !text-[12px] mt-2" 
-            action={() => navigate('/create-item')} 
-          />
           
           <Suspense fallback={<div className="animate-pulse bg-gray-200 h-48 rounded" />}>
             {products.map((product) => (
@@ -51,6 +46,9 @@ const MyStore = memo(() => {
               />
             ))}
           </Suspense>
+
+          <button title='Create Item' onClick={() => navigate('/create-item')} className='border-solid border-white fixed z-10 right-0 bottom-0 mr-[100px] mb-[150px] w-[40px] h-[40px] rounded-full bg-[#00243a] text-white text-lg flex items-center justify-center font-bold'>+</button>
+
         </div>
       ) : (
         <div className="w-full flex items-center mt-10 flex-col gap-3">
@@ -70,8 +68,11 @@ const MyStore = memo(() => {
             className="p-5 !text-[12px] mt-2" 
             action={() => navigate('/create-item')} 
           />
+
+          
         </div>
       )}
+
     </div>
   );
 });
