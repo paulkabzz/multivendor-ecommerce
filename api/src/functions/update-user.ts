@@ -190,26 +190,36 @@ if (request.method === "PATCH") {
         
         // Check if email is being updated
         let emailUpdated = false;
-        let verificationToken = null;
+        // let verificationToken = null;
         
-        if (email && email !== existingUser.email) {
-            if (!isValidUCTEmail(email)) {
-                return {
-                    status: 400,
-                    headers,
-                    body: JSON.stringify({
-                        success: false,
-                        message: email + " is not a valid UCT email."
-                    })
-                };
-            }
+        // if (email && email !== existingUser.email) {
+        //     if (!isValidUCTEmail(email)) {
+        //         return {
+        //             status: 400,
+        //             headers,
+        //             body: JSON.stringify({
+        //                 success: false,
+        //                 message: email + " is not a valid UCT email."
+        //             })
+        //         };
+        //     }
 
-            updateData.email = email;
-            updateData.is_verified = false;
-            emailUpdated = true;
+        //     updateData.email = email;
+        //     updateData.is_verified = false;
+        //     emailUpdated = true;
             
-            // Generate a new verification token for the new email
-            verificationToken = generateVerificationToken(email, existingUser.user_id);
+        //     // Generate a new verification token for the new email
+        //     verificationToken = generateVerificationToken(email, existingUser.user_id);
+        // }
+
+        if (email) {
+            return {
+                status: 403,
+                body: JSON.stringify({
+                    success: false,
+                    message: "Cannot update email address."
+                })
+            }
         }
 
         if (Object.keys(updateData).length === 0) {
@@ -237,7 +247,6 @@ if (request.method === "PATCH") {
                 user_id: true,
                 first_name: true,
                 last_name: true,
-                email: true,
                 phone: true,
                 avatar_url: true,
                 role: true,
@@ -257,17 +266,17 @@ if (request.method === "PATCH") {
             }
         }
         
-        // If email was updated, send verification email to the new email address
-        let emailSent = false;
+        // // If email was updated, send verification email to the new email address
+        // let emailSent = false;
 
-        if (emailUpdated && verificationToken && updatedUser) {
-            const otp: number = generateOTP();
-            emailSent = await sendVerificationEmail({
-                to: email!,
-                firstName: updatedUser.first_name,
-                otp
-            });
-        }
+        // if (emailUpdated && verificationToken && updatedUser) {
+        //     const otp: number = generateOTP();
+        //     emailSent = await sendVerificationEmail({
+        //         to: email!,
+        //         firstName: updatedUser.first_name,
+        //         otp
+        //     });
+        // }
 
         // Prepare response message based on what was updated
         let message = "User updated successfully";
@@ -284,7 +293,7 @@ if (request.method === "PATCH") {
                 success: true,
                 message: message,
                 user: updatedUser,
-                emailSent: emailUpdated ? emailSent : undefined,
+                // emailSent: emailUpdated ? emailSent : undefined,
                 imageUpload: imageUploadResult ? {
                     success: imageUploadResult.success,
                     fileId: imageUploadResult.fileId,
