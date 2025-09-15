@@ -6,8 +6,31 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router";
 import { useAppDispatch, useAppSelector } from "@/src/store/hooks";
 import { signupUser, clearError } from "@/src/store/slices/userSlice";
+import { Info, X } from "lucide-react";
+
+const PasswordFormat: React.FC<{a: any}> = ({ a }): React.ReactElement => {
+  // Password must contain at least 1 number, 1 uppercase letter, 1 special character, and must be at least 8 characters long.
+    return (
+      <div className="relative bg-white p-[50px] border-solid z-[100] text-[12px]">
+        <button className="absolute top-0 right-0 z-[10] mt-2 mr-2 cursor-pointer" onClick={a}><X /></button>
+        <h1 className="font-bold">Passord Must:</h1>
+        <ul className="!pr-[.5rem]">
+          <li>• Contain at least 1 number</li>
+          <li>• Contain At least 1 uppercase letter</li>
+          <li>• Contain At least 1 special character</li>
+          <li>• Be at least 8 characters long</li>
+        </ul>
+      </div>
+    )
+}
 
 const SignUp: React.FC = (): React.ReactElement => {
+  const [showPasswordFormat, setShowPasswordFormat] = useState<boolean>(false);
+
+  const handleShowPasswordFormat = () => {
+    setShowPasswordFormat(!showPasswordFormat);
+  }
+
   const [user, setUser] = useState<IUser | any>({
     first_name: "",
     last_name: "",
@@ -47,17 +70,25 @@ const SignUp: React.FC = (): React.ReactElement => {
     if (Object.keys(newErrors).length === 0) {
 
       const { ...userData } = user;
-      dispatch(signupUser(userData));
 
-      // Reset form fields
-      setUser({
-        first_name: '',
-        last_name: '',
-        email: '',
-        password: '',
-        confirm_password: ''
-      });
-      setErrors({});
+      try {
+        const user = await dispatch(signupUser(userData));
+
+        // Reset form fields
+        setUser({
+          first_name: '',
+          last_name: '',
+          email: '',
+          password: '',
+          confirm_password: ''
+        });
+        setErrors({});
+
+        navigate(`/verify-email/${user.payload.user.user_id}`);
+      } catch (error) {
+        console.error("Sign up error:", error);
+      }
+   
     }
   };
 
@@ -91,7 +122,7 @@ const SignUp: React.FC = (): React.ReactElement => {
       )
     ) {
       errors.password =
-        "Password must contain at least 1 number, 1 uppercase letter, 1 special character, and must be at least 8 characters long.";
+        "Invalid Passowrd";
     }
 
     if (data.confirm_password !== data.password) {
@@ -99,15 +130,22 @@ const SignUp: React.FC = (): React.ReactElement => {
     }
 
     return errors;
-  };
 
-  return (
-    <section className="w-full flex flex-col justify-center items-center pt-10">
+    // http://localhost:5173/
+  };
+  return ( 
+    <section className="relative w-full flex flex-col justify-center items-center pt-10">
+    {showPasswordFormat && (
+        <div className="absolute w-full h-full flex flex-col justify-center items-center bg-[rgb(0,0,0,0.5)]">
+          <PasswordFormat a={handleShowPasswordFormat} />
+        </div>
+    )}
       <div className="flex gap-1 items-center">
         <img src={logo} alt="logo" className="w-[80px] h-[80px]" />
         <h1 className="font-[700] text-[2.5rem]">Sign Up</h1>
       </div>
       <form className="flex flex-col gap-7 mt-10" onSubmit={handleSubmit}>
+
         <div>
           <label htmlFor="first_name" className="text-[12px] font-[600]">
             First Name
@@ -163,8 +201,8 @@ const SignUp: React.FC = (): React.ReactElement => {
           />
         </div>
         <div>
-          <label htmlFor="password" className="text-[12px] font-[600]">
-            Password
+          <label htmlFor="password" className="text-[12px] font-[600] flex items-center gap-2 mb-2">
+            Password <Info size={16} className="cursor-pointer" onClick={() => setShowPasswordFormat(true)} />
           </label>
           {errors.password && (
             <p className="text-[rgb(255,0,0)] text-[12px] font-[600] py-2">
@@ -216,6 +254,7 @@ const SignUp: React.FC = (): React.ReactElement => {
           </p>
         )}
       </form>
+
     </section>
   );
 };

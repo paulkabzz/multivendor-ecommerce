@@ -8,6 +8,10 @@ import { sendVerificationEmail } from '../utils/gmailService';
 import { generateVerificationToken } from '../utils/tokenUtils';
 import { headers, isStrongPassword, isValidUCTEmail } from "../utils/helpers";
 
+export function generateOTP(): number {
+    return Math.floor(Math.random() * (100_000 - 999_999) + 999_999);
+}
+
 async function signup(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
 
     if (request.method === "POST") {
@@ -53,6 +57,8 @@ async function signup(request: HttpRequest, context: InvocationContext): Promise
                 }
             });
 
+
+
             if (existingUser) {
                 return {
                     status: 409,
@@ -68,34 +74,28 @@ async function signup(request: HttpRequest, context: InvocationContext): Promise
 
             const hashedPassword = scryptSync(password, salt, 64).toString('hex');
 
-            const newUser = await prisma.users.create({
+            const otp = generateOTP();
+
+            const pendingUser = await prisma.unverifiedusers.create({
                 data: {
                     first_name,
                     last_name,
                     email: email.toLowerCase(),
                     password: `${salt}:${hashedPassword}`,
-                    phone: phone || null,
-                    role: role || 'CUSTOMER',
-                    is_verified: false
+                    otp
                 }
             });
 
-            const verificationToken = generateVerificationToken(newUser.email, newUser.user_id);
-            
-            const url: URL = new URL(request.url);
-            const baseUrl: string = `${url.protocol}//localhost:5173`;
-
             const emailSent = await sendVerificationEmail({
-                to: newUser.email,
-                firstName: newUser.first_name,
-                verificationToken,
-                baseUrl
+                to: pendingUser.email,
+                firstName: pendingUser.first_name,
+                otp,
             });
 
             if (!emailSent) {
                 context.error('Failed to send verification email');
-                await prisma.users.delete({
-                    where: { email: newUser.email}
+                await prisma.unverifiedusers.delete({
+                    where: { email: pendingUser.email}
                 });
             }
 
@@ -104,14 +104,9 @@ async function signup(request: HttpRequest, context: InvocationContext): Promise
                 headers,
                 body: JSON.stringify({
                     success: true,
-                    message: "User created successfully. Please check your email to verify your account.",
+                    message: "Please check your email to verify your account.",
                     user: {
-                        user_id: newUser.user_id,
-                        first_name: newUser.first_name,
-                        last_name: newUser.last_name,
-                        email: newUser.email,
-                        role: newUser.role,
-                        is_verified: newUser.is_verified
+                        user_id: pendingUser.user_id,
                     }
                 })
             };

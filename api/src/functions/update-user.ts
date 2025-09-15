@@ -7,6 +7,7 @@ import { generateVerificationToken } from "../utils/tokenUtils";
 import { sendVerificationEmail } from "../utils/gmailService";
 import { headers, isValidUCTEmail, parseJsonRequest, processImageFromMultipart } from "../utils/helpers";
 import { Avatar } from "../utils/avatars";
+import { generateOTP } from "./signup";
 
 interface IUpdateUserWithAvatarRequest extends IUpdateUserRequest {
     avatar_url?: string;
@@ -123,14 +124,15 @@ if (request.method === "PATCH") {
         // If user is not verified, resend verification email (skip for profile image updates)
         if (!existingUser?.is_verified && !imageFile) {
             // Generate a new verification token
-            const verificationToken = generateVerificationToken(existingUser.email, existingUser.user_id);
+            // const verificationToken = generateVerificationToken(existingUser.email, existingUser.user_id);
+
+            const otp: number = generateOTP();
             
             // Send verification email
             const emailSent = await sendVerificationEmail({
                 to: existingUser.email,
                 firstName: existingUser.first_name,
-                verificationToken,
-                baseUrl
+                otp
             });
             
             return {
@@ -259,11 +261,11 @@ if (request.method === "PATCH") {
         let emailSent = false;
 
         if (emailUpdated && verificationToken && updatedUser) {
+            const otp: number = generateOTP();
             emailSent = await sendVerificationEmail({
                 to: email!,
                 firstName: updatedUser.first_name,
-                verificationToken,
-                baseUrl
+                otp
             });
         }
 

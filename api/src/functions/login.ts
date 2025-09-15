@@ -6,6 +6,7 @@ import { scryptSync, timingSafeEqual } from "crypto";
 import { generateVerificationToken } from "../utils/tokenUtils";
 import { sendVerificationEmail } from "../utils/gmailService";
 import { headers } from "../utils/helpers";
+import { generateOTP } from "./signup";
 
 async function login(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
     context.log(`Processing login request for URL "${request.url}"`);
@@ -55,14 +56,13 @@ async function login(request: HttpRequest, context: InvocationContext): Promise<
 
             if (!user.is_verified) {
 
-                const verificationToken = generateVerificationToken(user.email, user.user_id);
-                
+                const otp = generateOTP();
+
                 const emailSent = await sendVerificationEmail({
                     to: user.email, 
                     firstName: user.first_name, 
-                    verificationToken,
-                    baseUrl
-                });
+                    otp
+                })
                 
                 const response: ILoginResponse = {
                     success: false,

@@ -6,15 +6,19 @@ import { headers } from "../utils/helpers";
 
 async function verifyEmail(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
 
-    if (request.method === "GET") {
+    if (request.method === "POST") {
         try {
-            const url = new URL(request.url);
-            const token = url.searchParams.get('token');
 
-            if (!token) {
+            const { user_id, otp } = await request.json() as any;
+
+
+            context.warn("OTP:", otp)
+
+            context.warn(typeof otp)
+            if (!user_id) {
                 const response: IVerificationResponse = {
                     success: false,
-                    message: "Verification token is required"
+                    message: "User ID is required"
                 };
                 return {
                     status: 400,
@@ -23,25 +27,22 @@ async function verifyEmail(request: HttpRequest, context: InvocationContext): Pr
                 };
             }
 
-            const tokenData = verifyVerificationToken(token);
-            if (!tokenData) {
-                const response: IVerificationResponse = {
-                    success: false,
-                    message: "Invalid or expired verification token"
-                };
+            if (!otp) {
                 return {
                     status: 400,
                     headers,
-                    body: JSON.stringify(response)
-                };
-            }
-
-            const user = await prisma.users.findUnique({
-                where: {
-                    user_id: tokenData.userId,
-                    email: tokenData.email
+                    body: JSON.stringify({
+                        success: false,
+                        message: "OTP not provided"
+                    })
                 }
+            }
+
+            const user = await prisma.unverifiedusers.findUnique({
+                where: { user_id }
             });
+
+            console.log(user);
 
             if (!user) {
                 const response: IVerificationResponse = {
@@ -55,25 +56,43 @@ async function verifyEmail(request: HttpRequest, context: InvocationContext): Pr
                 };
             }
 
-            if (user.is_verified) {
+            if (user.otp !== parseInt(otp)) {
                 const response: IVerificationResponse = {
-                    success: true,
-                    message: "Email already verified"
+                    success: false,
+                    message: "Invalid OTP"
                 };
                 return {
-                    status: 200,
+                    status: 400,
                     headers,
                     body: JSON.stringify(response)
                 };
             }
 
-            await prisma.users.update({
-                where: {
-                    user_id: user.user_id
-                },
+            const newUser = await prisma.users.create({
                 data: {
+                    user_id: user.user_id,
+                    email: user.email,
+                    first_name: user.first_name,
+                    last_name: user.last_name,
+                    password: user.password,
                     is_verified: true
                 }
+            });
+
+
+            if (!newUser) {
+                return {
+                    status: 400,
+                    headers,
+                    body: JSON.stringify({
+                        success: false,
+                        message: "Failed to create new user."
+                    })
+                }
+            }
+
+            await prisma.unverifiedusers.delete({
+                where: { user_id: user.user_id }
             });
 
             const response: IVerificationResponse = {
@@ -82,7 +101,7 @@ async function verifyEmail(request: HttpRequest, context: InvocationContext): Pr
             };
 
             return {
-                status: 204,
+                status: 201,
                 headers,
                 body: JSON.stringify(response)
             };
@@ -109,7 +128,7 @@ async function verifyEmail(request: HttpRequest, context: InvocationContext): Pr
 }
 
 app.http('verify-email', {
-    methods: ['GET'],
+    methods: ['POST'],
     authLevel: 'anonymous',
     handler: verifyEmail
 });

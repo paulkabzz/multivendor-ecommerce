@@ -79,7 +79,7 @@ export const signupUser = createAsyncThunk(
       });
 
       const data = await response.json();
-
+      
       if (!data.success) {
         return rejectWithValue(data.message);
       }

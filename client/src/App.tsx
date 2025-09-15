@@ -33,7 +33,7 @@ function App(): React.ReactElement {
       <Routes>
         <Route path="/" element={<RootLayout />}>
           <Route index element={<Home />} />
-          <Route path="/verify-email" element={<Verification />} />
+          <Route path="/verify-email/:user_id" element={<Verification />} />
           <Route path="/login" element={<Login />} />
           <Route path="/sign-up" element={<SignUp />} />
           <Route path="/faq" element={<FAQ />} />

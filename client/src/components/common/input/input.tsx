@@ -12,6 +12,7 @@ export const Input: React.FC<IInput> = ({
   id,
   name,
   value,
+  maxLength,
   defaultValue,
 }): React.ReactElement => {
   return (
@@ -25,6 +26,7 @@ export const Input: React.FC<IInput> = ({
       <input
         defaultValue={defaultValue}
         disabled={disabled}
+        maxLength={maxLength}
         type={type}
         name={name}
         value={value}

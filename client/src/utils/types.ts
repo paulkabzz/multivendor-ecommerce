@@ -16,6 +16,7 @@ export interface IInput {
   action?: any;
   name?: string;
   value?: string;
+  maxLength?: number;
   id?: string;
   defaultValue?: string | number;
 }

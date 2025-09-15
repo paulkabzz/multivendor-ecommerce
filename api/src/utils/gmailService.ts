@@ -3,8 +3,7 @@ import nodemailer from "nodemailer";
 export interface VerificationEmailData {
   to: string;
   firstName: string;
-  verificationToken: string;
-  baseUrl: string;
+  otp: number
 }
 
 const transporter = nodemailer.createTransport({
@@ -19,7 +18,7 @@ export async function sendVerificationEmail(
   data: VerificationEmailData
 ): Promise<boolean> {
   try {
-    const verificationUrl = `${data.baseUrl.replace(/\/$/, '')}/verify-email?token=${encodeURIComponent(data.verificationToken)}`;
+    // const verificationUrl = `${data.baseUrl.replace(/\/$/, '')}/verify-email?token=${encodeURIComponent(data.verificationToken)}`;
     
     const mailOptions = {
       from: `"Market Place" <${process.env.GMAIL_USER}>`,
@@ -95,11 +94,8 @@ export async function sendVerificationEmail(
                                         <!-- Verification button -->
                                         <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin: 0 auto;">
                                             <tr>
-                                                <td style="border-radius: 8px; background-color: #131313; text-align: center;">
-                                                    <a href="${verificationUrl}" 
-                                                      style="display: inline-block; padding: 16px 16px; font-size: 14px; font-weight: 700; color: #ffffff; text-decoration: none; border-radius: 8px; transition: all 0.2s ease;">
-                                                        Verify Email Address
-                                                    </a>
+                                                <td style="border-radius: 8px; text-align: center; font-family: monospace; font-size: 1.5rem;">
+                                                    ${data.otp}
                                                 </td>
                                             </tr>
                                         </table>
@@ -109,15 +105,6 @@ export async function sendVerificationEmail(
                                         </p>
                                     </div>
                                     
-                                    <!-- Alternative verification -->
-                                    <div style="text-align: center; margin-bottom: 32px;">
-                                        <p style="margin: 0 0 16px 0; font-size: 14px; color: #6b7280; line-height: 1.5;">
-                                            If the button doesn't work, copy and paste this link into your browser:
-                                        </p>
-                                        <p style="margin: 0; font-size: 12px; font-weight: 600; color: #667eea; word-break: break-all; background-color: #f3f4f6; padding: 12px; border-radius: 6px; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;">
-                                            ${verificationUrl}
-                                        </p>
-                                    </div>
                                 </td>
                             </tr>
                             

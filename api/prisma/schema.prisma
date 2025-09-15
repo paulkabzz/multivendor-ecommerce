@@ -164,6 +164,15 @@ model sizes {
   @@index([size_name], map: "idx_sizes_size_name")
 }
 
+model unverifiedusers {
+  user_id    String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  first_name String @db.VarChar(60)
+  last_name  String @db.VarChar(60)
+  email      String @unique @db.VarChar(120)
+  password   String @db.VarChar(255)
+  otp        Int
+}
+
 enum role {
   CUSTOMER
   VENDOR
