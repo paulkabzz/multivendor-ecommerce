@@ -333,7 +333,7 @@ const ProfileContent: React.FC = () => {
             placeholder="Enter your email"
             action={(e: any) => handleInputChange("email", e.target.value)}
             className="w-full"
-            disabled={isUpdateLoading}
+            disabled={true}
           />
         </div>
         <div>

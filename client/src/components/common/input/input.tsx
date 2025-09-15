@@ -25,7 +25,7 @@ export const Input: React.FC<IInput> = ({
       {icon && <img src={icon} alt="Search" />}
       <input
         defaultValue={defaultValue}
-        disabled={disabled}
+        disabled={disabled || type === "emal"}
         maxLength={maxLength}
         type={type}
         name={name}
