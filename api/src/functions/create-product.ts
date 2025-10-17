@@ -131,6 +131,16 @@ async function createProduct(request: HttpRequest, context: InvocationContext, d
                     })
                 };
             }
+            
+            if (!imageFiles || imageFiles.length < 1) {
+                return {
+                    status: 400,
+                    body: JSON.stringify({
+                        success: false,
+                        message: "At least 1 image should be uploaded."
+                    })
+                }
+            }
 
             // PERMISSION CHECK - Vendors can only create products for their own store
             if (decodedToken?.role === "VENDOR") {
@@ -333,11 +343,18 @@ async function createProduct(request: HttpRequest, context: InvocationContext, d
                         } else if (imageUploadResult.failedImages.length > 0) {
                             // Log failed uploads but don't fail the entire operation
                             context.warn("Some images failed to upload:", imageUploadResult.failedImages);
+                            return {
+                                statu: 400,
+                                body: JSON.stringify({
+                                    success: false,
+                                    message: "Error uploading product images"
+                                })
+                            }
                         }
                     } catch (error: unknown) {
                         context.error("Error uploading product images:", error);
-                        // Continue without failing the product creation
-                        // Product will be created but without images
+                 
+
                     }
                 }
 
@@ -382,7 +399,7 @@ async function createProduct(request: HttpRequest, context: InvocationContext, d
                             department_name: result.product.department.department_name
                         } : null,
                         images: result.uploadedImages,
-                        image_count: result.uploadedImages.length
+                        image_count: result.uploadedImages?.length ?? 0
                     }
                 })
             };
