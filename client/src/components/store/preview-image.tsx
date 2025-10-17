@@ -8,7 +8,7 @@ interface PreviewImageInterface {
 
 const PreviewImage: React.FC<PreviewImageInterface> = ({ index, onImageChange }) => {
     const [preview, setPreview] = useState<string>();
-    const [currentFile, setCurrentFile] = useState<File | null>(null);
+    const [, setCurrentFile] = useState<File | null>(null); //currentFile removed 
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
