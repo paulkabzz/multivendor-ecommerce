@@ -7,8 +7,8 @@ import { Link } from "react-router";
 import { Button } from "../buttons/button";
 import { useAuth } from "@/src/context/auth-context";
 import { useStore } from "@/src/context/store-context";
-import defaultStore from '@assets/ui/default-store.png'
-
+import defaultStore from '@assets/ui/default-store.png';
+import logo from '@assets/logo-4.png'
 const ProfileSkeleton = () => (
   <div className="w-[25px] h-[25px] rounded-full bg-gray-600 animate-pulse"></div>
 );
@@ -82,7 +82,7 @@ export const Nav: React.FC = (): React.ReactElement => {
     <header className="sticky top-0 right-0 bg-[#131313] h-[55px] w-full mt-[50px] px-[200px] py-[.5rem] flex flex-col justify-center z-[150]">
       <div className="flex items-center justify-between text-[#fff]">
         <div className=" flex items-center gap-5 font-[900]">
-          <Hamburger /> <Link to={"/"}>Ecom</Link>
+          <Hamburger /> <Link to={"/"} className="flex gap-3 h-full justify-center items-center">UCT <img src={logo} className="w-[30px] h-[30px]"/></Link>
         </div>
         <div className="flex items-center gap-3">
           <Input
