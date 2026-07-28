@@ -34,6 +34,6 @@ psql-stop:
 	cd docker && docker-compose down
 
 api:
-	docker run --env-file .env -p 7071:7071 api
+	docker ps -q | xargs docker stop 2>/dev/null; docker build -t api . && docker run --env-file .env -p 7071:7071 api 2>&1
 
 .PHONY: psql-stop commit migrate prisma psql count api
