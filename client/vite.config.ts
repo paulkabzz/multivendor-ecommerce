@@ -4,7 +4,7 @@ import { resolve } from "path";
 
 export default defineConfig({
   plugins: [react()],
-  base: "/multivendor-ecommerce",
+  base: "/multivendor-ecommerce/client",
   resolve: {
     alias: {
       "@": resolve(__dirname, "./"),
