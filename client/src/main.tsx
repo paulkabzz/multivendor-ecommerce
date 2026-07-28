@@ -25,7 +25,7 @@ const queryCLient = new QueryClient({
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
         <Provider store={store}>
-          <BrowserRouter>
+          <BrowserRouter basename="/multivendor-ecommerce">
               <QueryClientProvider client={queryCLient}>
                 <UIProvider>
                   <AuthProvider>
