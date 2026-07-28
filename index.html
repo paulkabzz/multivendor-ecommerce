@@ -2,13 +2,26 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/x-con" href="/multivendor-ecommerce/client/favicon.ico" />
+    <link rel="icon" type="image/x-con" href="/multivendor-ecommerce/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ecom</title>
-    <script type="module" crossorigin src="/multivendor-ecommerce/client/assets/index-gmK7KFy2.js"></script>
-    <link rel="stylesheet" crossorigin href="/multivendor-ecommerce/client/assets/index-CUHUrbzU.css">
+    <script type="module" crossorigin src="/multivendor-ecommerce/assets/index-Dy0CCmFa.js"></script>
+    <link rel="stylesheet" crossorigin href="/multivendor-ecommerce/assets/index-BRIX-G9T.css">
   </head>
   <body>
     <div id="root"></div>
+    <!-- GitHub Pages SPA redirect restore -->
+    <script type="text/javascript">
+      (function(l) {
+        if (l.search[1] === '/' ) {
+          var decoded = l.search.slice(1).split('&').map(function(s) { 
+            return s.replace(/~and~/g, '&')
+          }).join('?');
+          window.history.replaceState(null, null,
+              l.pathname.slice(0, -1) + decoded + l.hash
+          );
+        }
+      }(window.location))
+    </script>
   </body>
 </html>
