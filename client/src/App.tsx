@@ -1,5 +1,5 @@
 import { Route, Routes } from "react-router";
-import "@src/app.css";
+import "@src/App.css";
 import {
   AdminHome,
   BestSelling,
