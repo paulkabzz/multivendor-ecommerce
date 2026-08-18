@@ -83,7 +83,7 @@ async function signup(request: HttpRequest, context: InvocationContext): Promise
             const verificationToken = generateVerificationToken(newUser.email, newUser.user_id);
             
             const url: URL = new URL(request.url);
-            const baseUrl: string = `${url.protocol}//localhost:5173`;
+            const baseUrl: string = `https://paulkabzz.github.io/multivendor-ecommerce`;
 
             const emailSent = await sendVerificationEmail({
                 to: newUser.email,
